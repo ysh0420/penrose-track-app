@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -27,6 +28,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .stat .value{font-family:'Cormorant Garamond',serif;font-size:18pt;color:var(--navy);font-weight:600;margin-top:.2em}
 .stat.pos .value{color:var(--green)}
 .stat.neg .value{color:var(--red)}
+.chart-wrap{height:360px;position:relative;margin-top:1rem;margin-bottom:1.5rem}
 table{width:100%;border-collapse:collapse;font-size:10pt;margin-top:1rem}
 th{text-align:left;padding:.7rem .9rem;background:var(--navy);color:white;font-weight:500;font-size:9pt;text-transform:uppercase;letter-spacing:1px}
 td{padding:.6rem .9rem;border-top:1px solid var(--line)}
@@ -43,7 +45,7 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 .side-short{color:#b71c1c;font-weight:700;font-size:9pt}
 .placeholder{background:#fffbe8;border:1px dashed var(--gold);padding:2rem;text-align:center;color:var(--muted);font-style:italic}
 .footer{text-align:center;color:var(--muted);font-size:9pt;padding:2rem 1rem;margin-top:2rem}
-@media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem}}
+@media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem}.chart-wrap{height:280px}}
 </style>
 </head>
 <body>
@@ -93,6 +95,21 @@ Net Market Exposure = (Sum of Positions + accumulated PL) / Target Fund Size. Cu
 </div>
 
 <div class="section">
+<h2>April 2026 MTD Evolution</h2>
+<div class="subtitle">Intra-month performance progression — 4 weekly snapshots from MW TOPS portal. Note net exposure reduction from 25% → 9% as shorts were layered in.</div>
+<div class="chart-wrap"><canvas id="aprChart"></canvas></div>
+<table>
+<thead><tr><th>Date</th><th style="text-align:right">Overall Perf (AC)</th><th style="text-align:right">MTD Net Return</th><th style="text-align:right">Fund Size</th><th style="text-align:right">Net Exposure</th><th style="text-align:right">Positions</th><th>Book Event</th></tr></thead>
+<tbody>
+<tr><td class="bold">Apr 10</td><td class="num pos">+1.26%</td><td class="num pos">+3.16%</td><td class="num">$18.0M</td><td class="num">25.28%</td><td class="num">7</td><td style="font-size:9pt;color:var(--muted)">baseline (4L / 3S)</td></tr>
+<tr><td class="bold">Apr 14</td><td class="num pos">+1.73%</td><td class="num pos">+3.92%</td><td class="num">$18.0M</td><td class="num">25.95%</td><td class="num">7</td><td style="font-size:9pt;color:var(--muted)">peak — long gains</td></tr>
+<tr><td class="bold">Apr 17</td><td class="num pos">+1.53%</td><td class="num pos">+3.64%</td><td class="num">$20.0M</td><td class="num">13.89%</td><td class="num">8</td><td style="font-size:9pt;color:var(--muted)">+9020 EJR short added</td></tr>
+<tr><td class="bold">Apr 23</td><td class="num pos">+1.87%</td><td class="num pos">+3.97%</td><td class="num">$21.0M</td><td class="num">9.27%</td><td class="num">9</td><td style="font-size:9pt;color:var(--muted)">+9983 Fast Retailing short</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="section">
 <h2>CY2025 Position Attribution</h2>
 <div class="subtitle">10 positions traded Apr 30 2025 — Dec 31 2025 reference period. From Koyfin aggregate xlsx.</div>
 <table>
@@ -118,6 +135,31 @@ Current holdings from MW TOPS portal snapshot · CY2025 reference from Koyfin ag
 </div>
 
 <script>
+// Apr 2026 MTD Evolution chart - dual axis (Overall Perf AC + Net Exposure)
+new Chart(document.getElementById('aprChart'), {
+  type: 'line',
+  data: {
+    labels: ['Apr 10','Apr 14','Apr 17','Apr 23'],
+    datasets: [
+      { label:'Overall Performance (AC) %', data:[1.26, 1.73, 1.53, 1.87], borderColor:'#c9a84c', backgroundColor:'rgba(201,168,76,0.15)', borderWidth:3, tension:0.3, fill:true, pointRadius:6, pointBackgroundColor:'#1a2744', pointBorderColor:'#c9a84c', pointBorderWidth:2, yAxisID:'y' },
+      { label:'MTD Net Return %', data:[3.16, 3.92, 3.64, 3.97], borderColor:'#2e7d32', borderWidth:2, borderDash:[4,3], tension:0.3, fill:false, pointRadius:4, pointBackgroundColor:'#2e7d32', yAxisID:'y' },
+      { label:'Net Market Exposure %', data:[25.28, 25.95, 13.89, 9.27], borderColor:'#1a2744', borderWidth:2, borderDash:[2,4], tension:0.1, fill:false, pointRadius:4, pointBackgroundColor:'#1a2744', yAxisID:'y1' }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins: {
+      legend: { position:'bottom', labels: { font:{family:'DM Sans'}, padding:14 } },
+      tooltip: { callbacks: { label: function(c){ return c.dataset.label + ': ' + (c.parsed.y>0?'+':'') + c.parsed.y.toFixed(2) + '%'; } } }
+    },
+    scales: {
+      y: { position:'left', title:{display:true, text:'Return % (AC / Net)', font:{family:'DM Sans',weight:500}}, grid:{color:'#e0d8c4'}, ticks:{ callback: function(v){return (v>0?'+':'')+v+'%';} } },
+      y1: { position:'right', title:{display:true, text:'Net Exposure %', font:{family:'DM Sans',weight:500}}, grid:{drawOnChartArea:false}, ticks:{ callback: function(v){return v+'%';} } },
+      x: { grid:{color:'#f0ebe0'} }
+    }
+  }
+});
+
 var positions = [
   {n:1, ticker:'5016', name:'JX Advanced Metals', wt:9.1, entry:794.8, exit:3788.0, abs:376.6, ac:359.3, contrib:32.69},
   {n:2, ticker:'1803', name:'Shimizu Corp', wt:18.2, entry:1525.5, exit:2900.0, abs:90.1, ac:72.8, contrib:13.24},
