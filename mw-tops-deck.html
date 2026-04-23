@@ -66,7 +66,7 @@ td.bold{font-weight:600;color:var(--navy)}
 
 <div class="section">
 <h2>Cumulative Return Trajectory</h2>
-<div class="subtitle">Alpha capture basis. CY2025 from Koyfin daily CSV (verified); CY2026 from MW platform monthly reports.</div>
+<div class="subtitle">Alpha capture basis. CY2025 from Koyfin daily CSV (documented); CY2026 from MW platform monthly reports.</div>
 <div class="chart-wrap"><canvas id="retChart"></canvas></div>
 </div>
 
@@ -81,7 +81,7 @@ td.bold{font-weight:600;color:var(--navy)}
 
 <div class="footer">
 Data as of 2026-04-23 · Penrose Japan Ltd<br/>
-CY2025: Koyfin daily CSV — point-to-point alpha capture (documented) · CY2026: MW platform monthly reports (partial)
+CY2025: Koyfin daily CSV — point-to-point alpha capture (documented) · CY2026: MW platform monthly reports (partial evidence)
 </div>
 </div>
 
@@ -104,7 +104,7 @@ var months = [
 new Chart(document.getElementById('retChart'), {
   type: 'line',
   data: {
-    labels: ['Apr 30 \'25','May 30','Jun 30','Jul 31','Aug 29','Sep 30','Oct 31','Nov 28','Dec 30','Jan 30 \'26','Feb 27','Mar 31','Apr 22'],
+    labels: ["Apr 30 '25","May 30","Jun 30","Jul 31","Aug 29","Sep 30","Oct 31","Nov 28","Dec 30","Jan 30 '26","Feb 27","Mar 31","Apr 22"],
     datasets: [
       { label:'Cumulative AC Return from Inception (%)', data:[0, 0.30, 0.10, 1.85, 12.65, 21.95, 21.95, 24.70, 25.65, 30.05, 45.01, 34.13, 36.81], borderColor:'#c9a84c', backgroundColor:'rgba(201,168,76,0.15)', borderWidth:3, tension:0.25, fill:true, pointRadius:5, pointBackgroundColor:'#1a2744', pointBorderColor:'#c9a84c', pointBorderWidth:2 },
       { label:'Zero baseline', data:[0,0,0,0,0,0,0,0,0,0,0,0,0], borderColor:'rgba(139,134,128,0.4)', borderWidth:1, borderDash:[2,4], pointRadius:0, fill:false }
