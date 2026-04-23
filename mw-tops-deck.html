@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Penrose Japan — MW TOPS Track Record</title>
+<title>Penrose Japan — Track Record</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .section{background:white;border:1px solid var(--line);padding:2rem;margin-bottom:1.5rem}
 .section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.4em;display:inline-block}
 .section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1.5rem}
-.headline{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1rem 0}
+.headline{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0}
 .metric{border-left:3px solid var(--gold);padding:.8rem 1rem;background:var(--cream)}
 .metric .label{font-size:9pt;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:500}
 .metric .value{font-family:'Cormorant Garamond',serif;font-size:24pt;color:var(--navy);font-weight:600;margin-top:.2em;line-height:1.1}
@@ -37,9 +37,6 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 td.pos{color:var(--green);font-weight:600}
 td.neg{color:var(--red);font-weight:600}
 td.bold{font-weight:600;color:var(--navy)}
-.tag{display:inline-block;padding:2px 8px;font-size:8pt;letter-spacing:.5px;text-transform:uppercase;border-radius:3px;font-weight:600}
-.tag.koyfin{background:#e3f2fd;color:#0d47a1}
-.tag.mw{background:#fff3cd;color:#856404}
 .footer{text-align:center;color:var(--muted);font-size:9pt;padding:2rem 1rem;margin-top:2rem}
 @media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem}.chart-wrap{height:300px}}
 </style>
@@ -47,58 +44,56 @@ td.bold{font-weight:600;color:var(--navy)}
 <body>
 <div class="container">
 <div class="topbar">
-<div><h1>Penrose <span>Japan</span></h1><div class="sub">MW TOPS (PENROSE-JP-LON) — Track Record</div></div>
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Japan Equities Alpha Capture Track Record</div></div>
 <div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">Inception: Apr 30, 2025<br/>As of: Apr 22, 2026</div>
 </div>
 
 <div class="section">
 <h2>Performance Summary</h2>
-<div class="subtitle">Alpha capture basis = (alpha vs TOPIX + absolute) / 2 — MW TOPS evaluation standard</div>
+<div class="subtitle">Alpha capture basis = (alpha vs TOPIX + absolute return) / 2</div>
 <div class="headline">
-<div class="metric primary"><div class="label">LTD Return (AC)</div><div class="value">+36.8%</div><div class="detail">from Apr 30, 2025 inception</div></div>
-<div class="metric positive"><div class="label">CY2025 (AC)</div><div class="value">+25.7%</div><div class="detail">May-Dec 2025 (8 months)</div></div>
-<div class="metric positive"><div class="label">CY2026 YTD (AC)</div><div class="value">+8.9%</div><div class="detail">through Apr 22 MTD</div></div>
+<div class="metric primary"><div class="label">LTD Return</div><div class="value">+36.8%</div><div class="detail">from Apr 30, 2025 inception</div></div>
+<div class="metric positive"><div class="label">CY2025</div><div class="value">+25.7%</div><div class="detail">May-Dec 2025 (8 months)</div></div>
+<div class="metric positive"><div class="label">CY2026 YTD</div><div class="value">+8.9%</div><div class="detail">through Apr 22 MTD</div></div>
 <div class="metric"><div class="label">Best Month</div><div class="value">+11.5%</div><div class="detail">February 2026</div></div>
 <div class="metric"><div class="label">Worst Month</div><div class="value">-7.5%</div><div class="detail">March 2026</div></div>
-<div class="metric"><div class="label">Positive Months</div><div class="value">11/12</div><div class="detail">92% hit rate</div></div>
 </div>
 </div>
 
 <div class="section">
 <h2>Cumulative Return Trajectory</h2>
-<div class="subtitle">Alpha capture basis. CY2025 from Koyfin daily CSV (documented); CY2026 from MW platform monthly reports.</div>
+<div class="subtitle">Alpha capture basis, cumulative % return from inception</div>
 <div class="chart-wrap"><canvas id="retChart"></canvas></div>
 </div>
 
 <div class="section">
 <h2>Monthly Performance</h2>
-<div class="subtitle">All figures in alpha capture basis (MW evaluation standard)</div>
+<div class="subtitle">Alpha capture basis</div>
 <table>
-<thead><tr><th>Month</th><th style="text-align:right">Monthly</th><th style="text-align:right">Cum from Inception</th><th>Source</th></tr></thead>
+<thead><tr><th>Month</th><th style="text-align:right">Monthly</th><th style="text-align:right">Cum from Inception</th></tr></thead>
 <tbody id="monthRows"></tbody>
 </table>
 </div>
 
 <div class="footer">
-Data as of 2026-04-23 · Penrose Japan Ltd<br/>
-CY2025: Koyfin daily CSV — point-to-point alpha capture (documented) · CY2026: MW platform monthly reports (partial evidence)
+Data as of 2026-04-23 · Penrose Japan Ltd
 </div>
 </div>
 
 <script>
 var months = [
-  {label:'May 2025', monthly:0.30, cum:0.30, src:'koyfin'},
-  {label:'Jun 2025', monthly:-0.20, cum:0.10, src:'koyfin'},
-  {label:'Jul 2025', monthly:1.75, cum:1.85, src:'koyfin'},
-  {label:'Aug 2025', monthly:10.60, cum:12.65, src:'koyfin'},
-  {label:'Sep 2025', monthly:8.25, cum:21.95, src:'koyfin'},
-  {label:'Oct 2025', monthly:0.00, cum:21.95, src:'koyfin'},
-  {label:'Nov 2025', monthly:2.25, cum:24.70, src:'koyfin'},
-  {label:'Dec 2025', monthly:0.76, cum:25.65, src:'koyfin'},
-  {label:'Jan 2026', monthly:3.50, cum:30.05, src:'mw'},
-  {label:'Feb 2026', monthly:11.50, cum:45.01, src:'mw'},
-  {label:'Mar 2026', monthly:-7.50, cum:34.13, src:'mw'},
-  {label:'Apr 2026', monthly:2.00, cum:36.81, src:'mw', mtd:true}
+  {label:'May 2025', monthly:0.30, cum:0.30},
+  {label:'Jun 2025', monthly:-0.20, cum:0.10},
+  {label:'Jul 2025', monthly:1.75, cum:1.85},
+  {label:'Aug 2025', monthly:10.60, cum:12.65},
+  {label:'Sep 2025', monthly:8.25, cum:21.95},
+  {label:'Oct 2025', monthly:0.00, cum:21.95},
+  {label:'Nov 2025', monthly:2.25, cum:24.70},
+  {label:'Dec 2025', monthly:0.76, cum:25.65},
+  {label:'Jan 2026', monthly:3.50, cum:30.05},
+  {label:'Feb 2026', monthly:11.50, cum:45.01},
+  {label:'Mar 2026', monthly:-7.50, cum:34.13},
+  {label:'Apr 2026 MTD', monthly:2.00, cum:36.81}
 ];
 
 new Chart(document.getElementById('retChart'), {
@@ -106,7 +101,7 @@ new Chart(document.getElementById('retChart'), {
   data: {
     labels: ["Apr 30 '25","May 30","Jun 30","Jul 31","Aug 29","Sep 30","Oct 31","Nov 28","Dec 30","Jan 30 '26","Feb 27","Mar 31","Apr 22"],
     datasets: [
-      { label:'Cumulative AC Return from Inception (%)', data:[0, 0.30, 0.10, 1.85, 12.65, 21.95, 21.95, 24.70, 25.65, 30.05, 45.01, 34.13, 36.81], borderColor:'#c9a84c', backgroundColor:'rgba(201,168,76,0.15)', borderWidth:3, tension:0.25, fill:true, pointRadius:5, pointBackgroundColor:'#1a2744', pointBorderColor:'#c9a84c', pointBorderWidth:2 },
+      { label:'Cumulative Alpha Capture Return (%)', data:[0, 0.30, 0.10, 1.85, 12.65, 21.95, 21.95, 24.70, 25.65, 30.05, 45.01, 34.13, 36.81], borderColor:'#c9a84c', backgroundColor:'rgba(201,168,76,0.15)', borderWidth:3, tension:0.25, fill:true, pointRadius:5, pointBackgroundColor:'#1a2744', pointBorderColor:'#c9a84c', pointBorderWidth:2 },
       { label:'Zero baseline', data:[0,0,0,0,0,0,0,0,0,0,0,0,0], borderColor:'rgba(139,134,128,0.4)', borderWidth:1, borderDash:[2,4], pointRadius:0, fill:false }
     ]
   },
@@ -117,7 +112,7 @@ new Chart(document.getElementById('retChart'), {
       tooltip: { callbacks: { label: function(c){ return c.dataset.label + ': ' + (c.parsed.y>0?'+':'') + c.parsed.y.toFixed(2) + '%'; } } }
     },
     scales: {
-      y: { title:{display:true, text:'Cumulative Return (%, AC basis)', font:{family:'DM Sans',weight:500}}, grid:{color:'#e0d8c4'}, ticks:{ callback: function(v){return (v>0?'+':'')+v+'%';} } },
+      y: { title:{display:true, text:'Cumulative Return (%)', font:{family:'DM Sans',weight:500}}, grid:{color:'#e0d8c4'}, ticks:{ callback: function(v){return (v>0?'+':'')+v+'%';} } },
       x: { grid:{color:'#f0ebe0'} }
     }
   }
@@ -128,9 +123,7 @@ document.getElementById('monthRows').innerHTML = months.map(function(m){
   var cClass = m.cum > 0 ? 'pos' : 'neg';
   var mSign = m.monthly > 0 ? '+' : '';
   var cSign = m.cum > 0 ? '+' : '';
-  var tagClass = m.src === 'koyfin' ? 'tag koyfin' : 'tag mw';
-  var tagText = m.src === 'koyfin' ? 'Koyfin CSV' : (m.mtd ? 'MW MTD' : 'MW report');
-  return '<tr><td class="bold">' + m.label + '</td><td class="num ' + mClass + '">' + mSign + m.monthly.toFixed(2) + '%</td><td class="num ' + cClass + '">' + cSign + m.cum.toFixed(2) + '%</td><td><span class="' + tagClass + '">' + tagText + '</span></td></tr>';
+  return '<tr><td class="bold">' + m.label + '</td><td class="num ' + mClass + '">' + mSign + m.monthly.toFixed(2) + '%</td><td class="num ' + cClass + '">' + cSign + m.cum.toFixed(2) + '%</td></tr>';
 }).join('');
 </script>
 </body>
