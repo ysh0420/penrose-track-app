@@ -12,7 +12,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
 h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
-.container{max-width:1200px;margin:0 auto}
+.container{max-width:1280px;margin:0 auto}
 .topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
 .topbar h1 span{color:var(--gold)}
@@ -21,16 +21,26 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .section{background:white;border:1px solid var(--line);padding:2rem;margin-bottom:1.5rem}
 .section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.4em;display:inline-block}
 .section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1.5rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.stat{padding:.8rem 1rem;background:var(--cream);border-left:3px solid var(--gold)}
+.stat .label{font-size:9pt;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.stat .value{font-family:'Cormorant Garamond',serif;font-size:18pt;color:var(--navy);font-weight:600;margin-top:.2em}
+.stat.pos .value{color:var(--green)}
+.stat.neg .value{color:var(--red)}
 table{width:100%;border-collapse:collapse;font-size:10pt;margin-top:1rem}
-th{text-align:left;padding:.8rem 1rem;background:var(--navy);color:white;font-weight:500;font-size:9pt;text-transform:uppercase;letter-spacing:1px}
-td{padding:.7rem 1rem;border-top:1px solid var(--line)}
+th{text-align:left;padding:.7rem .9rem;background:var(--navy);color:white;font-weight:500;font-size:9pt;text-transform:uppercase;letter-spacing:1px}
+td{padding:.6rem .9rem;border-top:1px solid var(--line)}
 tr:hover{background:var(--cream)}
 td.num{text-align:right;font-variant-numeric:tabular-nums}
 td.pos{color:var(--green);font-weight:600}
 td.neg{color:var(--red);font-weight:600}
 td.bold{font-weight:600;color:var(--navy)}
 tr.total{background:var(--cream);font-weight:700}
-tr.total td{border-top:2px solid var(--navy);color:var(--navy);padding-top:.9rem}
+tr.total td{border-top:2px solid var(--navy);color:var(--navy);padding-top:.8rem}
+tr.subtotal{background:#f3efe4;font-weight:600;font-size:9pt}
+tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5rem;padding-bottom:.5rem}
+.side-long{color:#0d47a1;font-weight:700;font-size:9pt}
+.side-short{color:#b71c1c;font-weight:700;font-size:9pt}
 .placeholder{background:#fffbe8;border:1px dashed var(--gold);padding:2rem;text-align:center;color:var(--muted);font-style:italic}
 .footer{text-align:center;color:var(--muted);font-size:9pt;padding:2rem 1rem;margin-top:2rem}
 @media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem}}
@@ -41,8 +51,47 @@ tr.total td{border-top:2px solid var(--navy);color:var(--navy);padding-top:.9rem
 <div class="private-banner">⚠ INTERNAL / CONFIDENTIAL — Position names included. Not for external distribution.</div>
 <div class="topbar">
 <div><h1>Penrose <span>Japan</span></h1><div class="sub">MW TOPS — Attribution & Month-End Detail (Private)</div></div>
-<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">As of: Apr 22, 2026</div>
+<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">As of: Apr 23, 2026</div>
 </div>
+
+<div class="section">
+<h2>Current Holdings — April 23, 2026</h2>
+<div class="subtitle">Live positions from MW TOPS portal snapshot · 9 positions (4 long / 5 short)</div>
+
+<div class="stats-grid">
+<div class="stat"><div class="label">Current Fund Size</div><div class="value">$21.0M</div></div>
+<div class="stat"><div class="label">Target Fund Size</div><div class="value">$30.0M</div></div>
+<div class="stat pos"><div class="label">MTD P&L (Gross)</div><div class="value">+$744K</div></div>
+<div class="stat pos"><div class="label">MTD Net Return</div><div class="value">+3.97%</div></div>
+<div class="stat pos"><div class="label">Overall Perf (AC)</div><div class="value">+1.87%</div></div>
+<div class="stat"><div class="label">Net Mkt Exposure</div><div class="value">9.27%</div></div>
+</div>
+
+<table>
+<thead><tr><th>Side</th><th>Ticker</th><th>Company</th><th style="text-align:right">Position ($)</th><th style="text-align:right">Avg In ¥</th><th style="text-align:right">Last ¥</th><th style="text-align:right">Chg on Pos</th><th style="text-align:right">MTD Chg</th><th style="text-align:right">MTD P&L ($)</th><th style="text-align:right">LTD P&L ($)</th></tr></thead>
+<tbody>
+<tr><td><span class="side-long">LONG</span></td><td class="bold">4063</td><td>Shin-Etsu Chemical</td><td class="num">3,000,000</td><td class="num">5,509.9</td><td class="num">6,664</td><td class="num pos">+20.95%</td><td class="num pos">+6.47%</td><td class="num pos">220,511</td><td class="num pos">1,034,218</td></tr>
+<tr><td><span class="side-long">LONG</span></td><td class="bold">4091</td><td>Nippon Sanso Holdings</td><td class="num">3,000,000</td><td class="num">5,916.4</td><td class="num">5,600</td><td class="num neg">-5.35%</td><td class="num pos">+1.21%</td><td class="num pos">33,973</td><td class="num pos">180,452</td></tr>
+<tr><td><span class="side-long">LONG</span></td><td class="bold">8002</td><td>Marubeni Corp</td><td class="num">3,000,000</td><td class="num">5,593.3</td><td class="num">5,929</td><td class="num pos">+6.00%</td><td class="num pos">+5.54%</td><td class="num pos">166,807</td><td class="num pos">207,811</td></tr>
+<tr><td><span class="side-long">LONG</span></td><td class="bold">6332</td><td>Tsukishima Holdings</td><td class="num">2,000,000</td><td class="num">2,755.2</td><td class="num">2,943</td><td class="num pos">+6.82%</td><td class="num pos">+9.45%</td><td class="num pos">143,988</td><td class="num pos">136,360</td></tr>
+<tr class="subtotal"><td colspan="3">LONG SUBTOTAL (4 positions)</td><td class="num">11,000,000</td><td></td><td></td><td></td><td></td><td class="num pos">565,279</td><td></td></tr>
+<tr><td><span class="side-short">SHORT</span></td><td class="bold">9983</td><td>Fast Retailing *</td><td class="num">1,000,000</td><td class="num">71,710</td><td class="num">69,290</td><td class="num pos">N/A</td><td class="num pos">-3.37%</td><td class="num pos">33,747</td><td class="num pos">33,747</td></tr>
+<tr><td><span class="side-short">SHORT</span></td><td class="bold">4613</td><td>Kansai Paint</td><td class="num">2,000,000</td><td class="num">2,379.5</td><td class="num">2,387</td><td class="num pos">+0.31%</td><td class="num pos">+1.86%</td><td class="num pos">36,562</td><td class="num pos">6,279</td></tr>
+<tr><td><span class="side-short">SHORT</span></td><td class="bold">4661</td><td>Oriental Land Co</td><td class="num">2,000,000</td><td class="num">2,744.4</td><td class="num">2,482</td><td class="num pos">-9.56%</td><td class="num pos">N/A</td><td class="num pos">191,226</td><td class="num pos">191,226</td></tr>
+<tr><td><span class="side-short">SHORT</span></td><td class="bold">9020</td><td>East Japan Railway</td><td class="num">2,000,000</td><td class="num">3,526.8</td><td class="num">3,501</td><td class="num pos">-0.73%</td><td class="num pos">N/A</td><td class="num pos">14,620</td><td class="num pos">14,620</td></tr>
+<tr><td><span class="side-short">SHORT</span></td><td class="bold">9064</td><td>Yamato Holdings</td><td class="num">3,000,000</td><td class="num">1,762.5</td><td class="num">1,773</td><td class="num pos">+0.60%</td><td class="num pos">+1.63%</td><td class="num pos">24,329</td><td class="num pos">44,168</td></tr>
+<tr class="subtotal"><td colspan="3">SHORT SUBTOTAL (5 positions)</td><td class="num">10,000,000</td><td></td><td></td><td></td><td></td><td class="num pos">178,701</td><td></td></tr>
+<tr class="total"><td colspan="3">PORTFOLIO TOTAL (9 positions)</td><td class="num">21,000,000</td><td></td><td></td><td></td><td></td><td class="num pos">743,980</td><td class="num pos">1,853,561</td></tr>
+</tbody>
+</table>
+
+<div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
+* denotes position with pending re-price. All P&L figures from MW TOPS portal snapshot.<br/>
+Net Market Exposure = (Sum of Positions + accumulated PL) / Target Fund Size. Currently long-biased at +9.27%.<br/>
+9 of 9 positions currently profitable MTD.
+</div>
+</div>
+
 <div class="section">
 <h2>CY2025 Position Attribution</h2>
 <div class="subtitle">10 positions traded Apr 30 2025 — Dec 31 2025 reference period. From Koyfin aggregate xlsx.</div>
@@ -53,22 +102,21 @@ tr.total td{border-top:2px solid var(--navy);color:var(--navy);padding-top:.9rem
 <tr style="font-size:9pt;color:var(--muted)"><td colspan="3">vs TOPIX</td><td></td><td class="num">2,655</td><td class="num">3,576</td><td class="num">+34.7%</td><td></td><td></td></tr>
 <tr style="font-size:9pt;color:var(--muted)"><td colspan="3">ALPHA vs TOPIX</td><td></td><td></td><td></td><td class="num pos">+36.5pp</td><td></td><td></td></tr></tbody>
 </table>
-<div style="font-size:9pt;color:var(--muted);margin-top:1rem;font-style:italic">Note: +71.2%/+53.85% are xlsx aggregate metrics (position-level returns × weights summed on $165M notional). Actual $30M book NAV trajectory is +25.65% AC at Dec 2025 end — see public dashboard for book-level track record.</div>
+<div style="font-size:9pt;color:var(--muted);margin-top:1rem;font-style:italic">Note: +71.2%/+53.85% are xlsx aggregate metrics (position-level returns × weights on $165M notional). Actual book NAV trajectory is +25.65% AC by Dec 2025 — see public dashboard for book-level track record.</div>
 </div>
+
 <div class="section">
 <h2>Feb 2026 Month-End Holdings</h2>
 <div class="subtitle">Positions held at Feb 28, 2026 close — peak NAV month (+45.01% LTD AC)</div>
 <div class="placeholder">Positions data to be added — please provide holdings list for Feb month-end.</div>
 </div>
-<div class="section">
-<h2>Current Holdings (Apr 22, 2026)</h2>
-<div class="subtitle">Live positions as of today — LTD AC +36.81%</div>
-<div class="placeholder">Positions data to be added — please provide current holdings list.</div>
-</div>
+
 <div class="footer">
-Data as of 2026-04-23 · Penrose Japan Ltd — Internal Use Only
+Data as of Apr 23, 2026 · Penrose Japan Ltd — Internal Use Only<br/>
+Current holdings from MW TOPS portal snapshot · CY2025 reference from Koyfin aggregate xlsx
 </div>
 </div>
+
 <script>
 var positions = [
   {n:1, ticker:'5016', name:'JX Advanced Metals', wt:9.1, entry:794.8, exit:3788.0, abs:376.6, ac:359.3, contrib:32.69},
