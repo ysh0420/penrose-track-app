@@ -1,0 +1,723 @@
+{
+    "portfolio": {
+        "id": "b48c1e44-bb23-4a9e-862b-0dcc18985b3f",
+        "code": "MW_TOPS",
+        "status": "active",
+        "metadata": {
+        },
+        "strategy": "long_short",
+        "is_master": true,
+        "created_at": "2026-04-19T18:47:57.316962+00:00",
+        "created_by": null,
+        "updated_at": "2026-04-23T11:37:22.420151+00:00",
+        "updated_by": null,
+        "description": "Japan equities track record with alpha capture basis performance measurement. \nAC basis = (alpha vs TOPIX + absolute) / 2 = absolute - TOPIX/2. \nFor monthly/cumulative reporting: monthly ACs compound. \nCY2025 data: Koyfin daily CSV point-to-point. \nCY2026 data: MW platform monthly reports.",
+        "initial_nav": 30000000.0000,
+        "platform_id": "a8f70a95-1e04-479a-973d-a2ad358ad2c3",
+        "display_name": "MW TOPS (PENROSE-JP-LON)",
+        "base_currency": "USD",
+        "benchmark_code": "TOPIX",
+        "inception_date": "2025-04-30",
+        "portfolio_type": "alpha_capture",
+        "universe_rules": {
+        },
+        "organization_id": "7db2e687-8bc7-4625-84d3-b6077776f633",
+        "reporting_weekly": false,
+        "termination_date": null,
+        "reporting_monthly": true,
+        "reporting_currency": "USD",
+        "master_portfolio_id": null,
+        "reporting_quarterly": true,
+        "initial_nav_currency": "USD",
+        "universe_description": null,
+        "max_position_size_pct": null,
+        "backfilled_period_note": "CY2025: Apr 30 2025 - Dec 31 2025 reference point from Koyfin actual data (xlsx). +71.2% absolute / +53.85% alpha capture basis vs TOPIX. 10 positions, 80% win rate. CY2026: Jan-Apr MTD tracked monthly from MW platform reports on alpha capture basis. Apr 23, 2026 onwards live-tracked.",
+        "target_net_exposure_max": null,
+        "target_net_exposure_min": null,
+        "live_tracking_started_at": "2026-04-23",
+        "max_sector_concentration": null,
+        "target_gross_exposure_max": null,
+        "typical_position_count_max": null,
+        "typical_position_count_min": null
+    },
+    "description": "MW_TOPS portfolio complete data snapshot — recovery reference",
+    "generated_at": "2026-04-23T12:05:04.189196+00:00",
+    "snapshot_date": "2026-04-23",
+    "schema_version": "1.0",
+    "performance_daily": [
+        {
+            "date": "2025-04-30",
+            "notes": "Inception $30M",
+            "source": "Koyfin CSV inception",
+            "nav_basis": "absolute",
+            "nav_close": 30000000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "documented",
+            "alpha_capture_nav": 30000000
+        },
+        {
+            "date": "2025-05-30",
+            "notes": "Cum AC +0.30%",
+            "source": "Koyfin daily CSV",
+            "nav_basis": "alpha_capture",
+            "nav_close": 30090000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "documented",
+            "alpha_capture_nav": 30090000
+        },
+        {
+            "date": "2025-06-30",
+            "notes": "Cum AC +0.10%",
+            "source": "Koyfin daily CSV",
+            "nav_basis": "alpha_capture",
+            "nav_close": 30030000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "documented",
+            "alpha_capture_nav": 30030000
+        },
+        {
+            "date": "2025-07-31",
+            "notes": "Cum AC +1.85%",
+            "source": "Koyfin daily CSV",
+            "nav_basis": "alpha_capture",
+            "nav_close": 30555000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "documented",
+            "alpha_capture_nav": 30555000
+        },
+        {
+            "date": "2025-08-29",
+            "notes": "Cum AC +12.65%",
+            "source": "Koyfin daily CSV",
+            "nav_basis": "alpha_capture",
+            "nav_close": 33795000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "documented",
+            "alpha_capture_nav": 33795000
+        },
+        {
+            "date": "2025-09-30",
+            "notes": "Cum AC +21.95%",
+            "source": "Koyfin daily CSV",
+            "nav_basis": "alpha_capture",
+            "nav_close": 36585000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "documented",
+            "alpha_capture_nav": 36585000
+        },
+        {
+            "date": "2025-10-31",
+            "notes": "Cum AC +21.95% (flat month)",
+            "source": "Koyfin daily CSV",
+            "nav_basis": "alpha_capture",
+            "nav_close": 36585000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "documented",
+            "alpha_capture_nav": 36585000
+        },
+        {
+            "date": "2025-11-28",
+            "notes": "Cum AC +24.70%",
+            "source": "Koyfin daily CSV",
+            "nav_basis": "alpha_capture",
+            "nav_close": 37410000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "documented",
+            "alpha_capture_nav": 37410000
+        },
+        {
+            "date": "2025-12-30",
+            "notes": "CY2025 end — Cum AC +25.65% (this is the 2025 reference point)",
+            "source": "Koyfin daily CSV",
+            "nav_basis": "alpha_capture",
+            "nav_close": 37695000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "documented",
+            "alpha_capture_nav": 37695000
+        },
+        {
+            "date": "2026-01-30",
+            "notes": "MW Jan +3.5% → Cum AC +30.05%",
+            "source": "MW platform monthly",
+            "nav_basis": "alpha_capture",
+            "nav_close": 39014325.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "partial",
+            "alpha_capture_nav": 39014325
+        },
+        {
+            "date": "2026-02-27",
+            "notes": "MW Feb +11.5% → Cum AC +45.01%",
+            "source": "MW platform monthly",
+            "nav_basis": "alpha_capture",
+            "nav_close": 43500972.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "partial",
+            "alpha_capture_nav": 43500972
+        },
+        {
+            "date": "2026-03-31",
+            "notes": "MW Mar -7.5% → Cum AC +34.13%",
+            "source": "MW platform monthly",
+            "nav_basis": "alpha_capture",
+            "nav_close": 40238399.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "partial",
+            "alpha_capture_nav": 40238399
+        },
+        {
+            "date": "2026-04-22",
+            "notes": "AC basis: +1.87% MTD (corrected from MW portal Apr 23), +36.64% LTD.",
+            "source": "MW MTD Apr 22",
+            "nav_basis": "alpha_capture",
+            "nav_close": 40992000.0000,
+            "entry_mode": "backfilled_compiled",
+            "evidence_level": "partial",
+            "alpha_capture_nav": 40992000
+        }
+    ],
+    "performance_monthly": [
+        {
+            "year": 2025,
+            "month": 5,
+            "is_mtd": false,
+            "source": "Koyfin daily CSV",
+            "as_of_date": "2025-05-30",
+            "evidence_level": "documented",
+            "alpha_capture_return": 0.003
+        },
+        {
+            "year": 2025,
+            "month": 6,
+            "is_mtd": false,
+            "source": "Koyfin daily CSV",
+            "as_of_date": "2025-06-30",
+            "evidence_level": "documented",
+            "alpha_capture_return": -0.002
+        },
+        {
+            "year": 2025,
+            "month": 7,
+            "is_mtd": false,
+            "source": "Koyfin daily CSV",
+            "as_of_date": "2025-07-31",
+            "evidence_level": "documented",
+            "alpha_capture_return": 0.0175
+        },
+        {
+            "year": 2025,
+            "month": 8,
+            "is_mtd": false,
+            "source": "Koyfin daily CSV",
+            "as_of_date": "2025-08-29",
+            "evidence_level": "documented",
+            "alpha_capture_return": 0.106
+        },
+        {
+            "year": 2025,
+            "month": 9,
+            "is_mtd": false,
+            "source": "Koyfin daily CSV",
+            "as_of_date": "2025-09-30",
+            "evidence_level": "documented",
+            "alpha_capture_return": 0.0825
+        },
+        {
+            "year": 2025,
+            "month": 10,
+            "is_mtd": false,
+            "source": "Koyfin daily CSV",
+            "as_of_date": "2025-10-31",
+            "evidence_level": "documented",
+            "alpha_capture_return": 0.0
+        },
+        {
+            "year": 2025,
+            "month": 11,
+            "is_mtd": false,
+            "source": "Koyfin daily CSV",
+            "as_of_date": "2025-11-28",
+            "evidence_level": "documented",
+            "alpha_capture_return": 0.0225
+        },
+        {
+            "year": 2025,
+            "month": 12,
+            "is_mtd": false,
+            "source": "Koyfin daily CSV",
+            "as_of_date": "2025-12-30",
+            "evidence_level": "documented",
+            "alpha_capture_return": 0.0076
+        },
+        {
+            "year": 2026,
+            "month": 1,
+            "is_mtd": false,
+            "source": "MW platform monthly",
+            "as_of_date": "2026-01-30",
+            "evidence_level": "partial",
+            "alpha_capture_return": 0.035
+        },
+        {
+            "year": 2026,
+            "month": 2,
+            "is_mtd": false,
+            "source": "MW platform monthly",
+            "as_of_date": "2026-02-27",
+            "evidence_level": "partial",
+            "alpha_capture_return": 0.115
+        },
+        {
+            "year": 2026,
+            "month": 3,
+            "is_mtd": false,
+            "source": "MW platform monthly",
+            "as_of_date": "2026-03-31",
+            "evidence_level": "partial",
+            "alpha_capture_return": -0.075
+        },
+        {
+            "year": 2026,
+            "month": 4,
+            "is_mtd": true,
+            "source": "MW MTD Apr 22",
+            "as_of_date": "2026-04-22",
+            "evidence_level": "partial",
+            "alpha_capture_return": 0.0187
+        }
+    ],
+    "apr_2026_mtd_evolution": [
+        {
+            "date": "2026-04-10",
+            "event": "baseline 4L/3S",
+            "mtd_net": 3.16,
+            "fund_size": 18000000,
+            "mtd_gross": 3.22,
+            "positions": 7,
+            "net_exposure": 25.28,
+            "skill_factor": 0.68,
+            "overall_perf_ac": 1.26,
+            "return_from_target": 1.84
+        },
+        {
+            "date": "2026-04-14",
+            "event": "peak long gains",
+            "mtd_net": 3.92,
+            "fund_size": 18000000,
+            "mtd_gross": 3.98,
+            "positions": 7,
+            "net_exposure": 25.95,
+            "skill_factor": 1.16,
+            "overall_perf_ac": 1.73,
+            "return_from_target": 2.29
+        },
+        {
+            "date": "2026-04-17",
+            "event": "added 9020 EJR short",
+            "mtd_net": 3.64,
+            "fund_size": 20000000,
+            "mtd_gross": 3.72,
+            "positions": 8,
+            "net_exposure": 13.89,
+            "skill_factor": 0.89,
+            "overall_perf_ac": 1.53,
+            "return_from_target": 2.16
+        },
+        {
+            "date": "2026-04-23",
+            "event": "added 9983 Fast Retailing short",
+            "mtd_net": 3.97,
+            "fund_size": 21000000,
+            "mtd_gross": 4.05,
+            "positions": 9,
+            "net_exposure": 9.27,
+            "skill_factor": 1.31,
+            "overall_perf_ac": 1.87,
+            "return_from_target": 2.43
+        }
+    ],
+    "current_holdings_apr23": [
+        {
+            "name": "Shin-Etsu Chemical",
+            "side": "LONG",
+            "ticker": "4063",
+            "last_jpy": 6664,
+            "avg_in_jpy": 5509.9,
+            "ltd_pnl_usd": 1034218,
+            "mtd_chg_pct": 6.47,
+            "mtd_pnl_usd": 220511,
+            "position_usd": 3000000,
+            "chg_on_pos_pct": 20.95
+        },
+        {
+            "name": "Nippon Sanso Holdings",
+            "side": "LONG",
+            "ticker": "4091",
+            "last_jpy": 5600,
+            "avg_in_jpy": 5916.4,
+            "ltd_pnl_usd": 180452,
+            "mtd_chg_pct": 1.21,
+            "mtd_pnl_usd": 33973,
+            "position_usd": 3000000,
+            "chg_on_pos_pct": -5.35
+        },
+        {
+            "name": "Marubeni Corp",
+            "side": "LONG",
+            "ticker": "8002",
+            "last_jpy": 5929,
+            "avg_in_jpy": 5593.3,
+            "ltd_pnl_usd": 207811,
+            "mtd_chg_pct": 5.54,
+            "mtd_pnl_usd": 166807,
+            "position_usd": 3000000,
+            "chg_on_pos_pct": 6.00
+        },
+        {
+            "name": "Tsukishima Holdings",
+            "side": "LONG",
+            "ticker": "6332",
+            "last_jpy": 2943,
+            "avg_in_jpy": 2755.2,
+            "ltd_pnl_usd": 136360,
+            "mtd_chg_pct": 9.45,
+            "mtd_pnl_usd": 143988,
+            "position_usd": 2000000,
+            "chg_on_pos_pct": 6.82
+        },
+        {
+            "name": "Fast Retailing",
+            "side": "SHORT",
+            "ticker": "9983",
+            "last_jpy": 69290,
+            "avg_in_jpy": 71710,
+            "ltd_pnl_usd": 33747,
+            "mtd_chg_pct": -3.37,
+            "mtd_pnl_usd": 33747,
+            "position_usd": 1000000,
+            "chg_on_pos_pct": null
+        },
+        {
+            "name": "Kansai Paint",
+            "side": "SHORT",
+            "ticker": "4613",
+            "last_jpy": 2387,
+            "avg_in_jpy": 2379.5,
+            "ltd_pnl_usd": 6279,
+            "mtd_chg_pct": 1.86,
+            "mtd_pnl_usd": 36562,
+            "position_usd": 2000000,
+            "chg_on_pos_pct": 0.31
+        },
+        {
+            "name": "Oriental Land Co",
+            "side": "SHORT",
+            "ticker": "4661",
+            "last_jpy": 2482,
+            "avg_in_jpy": 2744.4,
+            "ltd_pnl_usd": 191226,
+            "mtd_chg_pct": null,
+            "mtd_pnl_usd": 191226,
+            "position_usd": 2000000,
+            "chg_on_pos_pct": -9.56
+        },
+        {
+            "name": "East Japan Railway",
+            "side": "SHORT",
+            "ticker": "9020",
+            "last_jpy": 3501,
+            "avg_in_jpy": 3526.8,
+            "ltd_pnl_usd": 14620,
+            "mtd_chg_pct": null,
+            "mtd_pnl_usd": 14620,
+            "position_usd": 2000000,
+            "chg_on_pos_pct": -0.73
+        },
+        {
+            "name": "Yamato Holdings",
+            "side": "SHORT",
+            "ticker": "9064",
+            "last_jpy": 1773,
+            "avg_in_jpy": 1762.5,
+            "ltd_pnl_usd": 44168,
+            "mtd_chg_pct": 1.63,
+            "mtd_pnl_usd": 24329,
+            "position_usd": 3000000,
+            "chg_on_pos_pct": 0.60
+        }
+    ],
+    "transactions_feb_apr_2026": [
+        {
+            "qty": 2000000,
+            "date": "2026-02-02",
+            "side": "BUY",
+            "status": "Confirmed - Px Chg",
+            "ticker": "4063",
+            "rationale": "adding back on recent fall after result - PVC"
+        },
+        {
+            "qty": 2000000,
+            "date": "2026-02-25",
+            "side": "SELL",
+            "status": "Confirmed - Px Chg",
+            "ticker": "4063",
+            "rationale": "taking profit - while still likes the name"
+        },
+        {
+            "qty": 2000000,
+            "date": "2026-03-08",
+            "side": "SELL",
+            "status": "Confirmed - Px Chg",
+            "ticker": "9064",
+            "rationale": "company will be hit by higher diesel price"
+        },
+        {
+            "qty": 2000000,
+            "date": "2026-03-11",
+            "side": "BUY",
+            "status": "Confirmed - Px Chg",
+            "ticker": "4091",
+            "rationale": "beneficiary of having local access to specialty gas"
+        },
+        {
+            "qty": 2000000,
+            "date": "2026-03-15",
+            "side": "BUY",
+            "status": "Confirmed - Px Chg",
+            "ticker": "8002",
+            "rationale": "one of few companies that is a beneficiary"
+        },
+        {
+            "qty": 1000000,
+            "date": "2026-03-16",
+            "side": "BUY",
+            "status": "Confirmed - Px Chg",
+            "ticker": "4063",
+            "rationale": "20% price hike announced for PVC"
+        },
+        {
+            "qty": 1000000,
+            "date": "2026-03-16",
+            "side": "BUY",
+            "status": "Confirmed - Px Chg",
+            "ticker": "4091",
+            "rationale": "beneficiary of fertilizer shortage and price going up"
+        },
+        {
+            "qty": 1000000,
+            "date": "2026-03-16",
+            "side": "BUY",
+            "status": "Confirmed - Px Chg",
+            "ticker": "8002",
+            "rationale": "well positioned for helium gas"
+        },
+        {
+            "qty": 1000000,
+            "date": "2026-03-29",
+            "side": "BUY",
+            "status": "Confirmed - Px Chg",
+            "ticker": "6332",
+            "rationale": "company has a 30% market share in sewage"
+        },
+        {
+            "qty": 2000000,
+            "date": "2026-03-29",
+            "side": "SELL",
+            "status": "Confirmed - Px Chg",
+            "ticker": "4613",
+            "rationale": "key raw material is naphtha where cost pressure"
+        },
+        {
+            "qty": 1000000,
+            "date": "2026-03-29",
+            "side": "SELL",
+            "status": "Confirmed - Px Chg",
+            "ticker": "4063",
+            "rationale": "reducing exposure on uncertain environment"
+        },
+        {
+            "qty": 1000000,
+            "date": "2026-03-29",
+            "side": "SELL",
+            "status": "Confirmed - Px Chg",
+            "ticker": "4091",
+            "rationale": "reducing exposure on uncertain environment"
+        },
+        {
+            "qty": 1000000,
+            "date": "2026-04-01",
+            "side": "SELL",
+            "status": "Confirmed - Px Chg",
+            "ticker": "9064",
+            "rationale": "company will suffer from higher diesel price"
+        },
+        {
+            "qty": 2000000,
+            "date": "2026-04-01",
+            "side": "SELL",
+            "status": "Confirmed - Px Chg",
+            "ticker": "4661",
+            "rationale": "higher cost of living for Japanese, reduced consumption"
+        },
+        {
+            "qty": 1000000,
+            "date": "2026-04-01",
+            "side": "BUY",
+            "status": "Confirmed - VWAP",
+            "ticker": "6332",
+            "rationale": "even when crude oil flow comes back, fertilizer"
+        }
+    ],
+    "position_attribution_cy2025": [
+        {
+            "ticker": "5016",
+            "company": "JX Advanced Metals",
+            "pnl_usd_m": 56.5,
+            "exit_price": 3788.0,
+            "period_end": "2025-12-31",
+            "return_pct": 3.766,
+            "weight_pct": 0.091,
+            "entry_price": 794.8,
+            "period_start": "2025-04-30",
+            "position_usd_m": 15.0,
+            "contribution_pct": 0.342,
+            "alpha_capture_return": 3.5925,
+            "alpha_capture_contribution": 0.3269175
+        },
+        {
+            "ticker": "1803",
+            "company": "Shimizu Corp",
+            "pnl_usd_m": 27.0,
+            "exit_price": 2900.0,
+            "period_end": "2025-12-31",
+            "return_pct": 0.901,
+            "weight_pct": 0.182,
+            "entry_price": 1525.5,
+            "period_start": "2025-04-30",
+            "position_usd_m": 30.0,
+            "contribution_pct": 0.164,
+            "alpha_capture_return": 0.7275,
+            "alpha_capture_contribution": 0.1324050
+        },
+        {
+            "ticker": "5020",
+            "company": "ENEOS Holdings",
+            "pnl_usd_m": 14.9,
+            "exit_price": 1367.5,
+            "period_end": "2025-12-31",
+            "return_pct": 0.994,
+            "weight_pct": 0.091,
+            "entry_price": 685.9,
+            "period_start": "2025-04-30",
+            "position_usd_m": 15.0,
+            "contribution_pct": 0.090,
+            "alpha_capture_return": 0.8205,
+            "alpha_capture_contribution": 0.0746655
+        },
+        {
+            "ticker": "4063",
+            "company": "Shin-Etsu Chemical",
+            "pnl_usd_m": 14.2,
+            "exit_price": 6373.0,
+            "period_end": "2025-12-31",
+            "return_pct": 0.472,
+            "weight_pct": 0.182,
+            "entry_price": 4330.0,
+            "period_start": "2025-04-30",
+            "position_usd_m": 30.0,
+            "contribution_pct": 0.086,
+            "alpha_capture_return": 0.2985,
+            "alpha_capture_contribution": 0.0543270
+        },
+        {
+            "ticker": "2875",
+            "company": "Toyo Suisan",
+            "pnl_usd_m": 5.2,
+            "exit_price": 10820.0,
+            "period_end": "2025-12-31",
+            "return_pct": 0.174,
+            "weight_pct": 0.182,
+            "entry_price": 9220.0,
+            "period_start": "2025-04-30",
+            "position_usd_m": 30.0,
+            "contribution_pct": 0.032,
+            "alpha_capture_return": 0.0005,
+            "alpha_capture_contribution": 0.0000910
+        },
+        {
+            "ticker": "5074",
+            "company": "TESS Holdings",
+            "pnl_usd_m": 2.7,
+            "exit_price": 635.0,
+            "period_end": "2025-12-31",
+            "return_pct": 0.907,
+            "weight_pct": 0.018,
+            "entry_price": 333.0,
+            "period_start": "2025-04-30",
+            "position_usd_m": 3.0,
+            "contribution_pct": 0.016,
+            "alpha_capture_return": 0.7335,
+            "alpha_capture_contribution": 0.0132030
+        },
+        {
+            "ticker": "2331",
+            "company": "ALSOK",
+            "pnl_usd_m": 0.9,
+            "exit_price": 1228.0,
+            "period_end": "2025-12-31",
+            "return_pct": 0.090,
+            "weight_pct": 0.061,
+            "entry_price": 1126.5,
+            "period_start": "2025-04-30",
+            "position_usd_m": 10.0,
+            "contribution_pct": 0.005,
+            "alpha_capture_return": -0.0835,
+            "alpha_capture_contribution": -0.0050935
+        },
+        {
+            "ticker": "3939",
+            "company": "Kanamic Network",
+            "pnl_usd_m": 0.4,
+            "exit_price": 490.0,
+            "period_end": "2025-12-31",
+            "return_pct": 0.175,
+            "weight_pct": 0.012,
+            "entry_price": 417.0,
+            "period_start": "2025-04-30",
+            "position_usd_m": 2.0,
+            "contribution_pct": 0.002,
+            "alpha_capture_return": 0.0015,
+            "alpha_capture_contribution": 0.0000180
+        },
+        {
+            "ticker": "2767",
+            "company": "Tsuburaya Fields",
+            "pnl_usd_m": -2.2,
+            "exit_price": 1453.0,
+            "period_end": "2025-12-31",
+            "return_pct": -0.220,
+            "weight_pct": 0.061,
+            "entry_price": 1862.0,
+            "period_start": "2025-04-30",
+            "position_usd_m": 10.0,
+            "contribution_pct": -0.013,
+            "alpha_capture_return": -0.3935,
+            "alpha_capture_contribution": -0.0240035
+        },
+        {
+            "ticker": "5233",
+            "company": "Taiheiyo Cement",
+            "pnl_usd_m": -2.1,
+            "exit_price": 3439.0,
+            "period_end": "2025-12-31",
+            "return_pct": -0.106,
+            "weight_pct": 0.121,
+            "entry_price": 3846.0,
+            "period_start": "2025-04-30",
+            "position_usd_m": 20.0,
+            "contribution_pct": -0.013,
+            "alpha_capture_return": -0.2795,
+            "alpha_capture_contribution": -0.0338195
+        }
+    ]
+}
