@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penrose Japan — MW TOPS Attribution (Private)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1200px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
+.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.private-banner{background:#721c24;color:white;padding:.6rem 1rem;text-align:center;font-size:10pt;margin-bottom:1.5rem;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.section{background:white;border:1px solid var(--line);padding:2rem;margin-bottom:1.5rem}
+.section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.4em;display:inline-block}
+.section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1.5rem}
+table{width:100%;border-collapse:collapse;font-size:10pt;margin-top:1rem}
+th{text-align:left;padding:.8rem 1rem;background:var(--navy);color:white;font-weight:500;font-size:9pt;text-transform:uppercase;letter-spacing:1px}
+td{padding:.7rem 1rem;border-top:1px solid var(--line)}
+tr:hover{background:var(--cream)}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+td.pos{color:var(--green);font-weight:600}
+td.neg{color:var(--red);font-weight:600}
+td.bold{font-weight:600;color:var(--navy)}
+tr.total{background:var(--cream);font-weight:700}
+tr.total td{border-top:2px solid var(--navy);color:var(--navy);padding-top:.9rem}
+.placeholder{background:#fffbe8;border:1px dashed var(--gold);padding:2rem;text-align:center;color:var(--muted);font-style:italic}
+.footer{text-align:center;color:var(--muted);font-size:9pt;padding:2rem 1rem;margin-top:2rem}
+@media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="private-banner">⚠ INTERNAL / CONFIDENTIAL — Position names included. Not for external distribution.</div>
+
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">MW TOPS — Attribution & Month-End Detail (Private)</div></div>
+<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">As of: Apr 22, 2026</div>
+</div>
+
+<div class="section">
+<h2>CY2025 Position Attribution</h2>
+<div class="subtitle">10 positions traded Apr 30 2025 — Dec 31 2025 reference period. From Koyfin aggregate xlsx.</div>
+<table>
+<thead><tr><th>#</th><th>Ticker</th><th>Company</th><th style="text-align:right">Weight</th><th style="text-align:right">Entry ¥</th><th style="text-align:right">Exit ¥</th><th style="text-align:right">Abs Return</th><th style="text-align:right">AC Return</th><th style="text-align:right">Contrib (AC)</th></tr></thead>
+<tbody id="posRows"></tbody>
+<tbody><tr class="total"><td colspan="3">PORTFOLIO (10 positions, 80% win rate)</td><td class="num">100%</td><td></td><td></td><td class="num pos">+71.2%</td><td class="num pos">+53.85%</td><td class="num"></td></tr>
+<tr style="font-size:9pt;color:var(--muted)"><td colspan="3">vs TOPIX</td><td></td><td class="num">2,655</td><td class="num">3,576</td><td class="num">+34.7%</td><td></td><td></td></tr>
+<tr style="font-size:9pt;color:var(--muted)"><td colspan="3">ALPHA vs TOPIX</td><td></td><td></td><td></td><td class="num pos">+36.5pp</td><td></td><td></td></tr></tbody>
+</table>
+</div>
+
+<div class="section">
+<h2>Feb 2026 Month-End Holdings</h2>
+<div class="subtitle">Positions held at Feb 28, 2026 close</div>
+<div class="placeholder">Positions data to be added — please provide holdings list for Feb month-end.</div>
+</div>
+
+<div class="section">
+<h2>Current Holdings (Apr 22, 2026)</h2>
+<div class="subtitle">Live positions as of today</div>
+<div class="placeholder">Positions data to be added — please provide current holdings list.</div>
+</div>
+
+<div class="footer">
+Data as of 2026-04-23 · Penrose Japan Ltd — Internal Use Only
+</div>
+</div>
+
+<script>
+var positions = [
+  {n:1, ticker:'5016', name:'JX Advanced Metals', wt:9.1, entry:794.8, exit:3788.0, abs:376.6, ac:359.3, contrib:32.69},
+  {n:2, ticker:'1803', name:'Shimizu Corp', wt:18.2, entry:1525.5, exit:2900.0, abs:90.1, ac:72.8, contrib:13.24},
+  {n:3, ticker:'5020', name:'ENEOS Holdings', wt:9.1, entry:685.9, exit:1367.5, abs:99.4, ac:82.1, contrib:7.47},
+  {n:4, ticker:'4063', name:'Shin-Etsu Chemical', wt:18.2, entry:4330.0, exit:6373.0, abs:47.2, ac:29.9, contrib:5.43},
+  {n:5, ticker:'5074', name:'TESS Holdings', wt:1.8, entry:333.0, exit:635.0, abs:90.7, ac:73.4, contrib:1.32},
+  {n:6, ticker:'2875', name:'Toyo Suisan', wt:18.2, entry:9220.0, exit:10820.0, abs:17.4, ac:0.1, contrib:0.01},
+  {n:7, ticker:'3939', name:'Kanamic Network', wt:1.2, entry:417.0, exit:490.0, abs:17.5, ac:0.2, contrib:0.00},
+  {n:8, ticker:'2331', name:'ALSOK', wt:6.1, entry:1126.5, exit:1228.0, abs:9.0, ac:-8.4, contrib:-0.51},
+  {n:9, ticker:'2767', name:'Tsuburaya Fields', wt:6.1, entry:1862.0, exit:1453.0, abs:-22.0, ac:-39.4, contrib:-2.40},
+  {n:10, ticker:'5233', name:'Taiheiyo Cement', wt:12.1, entry:3846.0, exit:3439.0, abs:-10.6, ac:-28.0, contrib:-3.38}
+];
+document.getElementById('posRows').innerHTML = positions.map(function(p){
+  var absClass = p.abs > 0 ? 'pos' : p.abs < 0 ? 'neg' : '';
+  var acClass = p.ac > 0 ? 'pos' : p.ac < 0 ? 'neg' : '';
+  var contribClass = p.contrib > 0 ? 'pos' : p.contrib < 0 ? 'neg' : '';
+  var absSign = p.abs > 0 ? '+' : '';
+  var acSign = p.ac > 0 ? '+' : '';
+  var ctrSign = p.contrib > 0 ? '+' : '';
+  return '<tr><td>' + p.n + '</td><td class="bold">' + p.ticker + '</td><td>' + p.name + '</td><td class="num">' + p.wt.toFixed(1) + '%</td><td class="num">' + p.entry.toLocaleString() + '</td><td class="num">' + p.exit.toLocaleString() + '</td><td class="num ' + absClass + '">' + absSign + p.abs.toFixed(1) + '%</td><td class="num ' + acClass + '">' + acSign + p.ac.toFixed(1) + '%</td><td class="num ' + contribClass + '">' + ctrSign + p.contrib.toFixed(2) + '%</td></tr>';
+}).join('');
+</script>
+</body>
+</html>
