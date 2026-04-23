@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penrose Japan — MW TOPS Track Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1200px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
+.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.section{background:white;border:1px solid var(--line);padding:2rem;margin-bottom:1.5rem}
+.section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.4em;display:inline-block}
+.section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1.5rem}
+.headline{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1rem 0}
+.metric{border-left:3px solid var(--gold);padding:.8rem 1rem;background:var(--cream)}
+.metric .label{font-size:9pt;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:500}
+.metric .value{font-family:'Cormorant Garamond',serif;font-size:24pt;color:var(--navy);font-weight:600;margin-top:.2em;line-height:1.1}
+.metric .detail{font-size:9pt;color:var(--muted);margin-top:.3em}
+.metric.primary{border-left-color:var(--navy);background:#fffbe8}
+.metric.positive .value{color:var(--green)}
+.chart-wrap{height:380px;position:relative;margin-top:1rem}
+table{width:100%;border-collapse:collapse;font-size:10pt;margin-top:1rem}
+th{text-align:left;padding:.8rem 1rem;background:var(--navy);color:white;font-weight:500;font-size:9pt;text-transform:uppercase;letter-spacing:1px}
+td{padding:.7rem 1rem;border-top:1px solid var(--line)}
+tr:hover{background:var(--cream)}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+td.pos{color:var(--green);font-weight:600}
+td.neg{color:var(--red);font-weight:600}
+td.bold{font-weight:600;color:var(--navy)}
+tr.total{background:var(--cream);font-weight:700}
+tr.total td{border-top:2px solid var(--navy);color:var(--navy);padding-top:.9rem}
+.tag{display:inline-block;padding:2px 8px;font-size:8pt;letter-spacing:.5px;text-transform:uppercase;border-radius:3px;font-weight:600;background:#fff3cd;color:#856404}
+.footer{text-align:center;color:var(--muted);font-size:9pt;padding:2rem 1rem;margin-top:2rem}
+@media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem}.chart-wrap{height:280px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">MW TOPS (PENROSE-JP-LON) — Track Record</div></div>
+<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">Apr 30, 2025 — Apr 22, 2026<br/>Book: USD 30M notional</div>
+</div>
+<div class="section">
+<h2>Headline Performance</h2>
+<div class="subtitle">Alpha capture basis = (alpha vs TOPIX + absolute) / 2 — MW TOPS evaluation standard</div>
+<div class="headline">
+<div class="metric primary"><div class="label">LTD Return (AC)</div><div class="value">+65.7%</div><div class="detail">from Apr 30, 2025 inception</div></div>
+<div class="metric positive"><div class="label">CY2025 Return (AC)</div><div class="value">+53.9%</div><div class="detail">8 months from inception</div></div>
+<div class="metric positive"><div class="label">CY2026 YTD (AC)</div><div class="value">+7.7%</div><div class="detail">through Apr 22 MTD</div></div>
+<div class="metric"><div class="label">CY2025 Abs vs TOPIX</div><div class="value">+71.2% / +34.7%</div><div class="detail">Alpha +36.5pp (xlsx reference)</div></div>
+<div class="metric"><div class="label">Win Rate (CY2025)</div><div class="value">80%</div><div class="detail">8 of 10 positions positive</div></div>
+<div class="metric"><div class="label">Current NAV (AC)</div><div class="value">$49.7M</div><div class="detail">from $30M inception</div></div>
+</div>
+</div>
+<div class="section">
+<h2>NAV Trajectory</h2>
+<div class="subtitle">Alpha capture basis. Dec 2025 reference from Koyfin aggregate; 2026 from MW platform monthly reports</div>
+<div class="chart-wrap"><canvas id="navChart"></canvas></div>
+</div>
+<div class="section">
+<h2>CY2025 Position Attribution</h2>
+<div class="subtitle">10 positions traded Apr 30 2025 — Dec 31 2025 reference period. Both absolute and alpha capture bases shown.</div>
+<table>
+<thead><tr><th>#</th><th>Ticker</th><th>Company</th><th style="text-align:right">Weight</th><th style="text-align:right">Entry ¥</th><th style="text-align:right">Exit ¥</th><th style="text-align:right">Abs Return</th><th style="text-align:right">AC Return</th><th style="text-align:right">Contrib (AC)</th></tr></thead>
+<tbody id="posRows"></tbody>
+<tbody><tr class="total"><td colspan="3">PORTFOLIO (10 positions, 80% win rate)</td><td class="num">100%</td><td></td><td></td><td class="num pos">+71.2%</td><td class="num pos">+53.85%</td><td class="num"></td></tr>
+<tr style="font-size:9pt;color:var(--muted)"><td colspan="3">vs TOPIX</td><td></td><td class="num">2,655</td><td class="num">3,576</td><td class="num">+34.7%</td><td></td><td></td></tr>
+<tr style="font-size:9pt;color:var(--muted)"><td colspan="3">ALPHA vs TOPIX</td><td></td><td></td><td></td><td class="num pos">+36.5pp</td><td></td><td></td></tr></tbody>
+</table>
+</div>
+<div class="section">
+<h2>CY2026 Monthly Trajectory</h2>
+<div class="subtitle">Alpha capture basis, from MW platform monthly reports</div>
+<table>
+<thead><tr><th>Period</th><th style="text-align:right">Monthly</th><th style="text-align:right">YTD Cumulative</th><th style="text-align:right">NAV (AC, $M)</th><th style="text-align:right">LTD from Inception</th><th>Source</th></tr></thead>
+<tbody id="monthRows"></tbody>
+</table>
+</div>
+<div class="footer">
+Data as of 2026-04-23 · Penrose Japan Ltd<br/>
+CY2025 aggregate from xlsx (partial evidence) · CY2026 monthly from MW platform reports
+</div>
+</div>
+<script>
+new Chart(document.getElementById('navChart'), {
+  type: 'line',
+  data: {
+    labels: ['Apr 30 2025','Dec 31 2025','Jan 31 2026','Feb 28 2026','Mar 31 2026','Apr 22 2026'],
+    datasets: [
+      { label:'NAV (Alpha Capture basis, $M)', data:[30.00,46.16,47.77,53.26,48.74,49.71], borderColor:'#c9a84c', backgroundColor:'rgba(201,168,76,0.12)', borderWidth:3, tension:0.25, fill:true, pointRadius:6, pointBackgroundColor:'#1a2744', pointBorderColor:'#c9a84c', pointBorderWidth:2 },
+      { label:'NAV (Absolute basis, $M) - CY2025 reference', data:[30.00,51.36,null,null,null,null], borderColor:'#1a2744', borderWidth:2, borderDash:[5,5], tension:0.1, fill:false, pointRadius:5, pointBackgroundColor:'#1a2744', spanGaps:false },
+      { label:'Inception baseline ($30M)', data:[30,30,30,30,30,30], borderColor:'rgba(139,134,128,0.4)', borderWidth:1, borderDash:[2,4], pointRadius:0, fill:false }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins: {
+      legend: { position:'bottom', labels: { font:{family:'DM Sans'}, padding:14 } },
+      tooltip: { callbacks: { label: function(c){ return c.dataset.label + ': $' + c.parsed.y.toFixed(2) + 'M'; } } }
+    },
+    scales: {
+      y: { title:{display:true, text:'NAV ($M USD)', font:{family:'DM Sans',weight:500}}, grid:{color:'#e0d8c4'}, ticks:{ callback: function(v){return '$'+v+'M';} } },
+      x: { grid:{color:'#f0ebe0'} }
+    }
+  }
+});
+var positions = [
+  {n:1, ticker:'5016', name:'JX Advanced Metals', wt:9.1, entry:794.8, exit:3788.0, abs:376.6, ac:359.3, contrib:32.69},
+  {n:2, ticker:'1803', name:'Shimizu Corp', wt:18.2, entry:1525.5, exit:2900.0, abs:90.1, ac:72.8, contrib:13.24},
+  {n:3, ticker:'5020', name:'ENEOS Holdings', wt:9.1, entry:685.9, exit:1367.5, abs:99.4, ac:82.1, contrib:7.47},
+  {n:4, ticker:'4063', name:'Shin-Etsu Chemical', wt:18.2, entry:4330.0, exit:6373.0, abs:47.2, ac:29.9, contrib:5.43},
+  {n:5, ticker:'5074', name:'TESS Holdings', wt:1.8, entry:333.0, exit:635.0, abs:90.7, ac:73.4, contrib:1.32},
+  {n:6, ticker:'2875', name:'Toyo Suisan', wt:18.2, entry:9220.0, exit:10820.0, abs:17.4, ac:0.1, contrib:0.01},
+  {n:7, ticker:'3939', name:'Kanamic Network', wt:1.2, entry:417.0, exit:490.0, abs:17.5, ac:0.2, contrib:0.00},
+  {n:8, ticker:'2331', name:'ALSOK', wt:6.1, entry:1126.5, exit:1228.0, abs:9.0, ac:-8.4, contrib:-0.51},
+  {n:9, ticker:'2767', name:'Tsuburaya Fields', wt:6.1, entry:1862.0, exit:1453.0, abs:-22.0, ac:-39.4, contrib:-2.40},
+  {n:10, ticker:'5233', name:'Taiheiyo Cement', wt:12.1, entry:3846.0, exit:3439.0, abs:-10.6, ac:-28.0, contrib:-3.38}
+];
+document.getElementById('posRows').innerHTML = positions.map(function(p){
+  var absClass = p.abs > 0 ? 'pos' : p.abs < 0 ? 'neg' : '';
+  var acClass = p.ac > 0 ? 'pos' : p.ac < 0 ? 'neg' : '';
+  var contribClass = p.contrib > 0 ? 'pos' : p.contrib < 0 ? 'neg' : '';
+  var absSign = p.abs > 0 ? '+' : '';
+  var acSign = p.ac > 0 ? '+' : '';
+  var ctrSign = p.contrib > 0 ? '+' : '';
+  return '<tr><td>' + p.n + '</td><td class="bold">' + p.ticker + '</td><td>' + p.name + '</td><td class="num">' + p.wt.toFixed(1) + '%</td><td class="num">' + p.entry.toLocaleString() + '</td><td class="num">' + p.exit.toLocaleString() + '</td><td class="num ' + absClass + '">' + absSign + p.abs.toFixed(1) + '%</td><td class="num ' + acClass + '">' + acSign + p.ac.toFixed(1) + '%</td><td class="num ' + contribClass + '">' + ctrSign + p.contrib.toFixed(2) + '%</td></tr>';
+}).join('');
+var months = [
+  {label:'Jan 2026', monthly:3.5, ytd:3.50, nav:47.77, ltd:59.23, status:'full month'},
+  {label:'Feb 2026', monthly:11.5, ytd:15.40, nav:53.26, ltd:77.55, status:'full month'},
+  {label:'Mar 2026', monthly:-8.5, ytd:5.59, nav:48.74, ltd:62.46, status:'full month'},
+  {label:'Apr 2026', monthly:2.0, ytd:7.71, nav:49.71, ltd:65.70, status:'MTD to Apr 22'}
+];
+document.getElementById('monthRows').innerHTML = months.map(function(m){
+  var mClass = m.monthly > 0 ? 'pos' : 'neg';
+  var ytdClass = m.ytd > 0 ? 'pos' : 'neg';
+  var ltdClass = m.ltd > 0 ? 'pos' : 'neg';
+  var mSign = m.monthly > 0 ? '+' : '';
+  var ySign = m.ytd > 0 ? '+' : '';
+  var lSign = m.ltd > 0 ? '+' : '';
+  return '<tr><td class="bold">' + m.label + '</td><td class="num ' + mClass + '">' + mSign + m.monthly.toFixed(1) + '%</td><td class="num ' + ytdClass + '">' + ySign + m.ytd.toFixed(2) + '%</td><td class="num">$' + m.nav.toFixed(2) + 'M</td><td class="num ' + ltdClass + '">' + lSign + m.ltd.toFixed(2) + '%</td><td><span class="tag">' + m.status + '</span></td></tr>';
+}).join('');
+</script>
+</body>
+</html>
