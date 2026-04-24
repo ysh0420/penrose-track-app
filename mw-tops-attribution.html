@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Penrose Japan — MW TOPS Attribution (Private)</title>
+<title>Penrose Japan — Attribution & Holdings</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,7 +18,6 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
 .topbar h1 span{color:var(--gold)}
 .topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
-.private-banner{background:#721c24;color:white;padding:.6rem 1rem;text-align:center;font-size:10pt;margin-bottom:1.5rem;letter-spacing:1px;text-transform:uppercase;font-weight:600}
 .nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
 .nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
 .nav-links a:hover{background:var(--cream);border-color:var(--gold)}
@@ -54,21 +53,20 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 </head>
 <body>
 <div class="container">
-<div class="private-banner">⚠ INTERNAL / CONFIDENTIAL — Position names included. Not for external distribution.</div>
 <div class="topbar">
-<div><h1>Penrose <span>Japan</span></h1><div class="sub">MW TOPS — Attribution & Month-End Detail (Private)</div></div>
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Portfolio Attribution & Holdings</div></div>
 <div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">As of: Apr 24, 2026</div>
 </div>
 
 <div class="nav-links">
-<a href="/track-record.html">← Public Track Record</a>
+<a href="/track-record.html">← Track Record</a>
 <a href="/mw-tops-attribution.html" class="active">Attribution & Holdings</a>
 <a href="/mw-tops-transactions.html">Transaction Log</a>
 </div>
 
 <div class="section">
 <h2>Current Holdings — April 24, 2026</h2>
-<div class="subtitle">Live positions from MW TOPS portal snapshot · 9 positions (4 long / 5 short) · Moving toward market-neutral</div>
+<div class="subtitle">Live positions · 9 positions (4 long / 5 short) · Moving toward market-neutral</div>
 <div class="stats-grid">
 <div class="stat"><div class="label">Current Fund Size</div><div class="value">$22.0M</div></div>
 <div class="stat"><div class="label">Target Fund Size</div><div class="value">$30.0M</div></div>
@@ -95,7 +93,7 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 </tbody>
 </table>
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
-* denotes position with pending re-price. All P&L figures from MW TOPS portal snapshot.<br/>
+* denotes position with pending re-price.<br/>
 Net Market Exposure = (Sum of Positions + accumulated PL) / Target Fund Size. Now near market-neutral at +5.56% (down from +25.28% early April).<br/>
 Fast Retailing short doubled from $1M → $2M between Apr 23 and Apr 24. All 9 positions MTD profitable.
 </div>
@@ -116,14 +114,14 @@ Fast Retailing short doubled from $1M → $2M between Apr 23 and Apr 24. All 9 p
 </tbody>
 </table>
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
-+0.93pp jump in Overall AC on Apr 24 driven by: Oriental Land short (-12.55% cum, MTD -3.30% today) + Shin-Etsu long (+22.83% cum, +1.56% today) + Tsukishima long (+10.88%, +3.81% today).<br/>
++0.93pp jump in Overall AC on Apr 24 driven by: Oriental Land short (-12.55% cum, -3.30% today) + Shin-Etsu long (+22.83% cum, +1.56% today) + Tsukishima long (+10.88%, +3.81% today).<br/>
 For detailed transaction-level audit trail, see <a href="/mw-tops-transactions.html" style="color:var(--navy)">Transaction Log</a>.
 </div>
 </div>
 
 <div class="section">
 <h2>CY2025 Position Attribution</h2>
-<div class="subtitle">10 positions traded Apr 30 2025 — Dec 31 2025 reference period. From Koyfin aggregate xlsx.</div>
+<div class="subtitle">10 positions traded Apr 30 2025 — Dec 31 2025 reference period</div>
 <table>
 <thead><tr><th>#</th><th>Ticker</th><th>Company</th><th style="text-align:right">Weight</th><th style="text-align:right">Entry ¥</th><th style="text-align:right">Exit ¥</th><th style="text-align:right">Abs Return</th><th style="text-align:right">AC Return</th><th style="text-align:right">Contrib (AC)</th></tr></thead>
 <tbody id="posRows"></tbody>
@@ -131,7 +129,7 @@ For detailed transaction-level audit trail, see <a href="/mw-tops-transactions.h
 <tr style="font-size:9pt;color:var(--muted)"><td colspan="3">vs TOPIX</td><td></td><td class="num">2,655</td><td class="num">3,576</td><td class="num">+34.7%</td><td></td><td></td></tr>
 <tr style="font-size:9pt;color:var(--muted)"><td colspan="3">ALPHA vs TOPIX</td><td></td><td></td><td></td><td class="num pos">+36.5pp</td><td></td><td></td></tr></tbody>
 </table>
-<div style="font-size:9pt;color:var(--muted);margin-top:1rem;font-style:italic">Note: +71.2%/+53.85% are xlsx aggregate metrics (position-level returns × weights on $165M notional). Actual book NAV trajectory is +25.65% AC by Dec 2025 — see public dashboard for book-level track record.</div>
+<div style="font-size:9pt;color:var(--muted);margin-top:1rem;font-style:italic">Note: +71.2%/+53.85% are aggregate metrics (position-level returns × weights on $165M notional). Actual book NAV trajectory is +25.65% AC by Dec 2025 — see public dashboard for book-level track record.</div>
 </div>
 
 <div class="section">
@@ -141,8 +139,7 @@ For detailed transaction-level audit trail, see <a href="/mw-tops-transactions.h
 </div>
 
 <div class="footer">
-Data as of Apr 24, 2026 · Penrose Japan Ltd — Internal Use Only<br/>
-Current holdings from MW TOPS portal snapshot · CY2025 reference from Koyfin aggregate xlsx
+Data as of Apr 24, 2026 · Penrose Japan Ltd
 </div>
 </div>
 
