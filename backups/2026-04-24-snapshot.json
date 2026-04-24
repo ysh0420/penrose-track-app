@@ -1,0 +1,274 @@
+{
+    "summary": {
+        "ltd_ac_return": 37.89,
+        "inception_date": "2025-04-30",
+        "ltd_ac_nav_usd": 41366700,
+        "cy2025_ac_return": 25.65,
+        "current_positions": 9,
+        "current_net_exposure": 5.56,
+        "cy2026_ytd_ac_return": 9.72,
+        "total_cumulative_pnl_usd": 2159921
+    },
+    "description": "MW_TOPS Apr 24 snapshot - Overall AC +2.80%, LTD +37.89%",
+    "generated_at": "2026-04-24T06:53:33.347921+00:00",
+    "snapshot_date": "2026-04-24",
+    "schema_version": "1.1",
+    "performance_monthly": [
+        {
+            "year": 2025,
+            "as_of": "2025-05-30",
+            "month": 5,
+            "is_mtd": false,
+            "ac_return": 0.003
+        },
+        {
+            "year": 2025,
+            "as_of": "2025-06-30",
+            "month": 6,
+            "is_mtd": false,
+            "ac_return": -0.002
+        },
+        {
+            "year": 2025,
+            "as_of": "2025-07-31",
+            "month": 7,
+            "is_mtd": false,
+            "ac_return": 0.0175
+        },
+        {
+            "year": 2025,
+            "as_of": "2025-08-29",
+            "month": 8,
+            "is_mtd": false,
+            "ac_return": 0.106
+        },
+        {
+            "year": 2025,
+            "as_of": "2025-09-30",
+            "month": 9,
+            "is_mtd": false,
+            "ac_return": 0.0825
+        },
+        {
+            "year": 2025,
+            "as_of": "2025-10-31",
+            "month": 10,
+            "is_mtd": false,
+            "ac_return": 0.0
+        },
+        {
+            "year": 2025,
+            "as_of": "2025-11-28",
+            "month": 11,
+            "is_mtd": false,
+            "ac_return": 0.0225
+        },
+        {
+            "year": 2025,
+            "as_of": "2025-12-30",
+            "month": 12,
+            "is_mtd": false,
+            "ac_return": 0.0076
+        },
+        {
+            "year": 2026,
+            "as_of": "2026-01-30",
+            "month": 1,
+            "is_mtd": false,
+            "ac_return": 0.035
+        },
+        {
+            "year": 2026,
+            "as_of": "2026-02-27",
+            "month": 2,
+            "is_mtd": false,
+            "ac_return": 0.115
+        },
+        {
+            "year": 2026,
+            "as_of": "2026-03-31",
+            "month": 3,
+            "is_mtd": false,
+            "ac_return": -0.075
+        },
+        {
+            "year": 2026,
+            "as_of": "2026-04-24",
+            "month": 4,
+            "is_mtd": true,
+            "ac_return": 0.028
+        }
+    ],
+    "apr_2026_mtd_evolution": [
+        {
+            "date": "2026-04-10",
+            "event": "baseline 4L/3S",
+            "mtd_net": 3.16,
+            "fund_size": 18000000,
+            "mtd_gross": 3.22,
+            "positions": 7,
+            "net_exposure": 25.28,
+            "skill_factor": 0.68,
+            "overall_perf_ac": 1.26,
+            "return_from_target": 1.84
+        },
+        {
+            "date": "2026-04-14",
+            "event": "peak long gains",
+            "mtd_net": 3.92,
+            "fund_size": 18000000,
+            "mtd_gross": 3.98,
+            "positions": 7,
+            "net_exposure": 25.95,
+            "skill_factor": 1.16,
+            "overall_perf_ac": 1.73,
+            "return_from_target": 2.29
+        },
+        {
+            "date": "2026-04-17",
+            "event": "added 9020 EJR short",
+            "mtd_net": 3.64,
+            "fund_size": 20000000,
+            "mtd_gross": 3.72,
+            "positions": 8,
+            "net_exposure": 13.89,
+            "skill_factor": 0.89,
+            "overall_perf_ac": 1.53,
+            "return_from_target": 2.16
+        },
+        {
+            "date": "2026-04-23",
+            "event": "added 9983 Fast Retailing short $1M",
+            "mtd_net": 3.97,
+            "fund_size": 21000000,
+            "mtd_gross": 4.05,
+            "positions": 9,
+            "net_exposure": 9.27,
+            "skill_factor": 1.31,
+            "overall_perf_ac": 1.87,
+            "return_from_target": 2.43
+        },
+        {
+            "date": "2026-04-24",
+            "event": "9983 doubled to $2M; Oriental Land short big winner",
+            "mtd_net": 5.33,
+            "fund_size": 22000000,
+            "mtd_gross": 5.42,
+            "positions": 9,
+            "net_exposure": 5.56,
+            "skill_factor": 2.31,
+            "overall_perf_ac": 2.80,
+            "return_from_target": 3.29
+        }
+    ],
+    "current_holdings_apr24": [
+        {
+            "name": "Shin-Etsu Chemical",
+            "side": "LONG",
+            "ticker": "4063",
+            "last_jpy": 6768,
+            "avg_in_jpy": 5509.9,
+            "ltd_pnl_usd": 1090843,
+            "mtd_chg_pct": 8.13,
+            "mtd_pnl_usd": 277136,
+            "position_usd": 3000000,
+            "chg_on_pos_pct": 22.83
+        },
+        {
+            "name": "Nippon Sanso Holdings",
+            "side": "LONG",
+            "ticker": "4091",
+            "last_jpy": 5690,
+            "avg_in_jpy": 5916.4,
+            "ltd_pnl_usd": 134816,
+            "mtd_chg_pct": 2.84,
+            "mtd_pnl_usd": 79609,
+            "position_usd": 3000000,
+            "chg_on_pos_pct": -3.83
+        },
+        {
+            "name": "Marubeni Corp",
+            "side": "LONG",
+            "ticker": "8002",
+            "last_jpy": 5936,
+            "avg_in_jpy": 5593.3,
+            "ltd_pnl_usd": 211566,
+            "mtd_chg_pct": 5.66,
+            "mtd_pnl_usd": 170561,
+            "position_usd": 3000000,
+            "chg_on_pos_pct": 6.13
+        },
+        {
+            "name": "Tsukishima Holdings",
+            "side": "LONG",
+            "ticker": "6332",
+            "last_jpy": 3055,
+            "avg_in_jpy": 2755.2,
+            "ltd_pnl_usd": 217662,
+            "mtd_chg_pct": 13.61,
+            "mtd_pnl_usd": 225290,
+            "position_usd": 2000000,
+            "chg_on_pos_pct": 10.88
+        },
+        {
+            "name": "Kansai Paint",
+            "side": "SHORT",
+            "ticker": "4613",
+            "last_jpy": 2375.5,
+            "avg_in_jpy": 2379.5,
+            "ltd_pnl_usd": 3387,
+            "mtd_chg_pct": 1.37,
+            "mtd_pnl_usd": 26896,
+            "position_usd": 2000000,
+            "chg_on_pos_pct": -0.17
+        },
+        {
+            "name": "Oriental Land Co",
+            "side": "SHORT",
+            "ticker": "4661",
+            "last_jpy": 2400,
+            "avg_in_jpy": 2744.4,
+            "ltd_pnl_usd": 250984,
+            "mtd_chg_pct": null,
+            "mtd_pnl_usd": 250984,
+            "position_usd": 2000000,
+            "chg_on_pos_pct": -12.55
+        },
+        {
+            "name": "East Japan Railway",
+            "side": "SHORT",
+            "ticker": "9020",
+            "last_jpy": 3461,
+            "avg_in_jpy": 3526.8,
+            "ltd_pnl_usd": 37303,
+            "mtd_chg_pct": null,
+            "mtd_pnl_usd": 37303,
+            "position_usd": 2000000,
+            "chg_on_pos_pct": -1.87
+        },
+        {
+            "name": "Fast Retailing",
+            "side": "SHORT",
+            "ticker": "9983",
+            "last_jpy": 70090,
+            "avg_in_jpy": 70325.5,
+            "ltd_pnl_usd": 6699,
+            "mtd_chg_pct": 1.15,
+            "mtd_pnl_usd": 6699,
+            "position_usd": 2000000,
+            "chg_on_pos_pct": null
+        },
+        {
+            "name": "Yamato Holdings",
+            "side": "SHORT",
+            "ticker": "9064",
+            "last_jpy": 1768,
+            "avg_in_jpy": 1762.5,
+            "ltd_pnl_usd": 35657,
+            "mtd_chg_pct": 1.35,
+            "mtd_pnl_usd": 15819,
+            "position_usd": 3000000,
+            "chg_on_pos_pct": 0.31
+        }
+    ]
+}
