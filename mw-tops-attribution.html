@@ -19,6 +19,10 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .topbar h1 span{color:var(--gold)}
 .topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
 .private-banner{background:#721c24;color:white;padding:.6rem 1rem;text-align:center;font-size:10pt;margin-bottom:1.5rem;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
+.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
+.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
 .section{background:white;border:1px solid var(--line);padding:2rem;margin-bottom:1.5rem}
 .section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.4em;display:inline-block}
 .section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1.5rem}
@@ -56,10 +60,15 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 <div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">As of: Apr 24, 2026</div>
 </div>
 
+<div class="nav-links">
+<a href="/track-record.html">← Public Track Record</a>
+<a href="/mw-tops-attribution.html" class="active">Attribution & Holdings</a>
+<a href="/mw-tops-transactions.html">Transaction Log</a>
+</div>
+
 <div class="section">
 <h2>Current Holdings — April 24, 2026</h2>
 <div class="subtitle">Live positions from MW TOPS portal snapshot · 9 positions (4 long / 5 short) · Moving toward market-neutral</div>
-
 <div class="stats-grid">
 <div class="stat"><div class="label">Current Fund Size</div><div class="value">$22.0M</div></div>
 <div class="stat"><div class="label">Target Fund Size</div><div class="value">$30.0M</div></div>
@@ -68,7 +77,6 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 <div class="stat pos"><div class="label">Overall Perf (AC)</div><div class="value">+2.80%</div></div>
 <div class="stat"><div class="label">Net Mkt Exposure</div><div class="value">5.56%</div></div>
 </div>
-
 <table>
 <thead><tr><th>Side</th><th>Ticker</th><th>Company</th><th style="text-align:right">Position ($)</th><th style="text-align:right">Avg In ¥</th><th style="text-align:right">Last ¥</th><th style="text-align:right">Chg on Pos</th><th style="text-align:right">MTD Chg</th><th style="text-align:right">MTD P&L ($)</th><th style="text-align:right">LTD P&L ($)</th></tr></thead>
 <tbody>
@@ -86,7 +94,6 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 <tr class="total"><td colspan="3">PORTFOLIO TOTAL (9 positions)</td><td class="num">22,000,000</td><td></td><td></td><td></td><td></td><td class="num pos">1,004,868</td><td class="num pos">2,159,921</td></tr>
 </tbody>
 </table>
-
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
 * denotes position with pending re-price. All P&L figures from MW TOPS portal snapshot.<br/>
 Net Market Exposure = (Sum of Positions + accumulated PL) / Target Fund Size. Now near market-neutral at +5.56% (down from +25.28% early April).<br/>
@@ -96,7 +103,7 @@ Fast Retailing short doubled from $1M → $2M between Apr 23 and Apr 24. All 9 p
 
 <div class="section">
 <h2>April 2026 MTD Evolution</h2>
-<div class="subtitle">Intra-month performance progression — 5 weekly snapshots from MW TOPS portal. Net exposure systematically reduced 25% → 5.6% as shorts were layered in.</div>
+<div class="subtitle">Intra-month performance progression — 5 weekly snapshots. Net exposure systematically reduced 25% → 5.6% as shorts were layered in.</div>
 <div class="chart-wrap"><canvas id="aprChart"></canvas></div>
 <table>
 <thead><tr><th>Date</th><th style="text-align:right">Overall Perf (AC)</th><th style="text-align:right">MTD Net Return</th><th style="text-align:right">Fund Size</th><th style="text-align:right">Net Exposure</th><th style="text-align:right">Positions</th><th>Book Event</th></tr></thead>
@@ -109,7 +116,8 @@ Fast Retailing short doubled from $1M → $2M between Apr 23 and Apr 24. All 9 p
 </tbody>
 </table>
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
-+0.93pp jump in Overall AC on Apr 24 driven by: Oriental Land short (-12.55% cum, MTD -3.30% today) + Shin-Etsu long (+22.83% cum, +1.56% today) + Tsukishima long (+10.88%, +3.81% today).
++0.93pp jump in Overall AC on Apr 24 driven by: Oriental Land short (-12.55% cum, MTD -3.30% today) + Shin-Etsu long (+22.83% cum, +1.56% today) + Tsukishima long (+10.88%, +3.81% today).<br/>
+For detailed transaction-level audit trail, see <a href="/mw-tops-transactions.html" style="color:var(--navy)">Transaction Log</a>.
 </div>
 </div>
 
