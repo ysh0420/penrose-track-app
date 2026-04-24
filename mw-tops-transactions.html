@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penrose Japan — MW TOPS Transaction Log (Private)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1400px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
+.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.private-banner{background:#721c24;color:white;padding:.6rem 1rem;text-align:center;font-size:10pt;margin-bottom:1.5rem;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.section{background:white;border:1px solid var(--line);padding:2rem;margin-bottom:1.5rem}
+.section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.4em;display:inline-block}
+.section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1.5rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;margin-bottom:1.5rem}
+.stat{padding:.7rem 1rem;background:var(--cream);border-left:3px solid var(--gold)}
+.stat .label{font-size:8pt;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.stat .value{font-family:'Cormorant Garamond',serif;font-size:16pt;color:var(--navy);font-weight:600;margin-top:.2em}
+.stat.long .value{color:#0d47a1}
+.stat.short .value{color:#b71c1c}
+table{width:100%;border-collapse:collapse;font-size:10pt;margin-top:1rem}
+th{text-align:left;padding:.7rem .9rem;background:var(--navy);color:white;font-weight:500;font-size:9pt;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+td{padding:.6rem .9rem;border-top:1px solid var(--line);vertical-align:top}
+tr:hover{background:var(--cream)}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+td.bold{font-weight:600;color:var(--navy)}
+td.date{white-space:nowrap;font-size:9pt;color:var(--muted)}
+.side-buy{color:#0d47a1;font-weight:700;font-size:9pt;padding:2px 8px;background:#e3f2fd;border-radius:3px}
+.side-sell{color:#b71c1c;font-weight:700;font-size:9pt;padding:2px 8px;background:#ffebee;border-radius:3px}
+.side-amend{color:#856404;font-weight:700;font-size:9pt;padding:2px 8px;background:#fff3cd;border-radius:3px}
+.status{font-size:8pt;color:var(--muted);padding:2px 6px;background:#f3efe4;border-radius:3px;white-space:nowrap}
+.rationale{font-size:9.5pt;color:var(--sumi);line-height:1.5;font-style:italic;max-width:420px}
+.month-divider{background:var(--navy);color:white;padding:.5rem 1rem;font-weight:600;font-size:10pt;letter-spacing:1px;text-transform:uppercase}
+.month-divider td{color:white;border-top:none;padding:.5rem 1rem}
+.footer{text-align:center;color:var(--muted);font-size:9pt;padding:2rem 1rem;margin-top:2rem}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
+.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
+.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
+@media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem;font-size:9pt}.rationale{max-width:none}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="private-banner">⚠ INTERNAL / CONFIDENTIAL — Transaction-level detail with rationale. Not for external distribution.</div>
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">MW TOPS — Transaction Log (Private)</div></div>
+<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">Period: Feb 2 — Apr 24, 2026<br/>18 transactions</div>
+</div>
+
+<div class="nav-links">
+<a href="/track-record.html">← Public Track Record</a>
+<a href="/mw-tops-attribution.html">Attribution & Holdings</a>
+<a href="/mw-tops-transactions.html" class="active">Transaction Log</a>
+</div>
+
+<div class="section">
+<h2>Transaction Summary</h2>
+<div class="subtitle">CY2026 book-building transactions (Feb 2 — Apr 24)</div>
+<div class="stats-grid">
+<div class="stat"><div class="label">Total Txns</div><div class="value">18</div></div>
+<div class="stat long"><div class="label">BUY</div><div class="value">9</div></div>
+<div class="stat short"><div class="label">SELL</div><div class="value">8</div></div>
+<div class="stat"><div class="label">AMEND</div><div class="value">1</div></div>
+<div class="stat"><div class="label">Tickers</div><div class="value">8</div></div>
+<div class="stat"><div class="label">Total Volume ($)</div><div class="value">26M</div></div>
+</div>
+</div>
+
+<div class="section">
+<h2>Full Transaction Log</h2>
+<div class="subtitle">Most recent first. All transactions are confirmed. Rationale from Idea Update notes in MW TOPS portal.</div>
+<table>
+<thead><tr><th>Date</th><th>Ticker</th><th>B/S</th><th style="text-align:right">Qty</th><th style="text-align:right">Target ¥</th><th style="text-align:right">Exec ¥</th><th style="text-align:right">Cost ($)</th><th>Price Type</th><th>Rationale</th></tr></thead>
+<tbody id="txnRows"></tbody>
+</table>
+</div>
+
+<div class="section">
+<h2>Activity by Ticker</h2>
+<div class="subtitle">Position-level chronology — how each holding was built</div>
+<table>
+<thead><tr><th>Ticker</th><th>Company</th><th style="text-align:right">Txns</th><th style="text-align:right">Net Qty</th><th>Timeline</th></tr></thead>
+<tbody id="tickerRows"></tbody>
+</table>
+</div>
+
+<div class="footer">
+Data compiled from MW TOPS portal Transactions tab · Penrose Japan Ltd — Internal Use Only<br/>
+Rationale = raw text from Yuki Soga's Idea Update notes
+</div>
+</div>
+
+<script>
+// Sorted most recent first
+var txns = [
+  {date:'2026-04-24', ticker:'9983', bs:'AMEND', qty:1000000, target:null, exec:null, cost:1500, type:'Touch', rationale:'doubled Fast Retailing short from $1M to $2M'},
+  {date:'2026-04-23', ticker:'9983', bs:'SHORT SELL', qty:1000000, target:null, exec:71392.5, cost:1500, type:'Touch', rationale:'initiated Fast Retailing short — consumer discretionary exposure with valuation stretch'},
+  {date:'2026-04-16', ticker:'9020', bs:'SHORT SELL', qty:2000000, target:null, exec:3526.8, cost:3288, type:'Touch', rationale:'East Japan Railway short — higher diesel costs squeeze rail margins'},
+  {date:'2026-04-02', ticker:'9064', bs:'SHORT SELL', qty:1000000, target:null, exec:1787.7, cost:2571, type:'Touch', rationale:'company will suffer from higher diesel price'},
+  {date:'2026-04-02', ticker:'4661', bs:'SHORT SELL', qty:2000000, target:null, exec:2744.4, cost:3235, type:'Touch', rationale:'Oriental Land short — higher cost of living for Japanese, reduced consumption'},
+  {date:'2026-04-02', ticker:'6332', bs:'AMEND BUY', qty:1000000, target:2802.2, exec:null, cost:4622, type:'VWAP over the day', rationale:'even when crude oil flow comes back, fertilizer thesis intact; added more Tsukishima'},
+  {date:'2026-03-30', ticker:'4613', bs:'SHORT SELL', qty:2000000, target:null, exec:2379.5, cost:5284, type:'Touch', rationale:'Kansai Paint short — key raw material is naphtha where cost pressure is rising'},
+  {date:'2026-03-30', ticker:'6332', bs:'LONG BUY', qty:1000000, target:null, exec:2709.7, cost:6603, type:'Touch', rationale:'Tsukishima has 30% market share in sewage infrastructure'},
+  {date:'2026-03-30', ticker:'4063', bs:'AMEND SELL', qty:1000000, target:null, exec:5954.9, cost:1500, type:'Touch', rationale:'reducing Shin-Etsu exposure on uncertain environment'},
+  {date:'2026-03-30', ticker:'4091', bs:'AMEND SELL', qty:1000000, target:null, exec:5681.9, cost:2462, type:'Touch', rationale:'reducing Nippon Sanso exposure on uncertain environment'},
+  {date:'2026-03-17', ticker:'4063', bs:'LONG BUY', qty:1000000, target:null, exec:6614, cost:1500, type:'Touch', rationale:'20% price hike announced for PVC — Shin-Etsu margin expansion'},
+  {date:'2026-03-16', ticker:'8002', bs:'LONG BUY', qty:1000000, target:null, exec:5654.6, cost:2742, type:'Touch', rationale:'Marubeni well positioned for helium gas — trading house with supply access'},
+  {date:'2026-03-16', ticker:'4091', bs:'AMEND BUY', qty:2000000, target:null, exec:6234.9, cost:5869, type:'Touch', rationale:'Nippon Sanso — beneficiary of fertilizer shortage and price going up'},
+  {date:'2026-03-16', ticker:'8002', bs:'LONG BUY', qty:2000000, target:null, exec:5563.1, cost:3751, type:'Touch', rationale:'Marubeni is one of few companies that is a beneficiary — fertilizer trade'},
+  {date:'2026-03-12', ticker:'4091', bs:'LONG BUY', qty:2000000, target:null, exec:5628.8, cost:5770, type:'Touch', rationale:'Nippon Sanso — beneficiary of having local access to specialty gas'},
+  {date:'2026-03-09', ticker:'9064', bs:'SHORT SELL', qty:2000000, target:null, exec:1750.1, cost:6407, type:'Touch', rationale:'Yamato — company will be hit by higher diesel price'},
+  {date:'2026-02-25', ticker:'4063', bs:'AMEND SELL', qty:1000000, target:null, exec:5977.6, cost:3000, type:'Touch', rationale:'Shin-Etsu — taking profit while still likes the name'},
+  {date:'2026-02-02', ticker:'4063', bs:'AMEND BUY', qty:2000000, target:null, exec:5243.7, cost:5442, type:'Touch', rationale:'Shin-Etsu — adding back on recent fall after result; PVC thesis intact'}
+];
+
+var tickerNames = {
+  '4063': 'Shin-Etsu Chemical',
+  '4091': 'Nippon Sanso Holdings',
+  '4613': 'Kansai Paint',
+  '4661': 'Oriental Land Co',
+  '6332': 'Tsukishima Holdings',
+  '8002': 'Marubeni Corp',
+  '9020': 'East Japan Railway',
+  '9064': 'Yamato Holdings',
+  '9983': 'Fast Retailing'
+};
+
+// Render with month dividers
+var lastMonth = '';
+var monthLabels = {'04':'April 2026','03':'March 2026','02':'February 2026'};
+var html = '';
+txns.forEach(function(t){
+  var m = t.date.substring(5,7);
+  if (m !== lastMonth) {
+    html += '<tr class="month-divider"><td colspan="9">' + monthLabels[m] + '</td></tr>';
+    lastMonth = m;
+  }
+  var sideClass = t.bs.indexOf('BUY') >= 0 ? 'side-buy' : (t.bs.indexOf('SELL') >= 0 ? 'side-sell' : 'side-amend');
+  html += '<tr>' +
+    '<td class="date">' + t.date + '</td>' +
+    '<td class="bold">' + t.ticker + '</td>' +
+    '<td><span class="' + sideClass + '">' + t.bs + '</span></td>' +
+    '<td class="num">' + t.qty.toLocaleString() + '</td>' +
+    '<td class="num">' + (t.target ? t.target.toLocaleString() : '—') + '</td>' +
+    '<td class="num">' + (t.exec ? t.exec.toLocaleString() : '—') + '</td>' +
+    '<td class="num">' + t.cost.toLocaleString() + '</td>' +
+    '<td><span class="status">' + t.type + '</span></td>' +
+    '<td class="rationale">' + t.rationale + '</td>' +
+    '</tr>';
+});
+document.getElementById('txnRows').innerHTML = html;
+
+// Ticker aggregation
+var byTicker = {};
+txns.forEach(function(t){
+  if (!byTicker[t.ticker]) byTicker[t.ticker] = {txns: [], netQty: 0};
+  byTicker[t.ticker].txns.push(t);
+  var mult = t.bs.indexOf('BUY') >= 0 ? 1 : (t.bs.indexOf('SELL') >= 0 ? -1 : 0);
+  byTicker[t.ticker].netQty += mult * t.qty;
+});
+
+var tickerHtml = '';
+Object.keys(byTicker).sort().forEach(function(t){
+  var d = byTicker[t];
+  var timeline = d.txns.slice().reverse().map(function(tx){
+    var marker = tx.bs.indexOf('BUY') >= 0 ? '🟢' : (tx.bs.indexOf('SELL') >= 0 ? '🔴' : '🟡');
+    return '<span style="white-space:nowrap;margin-right:8px">' + marker + ' ' + tx.date.substring(5) + '</span>';
+  }).join('');
+  tickerHtml += '<tr>' +
+    '<td class="bold">' + t + '</td>' +
+    '<td>' + tickerNames[t] + '</td>' +
+    '<td class="num">' + d.txns.length + '</td>' +
+    '<td class="num">' + (d.netQty > 0 ? '+' : '') + d.netQty.toLocaleString() + '</td>' +
+    '<td style="font-size:10pt">' + timeline + '</td>' +
+    '</tr>';
+});
+document.getElementById('tickerRows').innerHTML = tickerHtml;
+</script>
+</body>
+</html>
