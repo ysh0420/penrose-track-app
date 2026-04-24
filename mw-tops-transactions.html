@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Penrose Japan — MW TOPS Transaction Log (Private)</title>
+<title>Penrose Japan — Transaction Log</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -17,7 +17,10 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
 .topbar h1 span{color:var(--gold)}
 .topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
-.private-banner{background:#721c24;color:white;padding:.6rem 1rem;text-align:center;font-size:10pt;margin-bottom:1.5rem;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
+.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
+.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
 .section{background:white;border:1px solid var(--line);padding:2rem;margin-bottom:1.5rem}
 .section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.4em;display:inline-block}
 .section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1.5rem}
@@ -42,23 +45,18 @@ td.date{white-space:nowrap;font-size:9pt;color:var(--muted)}
 .month-divider{background:var(--navy);color:white;padding:.5rem 1rem;font-weight:600;font-size:10pt;letter-spacing:1px;text-transform:uppercase}
 .month-divider td{color:white;border-top:none;padding:.5rem 1rem}
 .footer{text-align:center;color:var(--muted);font-size:9pt;padding:2rem 1rem;margin-top:2rem}
-.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
-.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
-.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
-.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
 @media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem;font-size:9pt}.rationale{max-width:none}}
 </style>
 </head>
 <body>
 <div class="container">
-<div class="private-banner">⚠ INTERNAL / CONFIDENTIAL — Transaction-level detail with rationale. Not for external distribution.</div>
 <div class="topbar">
-<div><h1>Penrose <span>Japan</span></h1><div class="sub">MW TOPS — Transaction Log (Private)</div></div>
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Transaction Log with Rationale</div></div>
 <div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">Period: Feb 2 — Apr 24, 2026<br/>18 transactions</div>
 </div>
 
 <div class="nav-links">
-<a href="/track-record.html">← Public Track Record</a>
+<a href="/track-record.html">← Track Record</a>
 <a href="/mw-tops-attribution.html">Attribution & Holdings</a>
 <a href="/mw-tops-transactions.html" class="active">Transaction Log</a>
 </div>
@@ -78,7 +76,7 @@ td.date{white-space:nowrap;font-size:9pt;color:var(--muted)}
 
 <div class="section">
 <h2>Full Transaction Log</h2>
-<div class="subtitle">Most recent first. All transactions are confirmed. Rationale from Idea Update notes in MW TOPS portal.</div>
+<div class="subtitle">Most recent first. All transactions are confirmed. Rationale reflects Yuki Soga's analytical notes at time of trade.</div>
 <table>
 <thead><tr><th>Date</th><th>Ticker</th><th>B/S</th><th style="text-align:right">Qty</th><th style="text-align:right">Target ¥</th><th style="text-align:right">Exec ¥</th><th style="text-align:right">Cost ($)</th><th>Price Type</th><th>Rationale</th></tr></thead>
 <tbody id="txnRows"></tbody>
@@ -95,13 +93,12 @@ td.date{white-space:nowrap;font-size:9pt;color:var(--muted)}
 </div>
 
 <div class="footer">
-Data compiled from MW TOPS portal Transactions tab · Penrose Japan Ltd — Internal Use Only<br/>
-Rationale = raw text from Yuki Soga's Idea Update notes
+Data compiled from trade execution records · Penrose Japan Ltd<br/>
+Rationale from Yuki Soga's analytical notes
 </div>
 </div>
 
 <script>
-// Sorted most recent first
 var txns = [
   {date:'2026-04-24', ticker:'9983', bs:'AMEND', qty:1000000, target:null, exec:null, cost:1500, type:'Touch', rationale:'doubled Fast Retailing short from $1M to $2M'},
   {date:'2026-04-23', ticker:'9983', bs:'SHORT SELL', qty:1000000, target:null, exec:71392.5, cost:1500, type:'Touch', rationale:'initiated Fast Retailing short — consumer discretionary exposure with valuation stretch'},
@@ -135,7 +132,6 @@ var tickerNames = {
   '9983': 'Fast Retailing'
 };
 
-// Render with month dividers
 var lastMonth = '';
 var monthLabels = {'04':'April 2026','03':'March 2026','02':'February 2026'};
 var html = '';
@@ -160,7 +156,6 @@ txns.forEach(function(t){
 });
 document.getElementById('txnRows').innerHTML = html;
 
-// Ticker aggregation
 var byTicker = {};
 txns.forEach(function(t){
   if (!byTicker[t.ticker]) byTicker[t.ticker] = {txns: [], netQty: 0};
