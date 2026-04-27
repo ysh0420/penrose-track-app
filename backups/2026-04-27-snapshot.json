@@ -1,0 +1,156 @@
+{
+    "summary": {
+        "ltd_ac": 38.20,
+        "cy2025_ac": 25.65,
+        "positions": 9,
+        "total_pnl": 2190346,
+        "ltd_ac_nav": 41459700,
+        "net_exposure": 5.82,
+        "cy2026_ytd_ac": 9.99,
+        "mtd_pnl_gross": 1073078,
+        "earnings_alert": "quarterly earnings in 3 days"
+    },
+    "description": "EOD Apr 27 - Overall AC +3.03%, LTD +38.20%, earnings in 3 days",
+    "snapshot_date": "2026-04-27",
+    "holdings_apr27": [
+        {
+            "last": 6949,
+            "side": "LONG",
+            "ticker": "4063",
+            "ltd_pnl": 1189392,
+            "mtd_pct": 11.02,
+            "mtd_pnl": 375685,
+            "chg_pos_pct": 26.12
+        },
+        {
+            "last": 5626,
+            "side": "LONG",
+            "ticker": "4091",
+            "ltd_pnl": 167268,
+            "mtd_pct": 1.68,
+            "mtd_pnl": 47157,
+            "chg_pos_pct": -4.91
+        },
+        {
+            "last": 5910,
+            "side": "LONG",
+            "ticker": "8002",
+            "ltd_pnl": 197621,
+            "mtd_pct": 5.20,
+            "mtd_pnl": 156616,
+            "chg_pos_pct": 5.66
+        },
+        {
+            "last": 3140,
+            "side": "LONG",
+            "ticker": "6332",
+            "ltd_pnl": 279365,
+            "mtd_pct": 16.77,
+            "mtd_pnl": 286993,
+            "chg_pos_pct": 13.97
+        },
+        {
+            "last": 2384,
+            "side": "SHORT",
+            "ticker": "4613",
+            "ltd_pnl": 3757,
+            "mtd_pct": 1.73,
+            "mtd_pnl": 34040,
+            "chg_pos_pct": 0.19
+        },
+        {
+            "last": 2387.5,
+            "side": "SHORT",
+            "ticker": "4661",
+            "ltd_pnl": 260093,
+            "mtd_pnl": 260093,
+            "chg_pos_pct": -13.00
+        },
+        {
+            "last": 3427,
+            "side": "SHORT",
+            "ticker": "9020",
+            "ltd_pnl": 56584,
+            "mtd_pnl": 56584,
+            "chg_pos_pct": -2.83
+        },
+        {
+            "last": 71870,
+            "side": "SHORT",
+            "ticker": "9983",
+            "ltd_pnl": 49979,
+            "mtd_pct": 2.54,
+            "mtd_pnl": 49979,
+            "chg_pos_pct": 2.50
+        },
+        {
+            "last": 1774,
+            "side": "SHORT",
+            "ticker": "9064",
+            "ltd_pnl": 45870,
+            "mtd_pct": 1.69,
+            "mtd_pnl": 26032,
+            "chg_pos_pct": 0.65
+        }
+    ],
+    "schema_version": "1.2",
+    "apr_2026_evolution": [
+        {
+            "date": "2026-04-10",
+            "event": "baseline",
+            "mtd_net": 3.16,
+            "net_exp": 25.28,
+            "fund_size": 18000000,
+            "positions": 7,
+            "overall_perf_ac": 1.26
+        },
+        {
+            "date": "2026-04-14",
+            "event": "peak long",
+            "mtd_net": 3.92,
+            "net_exp": 25.95,
+            "fund_size": 18000000,
+            "positions": 7,
+            "overall_perf_ac": 1.73
+        },
+        {
+            "date": "2026-04-17",
+            "event": "+EJR short",
+            "mtd_net": 3.64,
+            "net_exp": 13.89,
+            "fund_size": 20000000,
+            "positions": 8,
+            "overall_perf_ac": 1.53
+        },
+        {
+            "date": "2026-04-23",
+            "event": "+9983 $1M",
+            "mtd_net": 3.97,
+            "net_exp": 9.27,
+            "fund_size": 21000000,
+            "positions": 9,
+            "overall_perf_ac": 1.87
+        },
+        {
+            "date": "2026-04-24",
+            "event": "9983 $2M",
+            "mtd_net": 5.33,
+            "net_exp": 5.56,
+            "fund_size": 22000000,
+            "positions": 9,
+            "overall_perf_ac": 2.80
+        },
+        {
+            "date": "2026-04-27",
+            "event": "earnings 3 days",
+            "mtd_net": 5.64,
+            "net_exp": 5.82,
+            "fund_size": 22000000,
+            "mtd_gross": 5.73,
+            "positions": 9,
+            "skill_factor": 2.54,
+            "mtd_pnl_gross": 1073078,
+            "overall_perf_ac": 3.03
+        }
+    ]
+}
