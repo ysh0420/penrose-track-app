@@ -10,11 +10,20 @@ export function convictionStarsHTML(score) {
   return `<span class="brain-stars" title="Conviction ${filled}/5">${"★".repeat(filled)}<span class="brain-stars-empty">${"☆".repeat(empty)}</span></span>`;
 }
 
-/** Direction badge: long (green) / short (red). */
+/**
+ * Direction badge: long (emerald) / short (rose) / pair (violet).
+ *
+ * `pair` is defensive — the only DB row that ever had direction='pair'
+ * (4063) was corrected to 'long' on the Sprint 1 closing patch (the
+ * pair-trade thesis is preserved via idea_type='pair'). Future
+ * delta-neutral pair ideas may legitimately set direction='pair', so
+ * the badge handles it instead of falling through to LONG.
+ */
 export function directionBadgeHTML(direction) {
-  const cls = direction === "short" ? "brain-badge brain-badge-short" : "brain-badge brain-badge-long";
-  const label = direction === "short" ? "SHORT" : "LONG";
-  return `<span class="${cls}">${label}</span>`;
+  const d = (direction ?? "").toString().toLowerCase();
+  if (d === "short") return `<span class="brain-badge brain-badge-short">SHORT</span>`;
+  if (d === "pair")  return `<span class="brain-badge brain-badge-pair" title="Pair-trade thesis">PAIR</span>`;
+  return `<span class="brain-badge brain-badge-long">LONG</span>`;
 }
 
 /** Verdict badge: confirmed / flagged_for_review / rejected / failed / null. */

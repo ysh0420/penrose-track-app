@@ -1,9 +1,11 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
-import { getPipelineRevisions, getPromotionCandidates } from "./brain-queries.js";
+import {
+  getPipelineRevisions, getPromotionCandidates, getActiveIdeas,
+} from "./brain-queries.js";
 import {
   convictionStarsHTML, themeChipsHTML, formatPct, formatYen, escapeHTML,
-  skeletonRowHTML,
+  formatRelativeTime, skeletonRowHTML,
 } from "./brain-components.js";
 import { showError } from "./brain-error.js";
 
@@ -15,6 +17,70 @@ const SIGNIFICANCE_HINT = {
   major_downward: "Cycle-inversion candidate? (Yuki edge)",
   major_upward: "First reversal trigger?",
 };
+
+async function loadEdinetSignals() {
+  const el = document.getElementById("brain-edinet-signals");
+  el.innerHTML = skeletonTable(4);
+
+  let raw;
+  try {
+    raw = await getActiveIdeas() ?? [];
+  } catch (e) {
+    showError({ container: el, message: `EDINET signals load failed: ${e.message}`, onRetry: loadEdinetSignals, error: e });
+    return;
+  }
+
+  // Auto-detected EDINET activist signals are flagged server-side as
+  // idea_type='event_driven'; Yuki-curated names are single_stock /
+  // pair / thematic. Keep only the auto bucket here, sorted newest
+  // first by first_noted_date.
+  const rows = raw
+    .filter((i) => i.idea_type === "event_driven")
+    .sort((a, b) => {
+      const ta = a.first_noted_date ? new Date(a.first_noted_date).getTime() : 0;
+      const tb = b.first_noted_date ? new Date(b.first_noted_date).getTime() : 0;
+      return tb - ta;
+    });
+
+  if (rows.length === 0) {
+    el.innerHTML = `<div class="brain-empty">No active EDINET signals</div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <table class="brain-table">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Name</th>
+          <th>First noted</th>
+          <th>Source</th>
+          <th>Themes</th>
+          <th>Conv</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map((r) => {
+          const sym = escapeHTML(r.symbol ?? "");
+          const fullSource = r.source ?? "";
+          const truncSource = fullSource.length > 60 ? fullSource.slice(0, 57) + "…" : fullSource;
+          const sourceTitle = fullSource.length > 60 ? ` title="${escapeHTML(fullSource)}"` : "";
+          return `
+            <tr class="clickable" data-symbol="${sym}">
+              <td><strong>${sym}</strong></td>
+              <td>${escapeHTML(r.company_name_jp ?? r.company_name ?? "")}</td>
+              <td>${formatRelativeTime(r.first_noted_date)}</td>
+              <td><span${sourceTitle}>${escapeHTML(truncSource)}</span></td>
+              <td>${themeChipsHTML(r.themes_linked)}</td>
+              <td>${convictionStarsHTML(r.conviction_score)}</td>
+            </tr>
+          `;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+  wireRowClicks(el);
+}
 
 async function loadRevisions() {
   const el = document.getElementById("brain-revisions");
@@ -144,6 +210,7 @@ function skeletonTable(rowCount) {
 
 mountBrainAuthGate({
   onAuthed: () => {
+    loadEdinetSignals();
     loadRevisions();
     loadPromotions();
   },

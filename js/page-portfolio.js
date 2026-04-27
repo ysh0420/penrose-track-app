@@ -21,12 +21,22 @@ async function load() {
     </div>
   `).join("");
 
+  let raw;
   try {
-    allIdeas = await getActiveIdeas() ?? [];
+    raw = await getActiveIdeas() ?? [];
   } catch (e) {
     showError({ container: grid, message: `Failed to load portfolio: ${e.message}`, onRetry: load, error: e });
     return;
   }
+  // Yuki Book = curated only. The Brain ideas table now mixes
+  // event_driven auto-detected EDINET activist signals (conviction 2)
+  // with Yuki-curated ideas (single_stock / pair / thematic, conviction
+  // ≥3). The auto-detected bucket lives on /pipeline; this grid shows
+  // curated only.
+  allIdeas = raw.filter((i) =>
+    (i.conviction_score ?? 0) >= 3 &&
+    i.idea_type !== "event_driven"
+  );
 
   document.getElementById("brain-portfolio-count").textContent = `${allIdeas.length} ideas`;
 
