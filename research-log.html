@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research — Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1200px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
+.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
+.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
+.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
+.coming-soon{padding:3rem;text-align:center;color:var(--muted);font-style:italic;background:white;border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar"><div><h1>Penrose <span>Japan</span></h1><div class="sub">Phase R research log</div></div></div>
+<div class="nav-links">
+<a href="/index.html">Dashboard</a>
+<a href="/track-record.html">Track Record</a>
+<a href="/mw-tops-attribution.html">Attribution</a>
+<a href="/mw-tops-transactions.html">Transactions</a>
+<a href="/portfolio.html">Portfolio</a>
+<a href="/stock.html">Stock</a>
+<a href="/pipeline.html">Pipeline</a>
+<a href="/research-log.html" class="active">Research</a>
+</div>
+<div class="coming-soon">Research log — implementation in progress on this feature branch.</div>
+</div>
+</body>
+</html>

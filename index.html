@@ -147,6 +147,10 @@ details[open] summary{margin-bottom:.5em;color:var(--penrose-navy)}
 .fx-card .rate{font-size:18pt;font-family:'Cormorant Garamond',serif;color:var(--penrose-navy);font-weight:600;margin-top:.2em}
 .fx-card .date{font-size:8pt;color:var(--penrose-muted);margin-top:.3em;font-family:'Courier New',monospace}
 @media(max-width:640px){.login-card{padding:2rem}.container{padding:1rem .5rem}.topbar{padding:1rem}.topbar-actions{font-size:9pt;gap:1rem}table th,table td{padding:.6rem .8rem}.modal-grid,.modal-grid-3{grid-template-columns:1fr}.action-bar{flex-direction:column}.action-btn{width:100%}.tv-container{height:240px}}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.nav-links a{color:var(--penrose-navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--penrose-line);background:white;border-radius:3px}
+.nav-links a:hover{background:var(--penrose-cream);border-color:var(--penrose-gold)}
+.nav-links a.active{background:var(--penrose-navy);color:white;border-color:var(--penrose-navy)}
 </style>
 </head>
 <body>
@@ -176,6 +180,16 @@ details[open] summary{margin-bottom:.5em;color:var(--penrose-navy)}
 </div>
 </div>
 <div class="container">
+<div class="nav-links">
+<a href="/index.html" class="active">Dashboard</a>
+<a href="/track-record.html">Track Record</a>
+<a href="/mw-tops-attribution.html">Attribution</a>
+<a href="/mw-tops-transactions.html">Transactions</a>
+<a href="/portfolio.html">Portfolio</a>
+<a href="/stock.html">Stock</a>
+<a href="/pipeline.html">Pipeline</a>
+<a href="/research-log.html">Research</a>
+</div>
 <div class="action-bar">
 <button class="action-btn gold" id="open-trade-btn">+ New Trade</button>
 <button class="action-btn" id="open-nav-btn">+ Record Daily NAV</button>
