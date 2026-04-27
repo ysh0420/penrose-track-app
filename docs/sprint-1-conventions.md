@@ -301,10 +301,13 @@ Brain page links can omit the `.html` suffix. The spec uses
 Either is fine; flagging.
 
 ### 7e. Edge function `commit-to-github.ts` exists in repo
-`edge-functions/commit-to-github.ts` is tracked in `main`. Worth
-reading before declaring Sprint 1 PR-ready; it might suggest the existing
-app already has a Vercel/Supabase function deploy step we should hook
-into for the Brain proxy. Not blocking §1 verification but flagging.
+`edge-functions/commit-to-github.ts` is tracked in `main`. Read; it is a
+generic GitHub-contents-API proxy (POST `{action, path, content, ...}`
+→ creates/updates/deletes a file in `ysh0420/penrose-track-app`),
+deployed to the **Track Record** Supabase project (`prdjmipmkomhvokwrjid`),
+authenticated by a `GITHUB_PAT` secret with `contents:write`. It is
+used as a deploy hook for Claude to push file changes back to this repo
+— not related to Brain integration. No reuse needed for Sprint 1.
 
 ---
 
