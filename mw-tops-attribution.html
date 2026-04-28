@@ -66,7 +66,7 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 
 <div class="section">
 <h2>Current Holdings — April 28, 2026</h2>
-<div class="subtitle">Live positions · 9 positions (4 long / 5 short) · 6.30% net exposure · Color = P&L direction (green = profit, red = loss)</div>
+<div class="subtitle">Live positions · 9 positions (4 long / 5 short) · 6.30% net exposure</div>
 <div class="stats-grid">
 <div class="stat"><div class="label">Current Fund Size</div><div class="value">$22.0M</div></div>
 <div class="stat"><div class="label">Target Fund Size</div><div class="value">$30.0M</div></div>
@@ -76,12 +76,12 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 <div class="stat"><div class="label">Net Mkt Exposure</div><div class="value">6.30%</div></div>
 </div>
 <table>
-<thead><tr><th>Side</th><th>Ticker</th><th>Company</th><th style="text-align:right">Position ($)</th><th style="text-align:right">Avg In ¥</th><th style="text-align:right">Last ¥</th><th style="text-align:right">Chg on Pos</th><th style="text-align:right">MTD Chg</th><th style="text-align:right">MTD P&L ($)</th><th style="text-align:right">LTD P&L ($)</th></tr></thead>
+<thead><tr><th>Side</th><th>Ticker</th><th>Company</th><th style="text-align:right">Position ($)</th><th style="text-align:right">Avg In ¥</th><th style="text-align:right">Last ¥</th><th style="text-align:right">Chg on Pos</th><th style="text-align:right">% Chg MTD</th><th style="text-align:right">MTD P&L ($)</th><th style="text-align:right">LTD P&L ($)</th></tr></thead>
 <tbody id="holdRows"></tbody>
 </table>
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
 Net Market Exposure = (Sum of Positions + accumulated PL) / Target Fund Size.<br/>
-Color logic: % columns colored by P&L direction. For shorts, price up = red (negative P&L); price down = green (positive P&L). $ columns reflect actual P&L.<br/>
+Color logic mirrors MW TOPS portal: % columns colored by raw price direction (negative = red). For P&L direction, see MTD/LTD P&L $ columns: positive = green, negative = red.<br/>
 Top contributors: Shin-Etsu (+$448K MTD), Tsukishima (+$356K), Marubeni (+$250K), Oriental Land short (+$226K).
 </div>
 </div>
@@ -103,7 +103,7 @@ Top contributors: Shin-Etsu (+$448K MTD), Tsukishima (+$356K), Marubeni (+$250K)
 </tbody>
 </table>
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
-Apr 28: Tsukishima MTD +20.30% (+3.03% today), Shin-Etsu MTD +13.13% (+1.90% today), Marubeni MTD +8.29% (+2.94% today). Shorts (9983, 9064) seeing some price up = position-level loss but still net P&L positive on entry basis.<br/>
+Apr 28: Tsukishima MTD +20.30%, Shin-Etsu MTD +13.13%, Marubeni MTD +8.29%. Two shorts (9983, 9064) showing price up since entry — unrealized loss on position basis but P&L still positive at MTD level.<br/>
 For detailed transaction-level audit trail, see <a href="/mw-tops-transactions.html" style="color:var(--navy)">Transaction Log</a>.
 </div>
 </div>
@@ -133,86 +133,71 @@ Data as of Apr 28, 2026 · Penrose Japan Ltd
 </div>
 
 <script>
-// Holdings with explicit P&L direction for each %
-// pnlSign on each cell: 'pos' = green, 'neg' = red. Determined by side+price-direction.
+// PORTAL MIRROR LOGIC: Color is purely sign-based for % columns
+// Negative number = red, positive = no color. Side-independent.
+// Sign symbol always reflects raw value (no auto-flip).
+//
+// Apr 28 raw portal values (verified from screenshot):
 var holdings = [
-  // LONG: price up (chg > 0) = green; price down = red
-  {side:'LONG', sideClass:'side-long', ticker:'4063', name:'Shin-Etsu Chemical', pos:3000000, avgIn:5509.9, last:7081,
-    chgPos:28.51, mtdChg:13.13, mtdPnl:447555, ltdPnl:1261262,
-    chgPosSign:'pos', mtdChgSign:'pos'},
-  {side:'LONG', sideClass:'side-long', ticker:'4091', name:'Nippon Sanso Holdings', pos:3000000, avgIn:5916.4, last:5677,
-    chgPos:-4.05, mtdChg:2.60, mtdPnl:73018, ltdPnl:141408,
-    chgPosSign:'neg', mtdChgSign:'pos'},
-  {side:'LONG', sideClass:'side-long', ticker:'8002', name:'Marubeni Corp', pos:3000000, avgIn:5593.3, last:6084,
-    chgPos:8.77, mtdChg:8.29, mtdPnl:249942, ltdPnl:290947,
-    chgPosSign:'pos', mtdChgSign:'pos'},
-  {side:'LONG', sideClass:'side-long', ticker:'6332', name:'Tsukishima Holdings', pos:2000000, avgIn:2755.2, last:3235,
-    chgPos:17.42, mtdChg:20.30, mtdPnl:355955, ltdPnl:348327,
-    chgPosSign:'pos', mtdChgSign:'pos'},
-  // SHORT: price down (chg < 0) = green (profit); price up = red (loss)
-  {side:'SHORT', sideClass:'side-short', ticker:'4613', name:'Kansai Paint', pos:2000000, avgIn:2379.5, last:2375.5,
-    chgPos:-0.17, mtdChg:1.37, mtdPnl:26896, ltdPnl:3387,
-    chgPosSign:'pos', mtdChgSign:'pos'},  // chgPos -0.17 = price down = good for short / mtdChg per portal +1.37 (already P&L based, green)
-  {side:'SHORT', sideClass:'side-short', ticker:'4661', name:'Oriental Land Co', pos:2000000, avgIn:2744.4, last:2434.5,
-    chgPos:-11.29, mtdChg:1.97, mtdPnl:225842, ltdPnl:225842,
-    chgPosSign:'pos', mtdChgSign:'pos'},  // -11.29% price = great for short
-  {side:'SHORT', sideClass:'side-short', ticker:'9020', name:'East Japan Railway', pos:2000000, avgIn:3526.8, last:3451,
-    chgPos:-2.15, mtdChg:0.70, mtdPnl:42974, ltdPnl:42974,
-    chgPosSign:'pos', mtdChgSign:'pos'},  // -2.15% price = good for short
-  {side:'SHORT', sideClass:'side-short', ticker:'9983', name:'Fast Retailing', pos:2000000, avgIn:70117.8, last:73170,
-    chgPos:4.35, mtdChg:1.81, mtdPnl:87060, ltdPnl:87060,
-    chgPosSign:'neg', mtdChgSign:'neg'},  // +4.35% price up = BAD for short
-  {side:'SHORT', sideClass:'side-short', ticker:'9064', name:'Yamato Holdings', pos:3000000, avgIn:1762.5, last:1802.5,
-    chgPos:2.27, mtdChg:3.32, mtdPnl:74542, ltdPnl:94381,
-    chgPosSign:'neg', mtdChgSign:'neg'}   // +2.27% price up = BAD for short
+  {side:'LONG', sideClass:'side-long', ticker:'4063', name:'Shin-Etsu Chemical', pos:3000000, avgIn:5509.9, last:7081,    chgPos:28.51,  mtdChg:13.13, mtdPnl:447555,  ltdPnl:1261262},
+  {side:'LONG', sideClass:'side-long', ticker:'4091', name:'Nippon Sanso Holdings', pos:3000000, avgIn:5916.4, last:5677, chgPos:-4.05,  mtdChg:2.60,  mtdPnl:73018,   ltdPnl:141408},
+  {side:'LONG', sideClass:'side-long', ticker:'8002', name:'Marubeni Corp', pos:3000000, avgIn:5593.3, last:6084,         chgPos:8.77,   mtdChg:8.29,  mtdPnl:249942,  ltdPnl:290947},
+  {side:'LONG', sideClass:'side-long', ticker:'6332', name:'Tsukishima Holdings', pos:2000000, avgIn:2755.2, last:3235,   chgPos:17.42,  mtdChg:20.30, mtdPnl:355955,  ltdPnl:348327},
+  {side:'SHORT', sideClass:'side-short', ticker:'4613', name:'Kansai Paint', pos:2000000, avgIn:2379.5, last:2375.5,      chgPos:-0.17,  mtdChg:1.37,  mtdPnl:26896,   ltdPnl:3387},
+  {side:'SHORT', sideClass:'side-short', ticker:'4661', name:'Oriental Land Co', pos:2000000, avgIn:2744.4, last:2434.5,  chgPos:-11.29, mtdChg:null,  mtdPnl:225842,  ltdPnl:225842},
+  {side:'SHORT', sideClass:'side-short', ticker:'9020', name:'East Japan Railway', pos:2000000, avgIn:3526.8, last:3451,  chgPos:-2.15,  mtdChg:null,  mtdPnl:42974,   ltdPnl:42974},
+  {side:'SHORT', sideClass:'side-short', ticker:'9983', name:'Fast Retailing', pos:2000000, avgIn:70117.8, last:73170,    chgPos:4.35,   mtdChg:1.81,  mtdPnl:87060,   ltdPnl:87060},
+  {side:'SHORT', sideClass:'side-short', ticker:'9064', name:'Yamato Holdings', pos:3000000, avgIn:1762.5, last:1802.5,   chgPos:2.27,   mtdChg:3.32,  mtdPnl:74542,   ltdPnl:94381}
 ];
 
-// MTD P&L $ direction: positive = green, negative = red (always)
+// Portal mirror: red iff raw value < 0
+function portalClass(n){return n !== null && n < 0 ? 'neg' : '';}
+// Portal sign: '+' iff > 0 (negative numbers already have '-' built in)
+function portalSign(n){return n > 0 ? '+' : '';}
+// P&L $ class: green if profit, red if loss (sign-based, both sides same)
+function pnlClass(n){return n > 0 ? 'pos' : (n < 0 ? 'neg' : '');}
+function pnlSign(n){return n >= 0 ? '+' : '';}
+
+function fmtNum(n, decimals){return n.toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals});}
+
 var html = '';
 var longSubtotal = 0, shortSubtotal = 0, total = 0;
-holdings.filter(function(h){return h.side==='LONG';}).forEach(function(h){longSubtotal += h.mtdPnl; total += h.mtdPnl;});
-holdings.filter(function(h){return h.side==='SHORT';}).forEach(function(h){shortSubtotal += h.mtdPnl; total += h.mtdPnl;});
-
-function formatNum(n, decimals){return n.toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals});}
-function pctSign(n){return n > 0 ? '+' : '';}
-function pnlClass(n){return n > 0 ? 'pos' : (n < 0 ? 'neg' : '');}
+holdings.forEach(function(h){total += h.mtdPnl; if(h.side==='LONG') longSubtotal += h.mtdPnl; else shortSubtotal += h.mtdPnl;});
 
 holdings.forEach(function(h, i){
-  // Insert long subtotal after 4th item (index 3), short subtotal after 9th (index 8)
-  if (i === 0) {} // first row, no separator
+  var mtdChgCell = h.mtdChg === null
+    ? '<td class="num" style="color:var(--muted)">N/A</td>'
+    : '<td class="num ' + portalClass(h.mtdChg) + '">' + portalSign(h.mtdChg) + h.mtdChg.toFixed(2) + '%</td>';
   
   html += '<tr>' +
     '<td><span class="' + h.sideClass + '">' + h.side + '</span></td>' +
     '<td class="bold">' + h.ticker + '</td>' +
     '<td>' + h.name + '</td>' +
     '<td class="num">' + h.pos.toLocaleString() + '</td>' +
-    '<td class="num">' + formatNum(h.avgIn, 1) + '</td>' +
-    '<td class="num">' + formatNum(h.last, h.last < 100 ? 2 : (h.last < 10000 ? 1 : 0)) + '</td>' +
-    '<td class="num ' + h.chgPosSign + '">' + pctSign(h.chgPos) + h.chgPos.toFixed(2) + '%</td>' +
-    '<td class="num ' + h.mtdChgSign + '">' + pctSign(h.mtdChg) + h.mtdChg.toFixed(2) + '%</td>' +
-    '<td class="num ' + pnlClass(h.mtdPnl) + '">' + (h.mtdPnl >= 0 ? '+' : '') + h.mtdPnl.toLocaleString() + '</td>' +
-    '<td class="num ' + pnlClass(h.ltdPnl) + '">' + (h.ltdPnl >= 0 ? '+' : '') + h.ltdPnl.toLocaleString() + '</td>' +
+    '<td class="num">' + fmtNum(h.avgIn, 1) + '</td>' +
+    '<td class="num">' + fmtNum(h.last, h.last < 100 ? 2 : (h.last < 10000 ? 1 : 0)) + '</td>' +
+    '<td class="num ' + portalClass(h.chgPos) + '">' + portalSign(h.chgPos) + h.chgPos.toFixed(2) + '%</td>' +
+    mtdChgCell +
+    '<td class="num ' + pnlClass(h.mtdPnl) + '">' + pnlSign(h.mtdPnl) + h.mtdPnl.toLocaleString() + '</td>' +
+    '<td class="num ' + pnlClass(h.ltdPnl) + '">' + pnlSign(h.ltdPnl) + h.ltdPnl.toLocaleString() + '</td>' +
     '</tr>';
   
-  // Subtotal after last LONG (index 3)
   if (i === 3) {
     html += '<tr class="subtotal"><td colspan="3">LONG SUBTOTAL (4 positions)</td>' +
       '<td class="num">11,000,000</td><td></td><td></td><td></td><td></td>' +
-      '<td class="num ' + pnlClass(longSubtotal) + '">' + (longSubtotal >= 0 ? '+' : '') + longSubtotal.toLocaleString() + '</td>' +
+      '<td class="num ' + pnlClass(longSubtotal) + '">' + pnlSign(longSubtotal) + longSubtotal.toLocaleString() + '</td>' +
       '<td></td></tr>';
   }
-  // Subtotal after last SHORT (index 8)
   if (i === 8) {
     html += '<tr class="subtotal"><td colspan="3">SHORT SUBTOTAL (5 positions)</td>' +
       '<td class="num">11,000,000</td><td></td><td></td><td></td><td></td>' +
-      '<td class="num ' + pnlClass(shortSubtotal) + '">' + (shortSubtotal >= 0 ? '+' : '') + shortSubtotal.toLocaleString() + '</td>' +
+      '<td class="num ' + pnlClass(shortSubtotal) + '">' + pnlSign(shortSubtotal) + shortSubtotal.toLocaleString() + '</td>' +
       '<td></td></tr>';
   }
 });
-// Portfolio total
 html += '<tr class="total"><td colspan="3">PORTFOLIO TOTAL (9 positions)</td>' +
   '<td class="num">22,000,000</td><td></td><td></td><td></td><td></td>' +
-  '<td class="num ' + pnlClass(total) + '">' + (total >= 0 ? '+' : '') + total.toLocaleString() + '</td>' +
+  '<td class="num ' + pnlClass(total) + '">' + pnlSign(total) + total.toLocaleString() + '</td>' +
   '<td class="num pos">+2,397,133</td></tr>';
 
 document.getElementById('holdRows').innerHTML = html;
@@ -253,12 +238,10 @@ var positions = [
   {n:9, ticker:'2767', name:'Tsuburaya Fields', wt:6.1, entry:1862.0, exit:1453.0, abs:-22.0, ac:-39.4, contrib:-2.40},
   {n:10, ticker:'5233', name:'Taiheiyo Cement', wt:12.1, entry:3846.0, exit:3439.0, abs:-10.6, ac:-28.0, contrib:-3.38}
 ];
-// CY2025 attribution: For shorts (which are absent here - all 10 are longs in xlsx), but logic same
-// All 10 positions in CY2025 attribution were LONGS based on xlsx, so abs return logic is straightforward
 document.getElementById('posRows').innerHTML = positions.map(function(p){
-  var absClass = p.abs > 0 ? 'pos' : (p.abs < 0 ? 'neg' : '');
-  var acClass = p.ac > 0 ? 'pos' : (p.ac < 0 ? 'neg' : '');
-  var contribClass = p.contrib > 0 ? 'pos' : (p.contrib < 0 ? 'neg' : '');
+  var absClass = p.abs > 0 ? '' : (p.abs < 0 ? 'neg' : '');
+  var acClass = p.ac > 0 ? '' : (p.ac < 0 ? 'neg' : '');
+  var contribClass = p.contrib > 0 ? '' : (p.contrib < 0 ? 'neg' : '');
   var absSign = p.abs > 0 ? '+' : '';
   var acSign = p.ac > 0 ? '+' : '';
   var ctrSign = p.contrib > 0 ? '+' : '';
