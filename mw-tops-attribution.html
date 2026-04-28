@@ -80,7 +80,7 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 </table>
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
 Numbers shown match MW TOPS portal exactly. Red cells indicate negative values (losses for that position/period).<br/>
-For shorts, price-up = position-level loss → shown as negative in $ P&L columns.
+For shorts, price-up since entry = position-level loss → shown as negative in $ P&L columns.
 </div>
 </div>
 
@@ -131,19 +131,11 @@ Data as of Apr 28, 2026 · Penrose Japan Ltd
 </div>
 
 <script>
-// Apr 28 holdings: each cell carries explicit value with portal's actual sign.
-// Red cells in portal = negative values. Stored as negative numbers, displayed as such.
+// Apr 28 portal red cells = negative values. Stored as negative.
+// For shorts where price went up since entry: MTD-PL and LTD-PL both negative.
 //
-// Verification from Apr 28 portal screenshot:
-// LONG  4063: %ChgPos +28.51, %Today +1.90, %MTD +13.13, MTD-PL +447,555, LTD-PL +1,261,262
-// LONG  4091: %ChgPos -4.05 (red), %Today +0.91, %MTD +2.60, MTD-PL +73,018, LTD-PL +141,408
-// LONG  8002: %ChgPos +8.77, %Today +2.94, %MTD +8.29, MTD-PL +249,942, LTD-PL +290,947
-// LONG  6332: %ChgPos +17.42, %Today +3.03, %MTD +20.30, MTD-PL +355,955, LTD-PL +348,327
-// SHORT 4613: %ChgPos -0.17, %Today -0.36 (red), %MTD +1.37, MTD-PL +26,896, LTD-PL +3,387
-// SHORT 4661: %ChgPos -11.29, %Today +1.97, %MTD N/A, MTD-PL +225,842, LTD-PL +225,842
-// SHORT 9020: %ChgPos -2.15, %Today +0.70, %MTD N/A, MTD-PL +42,974, LTD-PL +42,974
-// SHORT 9983: %ChgPos +4.35 (red), %Today +1.81, %MTD +1.81, MTD-PL -87,060 (red), LTD-PL -87,060 (red)
-// SHORT 9064: %ChgPos +2.27, %Today +1.61, %MTD +3.32, MTD-PL +74,542, LTD-PL -94,381 (red)
+// 9983 Fast Retailing SHORT: avg 70,118 → last 73,170 (price up 4.35%) → MTD-PL -87,060, LTD-PL -87,060
+// 9064 Yamato SHORT: avg 1,762.5 → last 1,802.5 (price up 2.27%) → MTD-PL -74,542, LTD-PL -94,381
 
 var holdings = [
   {side:'LONG', sideClass:'side-long', ticker:'4063', name:'Shin-Etsu Chemical', pos:3000000, avgIn:5509.9, last:7081,
@@ -163,11 +155,9 @@ var holdings = [
   {side:'SHORT', sideClass:'side-short', ticker:'9983', name:'Fast Retailing', pos:2000000, avgIn:70117.8, last:73170,
     chgPos:4.35, today:1.81, mtdChg:1.81, mtdPnl:-87060, ltdPnl:-87060},
   {side:'SHORT', sideClass:'side-short', ticker:'9064', name:'Yamato Holdings', pos:3000000, avgIn:1762.5, last:1802.5,
-    chgPos:2.27, today:1.61, mtdChg:3.32, mtdPnl:74542, ltdPnl:-94381}
+    chgPos:2.27, today:1.61, mtdChg:3.32, mtdPnl:-74542, ltdPnl:-94381}
 ];
 
-// Universal coloring: negative = red, positive = no special color
-// Sign always shown (+ for positive, - built into negative values)
 function pctCell(v){
   if (v === null) return '<td class="num" style="color:var(--muted)">N/A</td>';
   var cls = v < 0 ? 'neg' : '';
@@ -203,16 +193,14 @@ holdings.forEach(function(h, i){
     var sumLtd = holdings.slice(0,4).reduce(function(s,x){return s + x.ltdPnl;}, 0);
     html += '<tr class="subtotal"><td colspan="3">LONG SUBTOTAL (4 positions)</td>' +
       '<td class="num">11,000,000</td><td></td><td></td><td></td><td></td><td></td>' +
-      dolCell(sum) +
-      dolCell(sumLtd) + '</tr>';
+      dolCell(sum) + dolCell(sumLtd) + '</tr>';
   }
   if (i === 8) {
     var sum = holdings.slice(4,9).reduce(function(s,x){return s + x.mtdPnl;}, 0);
     var sumLtd = holdings.slice(4,9).reduce(function(s,x){return s + x.ltdPnl;}, 0);
     html += '<tr class="subtotal"><td colspan="3">SHORT SUBTOTAL (5 positions)</td>' +
       '<td class="num">11,000,000</td><td></td><td></td><td></td><td></td><td></td>' +
-      dolCell(sum) +
-      dolCell(sumLtd) + '</tr>';
+      dolCell(sum) + dolCell(sumLtd) + '</tr>';
   }
 });
 var totalMtd = holdings.reduce(function(s,x){return s + x.mtdPnl;}, 0);
