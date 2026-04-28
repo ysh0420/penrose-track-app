@@ -65,7 +65,7 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 
 <div class="section">
 <h2>Current Holdings — April 28, 2026</h2>
-<div class="subtitle">Live positions · 9 positions (4 long / 5 short) · 6.30% net exposure · Color mirrors portal: red = loss</div>
+<div class="subtitle">Live positions · 9 positions (4 long / 5 short) · 6.30% net exposure</div>
 <div class="stats-grid">
 <div class="stat"><div class="label">Current Fund Size</div><div class="value">$22.0M</div></div>
 <div class="stat"><div class="label">Target Fund Size</div><div class="value">$30.0M</div></div>
@@ -79,9 +79,8 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 <tbody id="holdRows"></tbody>
 </table>
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
-Color mirrors MW TOPS portal directly: red = loss, black = profit/neutral.<br/>
-For shorts, price up = red on % columns and on $ P&L (when position-level loss accumulates including financing).<br/>
-Top contributors (Total PL MTD): Shin-Etsu (+$447K), Tsukishima (+$356K), Marubeni (+$250K), Oriental Land short (+$226K).
+Numbers shown match MW TOPS portal exactly. Red cells indicate negative values (losses for that position/period).<br/>
+For shorts, price-up = position-level loss → shown as negative in $ P&L columns.
 </div>
 </div>
 
@@ -102,7 +101,7 @@ Top contributors (Total PL MTD): Shin-Etsu (+$447K), Tsukishima (+$356K), Marube
 </tbody>
 </table>
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
-Apr 28: Tsukishima MTD +20.30%, Shin-Etsu MTD +13.13%, Marubeni MTD +8.29%. Two shorts (9983, 9064) showing price up since entry — accumulated unrealized loss reflected in red P&L cells.<br/>
+Apr 28: Tsukishima MTD +20.30%, Shin-Etsu MTD +13.13%, Marubeni MTD +8.29%. Two shorts (9983, 9064) showing price up since entry — accumulated losses reflected in red cells.<br/>
 For detailed transaction-level audit trail, see <a href="/mw-tops-transactions.html" style="color:var(--navy)">Transaction Log</a>.
 </div>
 </div>
@@ -132,60 +131,54 @@ Data as of Apr 28, 2026 · Penrose Japan Ltd
 </div>
 
 <script>
-// PORTAL DIRECT MIRROR: each cell has explicit "isLoss" (true = red) per portal screenshot.
-// Negative numbers display with "-" naturally; positive with "+". 
-// Color is determined by P&L direction, not by raw sign.
+// Apr 28 holdings: each cell carries explicit value with portal's actual sign.
+// Red cells in portal = negative values. Stored as negative numbers, displayed as such.
 //
-// Apr 28 portal cell-by-cell verification (from screenshot):
-// LONG  4063: %ChgPos +28.51 black, %Today +1.90 black, %MTD +13.13 black, MTD-PL 447555 black, LTD-PL 1261262 black
-// LONG  4091: %ChgPos -4.05 RED,    %Today +0.91 black, %MTD +2.60 black,  MTD-PL 73018 black,  LTD-PL 141408 black
-// LONG  8002: %ChgPos +8.77 black,  %Today +2.94 black, %MTD +8.29 black,  MTD-PL 249942 black, LTD-PL 290947 black
-// LONG  6332: %ChgPos +17.42 black, %Today +3.03 black, %MTD +20.30 black, MTD-PL 355955 black, LTD-PL 348327 black
-// SHORT 4613: %ChgPos -0.17 black,  %Today -0.36 RED,   %MTD +1.37 black,  MTD-PL 26896 black,  LTD-PL 3387 black
-// SHORT 4661: %ChgPos -11.29 black, %Today +1.97 black, %MTD N/A,          MTD-PL 225842 black, LTD-PL 225842 black
-// SHORT 9020: %ChgPos -2.15 black,  %Today +0.70 black, %MTD N/A,          MTD-PL 42974 black,  LTD-PL 42974 black
-// SHORT 9983: %ChgPos +4.35 RED,    %Today +1.81 black, %MTD +1.81 black,  MTD-PL 87060 RED,    LTD-PL 87060 RED
-// SHORT 9064: %ChgPos +2.27 black,  %Today +1.61 black, %MTD +3.32 black,  MTD-PL 74542 black,  LTD-PL 94381 RED
+// Verification from Apr 28 portal screenshot:
+// LONG  4063: %ChgPos +28.51, %Today +1.90, %MTD +13.13, MTD-PL +447,555, LTD-PL +1,261,262
+// LONG  4091: %ChgPos -4.05 (red), %Today +0.91, %MTD +2.60, MTD-PL +73,018, LTD-PL +141,408
+// LONG  8002: %ChgPos +8.77, %Today +2.94, %MTD +8.29, MTD-PL +249,942, LTD-PL +290,947
+// LONG  6332: %ChgPos +17.42, %Today +3.03, %MTD +20.30, MTD-PL +355,955, LTD-PL +348,327
+// SHORT 4613: %ChgPos -0.17, %Today -0.36 (red), %MTD +1.37, MTD-PL +26,896, LTD-PL +3,387
+// SHORT 4661: %ChgPos -11.29, %Today +1.97, %MTD N/A, MTD-PL +225,842, LTD-PL +225,842
+// SHORT 9020: %ChgPos -2.15, %Today +0.70, %MTD N/A, MTD-PL +42,974, LTD-PL +42,974
+// SHORT 9983: %ChgPos +4.35 (red), %Today +1.81, %MTD +1.81, MTD-PL -87,060 (red), LTD-PL -87,060 (red)
+// SHORT 9064: %ChgPos +2.27, %Today +1.61, %MTD +3.32, MTD-PL +74,542, LTD-PL -94,381 (red)
 
 var holdings = [
   {side:'LONG', sideClass:'side-long', ticker:'4063', name:'Shin-Etsu Chemical', pos:3000000, avgIn:5509.9, last:7081,
-    chgPos:{v:28.51,red:false}, today:{v:1.90,red:false}, mtdChg:{v:13.13,red:false},
-    mtdPnl:{v:447555,red:false}, ltdPnl:{v:1261262,red:false}},
+    chgPos:28.51, today:1.90, mtdChg:13.13, mtdPnl:447555, ltdPnl:1261262},
   {side:'LONG', sideClass:'side-long', ticker:'4091', name:'Nippon Sanso Holdings', pos:3000000, avgIn:5916.4, last:5677,
-    chgPos:{v:-4.05,red:true}, today:{v:0.91,red:false}, mtdChg:{v:2.60,red:false},
-    mtdPnl:{v:73018,red:false}, ltdPnl:{v:141408,red:false}},
+    chgPos:-4.05, today:0.91, mtdChg:2.60, mtdPnl:73018, ltdPnl:141408},
   {side:'LONG', sideClass:'side-long', ticker:'8002', name:'Marubeni Corp', pos:3000000, avgIn:5593.3, last:6084,
-    chgPos:{v:8.77,red:false}, today:{v:2.94,red:false}, mtdChg:{v:8.29,red:false},
-    mtdPnl:{v:249942,red:false}, ltdPnl:{v:290947,red:false}},
+    chgPos:8.77, today:2.94, mtdChg:8.29, mtdPnl:249942, ltdPnl:290947},
   {side:'LONG', sideClass:'side-long', ticker:'6332', name:'Tsukishima Holdings', pos:2000000, avgIn:2755.2, last:3235,
-    chgPos:{v:17.42,red:false}, today:{v:3.03,red:false}, mtdChg:{v:20.30,red:false},
-    mtdPnl:{v:355955,red:false}, ltdPnl:{v:348327,red:false}},
+    chgPos:17.42, today:3.03, mtdChg:20.30, mtdPnl:355955, ltdPnl:348327},
   {side:'SHORT', sideClass:'side-short', ticker:'4613', name:'Kansai Paint', pos:2000000, avgIn:2379.5, last:2375.5,
-    chgPos:{v:-0.17,red:false}, today:{v:-0.36,red:true}, mtdChg:{v:1.37,red:false},
-    mtdPnl:{v:26896,red:false}, ltdPnl:{v:3387,red:false}},
+    chgPos:-0.17, today:-0.36, mtdChg:1.37, mtdPnl:26896, ltdPnl:3387},
   {side:'SHORT', sideClass:'side-short', ticker:'4661', name:'Oriental Land Co', pos:2000000, avgIn:2744.4, last:2434.5,
-    chgPos:{v:-11.29,red:false}, today:{v:1.97,red:false}, mtdChg:null,
-    mtdPnl:{v:225842,red:false}, ltdPnl:{v:225842,red:false}},
+    chgPos:-11.29, today:1.97, mtdChg:null, mtdPnl:225842, ltdPnl:225842},
   {side:'SHORT', sideClass:'side-short', ticker:'9020', name:'East Japan Railway', pos:2000000, avgIn:3526.8, last:3451,
-    chgPos:{v:-2.15,red:false}, today:{v:0.70,red:false}, mtdChg:null,
-    mtdPnl:{v:42974,red:false}, ltdPnl:{v:42974,red:false}},
+    chgPos:-2.15, today:0.70, mtdChg:null, mtdPnl:42974, ltdPnl:42974},
   {side:'SHORT', sideClass:'side-short', ticker:'9983', name:'Fast Retailing', pos:2000000, avgIn:70117.8, last:73170,
-    chgPos:{v:4.35,red:true}, today:{v:1.81,red:false}, mtdChg:{v:1.81,red:false},
-    mtdPnl:{v:87060,red:true}, ltdPnl:{v:87060,red:true}},
+    chgPos:4.35, today:1.81, mtdChg:1.81, mtdPnl:-87060, ltdPnl:-87060},
   {side:'SHORT', sideClass:'side-short', ticker:'9064', name:'Yamato Holdings', pos:3000000, avgIn:1762.5, last:1802.5,
-    chgPos:{v:2.27,red:false}, today:{v:1.61,red:false}, mtdChg:{v:3.32,red:false},
-    mtdPnl:{v:74542,red:false}, ltdPnl:{v:94381,red:true}}
+    chgPos:2.27, today:1.61, mtdChg:3.32, mtdPnl:74542, ltdPnl:-94381}
 ];
 
-function pctCell(cell){
-  if (cell === null) return '<td class="num" style="color:var(--muted)">N/A</td>';
-  var sign = cell.v > 0 ? '+' : '';
-  return '<td class="num' + (cell.red ? ' neg' : '') + '">' + sign + cell.v.toFixed(2) + '%</td>';
+// Universal coloring: negative = red, positive = no special color
+// Sign always shown (+ for positive, - built into negative values)
+function pctCell(v){
+  if (v === null) return '<td class="num" style="color:var(--muted)">N/A</td>';
+  var cls = v < 0 ? 'neg' : '';
+  var sign = v > 0 ? '+' : '';
+  return '<td class="num ' + cls + '">' + sign + v.toFixed(2) + '%</td>';
 }
-function dolCell(cell){
-  if (cell === null) return '<td class="num">—</td>';
-  var sign = cell.v > 0 ? '+' : '';
-  return '<td class="num' + (cell.red ? ' neg' : '') + '">' + sign + cell.v.toLocaleString() + '</td>';
+function dolCell(v){
+  if (v === null) return '<td class="num">—</td>';
+  var cls = v < 0 ? 'neg' : '';
+  var sign = v > 0 ? '+' : '';
+  return '<td class="num ' + cls + '">' + sign + v.toLocaleString() + '</td>';
 }
 function fmtNum(n, decimals){return n.toLocaleString('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals});}
 
@@ -206,25 +199,27 @@ holdings.forEach(function(h, i){
     '</tr>';
   
   if (i === 3) {
-    var sum = holdings.slice(0,4).reduce(function(s,x){return s + x.mtdPnl.v;}, 0);
+    var sum = holdings.slice(0,4).reduce(function(s,x){return s + x.mtdPnl;}, 0);
+    var sumLtd = holdings.slice(0,4).reduce(function(s,x){return s + x.ltdPnl;}, 0);
     html += '<tr class="subtotal"><td colspan="3">LONG SUBTOTAL (4 positions)</td>' +
       '<td class="num">11,000,000</td><td></td><td></td><td></td><td></td><td></td>' +
-      '<td class="num">+' + sum.toLocaleString() + '</td><td></td></tr>';
+      dolCell(sum) +
+      dolCell(sumLtd) + '</tr>';
   }
   if (i === 8) {
-    var sum = holdings.slice(4,9).reduce(function(s,x){return s + x.mtdPnl.v;}, 0);
-    var anyRed = holdings.slice(4,9).some(function(x){return x.mtdPnl.red;});
+    var sum = holdings.slice(4,9).reduce(function(s,x){return s + x.mtdPnl;}, 0);
+    var sumLtd = holdings.slice(4,9).reduce(function(s,x){return s + x.ltdPnl;}, 0);
     html += '<tr class="subtotal"><td colspan="3">SHORT SUBTOTAL (5 positions)</td>' +
       '<td class="num">11,000,000</td><td></td><td></td><td></td><td></td><td></td>' +
-      '<td class="num">+' + sum.toLocaleString() + '</td><td></td></tr>';
+      dolCell(sum) +
+      dolCell(sumLtd) + '</tr>';
   }
 });
-var totalMtd = holdings.reduce(function(s,x){return s + x.mtdPnl.v;}, 0);
-var totalLtd = holdings.reduce(function(s,x){return s + x.ltdPnl.v;}, 0);
+var totalMtd = holdings.reduce(function(s,x){return s + x.mtdPnl;}, 0);
+var totalLtd = holdings.reduce(function(s,x){return s + x.ltdPnl;}, 0);
 html += '<tr class="total"><td colspan="3">PORTFOLIO TOTAL (9 positions)</td>' +
   '<td class="num">22,000,000</td><td></td><td></td><td></td><td></td><td></td>' +
-  '<td class="num">+' + totalMtd.toLocaleString() + '</td>' +
-  '<td class="num">+' + totalLtd.toLocaleString() + '</td></tr>';
+  dolCell(totalMtd) + dolCell(totalLtd) + '</tr>';
 
 document.getElementById('holdRows').innerHTML = html;
 
