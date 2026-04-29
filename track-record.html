@@ -38,6 +38,10 @@ td.pos{color:var(--green);font-weight:600}
 td.neg{color:var(--red);font-weight:600}
 td.bold{font-weight:600;color:var(--navy)}
 .footer{text-align:center;color:var(--muted);font-size:9pt;padding:2rem 1rem;margin-top:2rem}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
+.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
+.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
 @media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem}.chart-wrap{height:300px}}
 </style>
 </head>
@@ -46,6 +50,17 @@ td.bold{font-weight:600;color:var(--navy)}
 <div class="topbar">
 <div><h1>Penrose <span>Japan</span></h1><div class="sub">Japan Equities Alpha Capture Track Record</div></div>
 <div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">Inception: Apr 30, 2025<br/>As of: Apr 28, 2026</div>
+</div>
+
+<div class="nav-links">
+<a href="/index.html">Dashboard</a>
+<a href="/track-record.html" class="active">Track Record</a>
+<a href="/mw-tops-attribution.html">Attribution</a>
+<a href="/mw-tops-transactions.html">Transactions</a>
+<a href="/portfolio.html">Portfolio</a>
+<a href="/stock.html">Stock</a>
+<a href="/pipeline.html">Pipeline</a>
+<a href="/research-log.html">Research</a>
 </div>
 
 <div class="section">

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research — Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1200px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
+.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
+.topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+.topbar-right a:hover{border-bottom-color:var(--gold)}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
+.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
+.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
+.section{background:white;border:1px solid var(--line);padding:1.5rem;margin-bottom:1.5rem}
+.section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.3em;display:inline-block}
+.section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1rem}
+.brain-research-form{display:flex;gap:.8rem;align-items:flex-end;flex-wrap:wrap}
+.brain-research-form label{display:flex;flex-direction:column;font-size:9pt;text-transform:uppercase;letter-spacing:1px;color:var(--navy);font-weight:500;gap:.3em}
+.brain-research-form input,.brain-research-form select{padding:8px 10px;border:1px solid var(--line);font-family:inherit;font-size:11pt;background:white}
+.brain-research-form input:focus,.brain-research-form select:focus{outline:2px solid var(--gold);outline-offset:-2px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Phase R research log</div></div>
+<div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
+</div>
+
+<div class="nav-links">
+<a href="/index.html">Dashboard</a>
+<a href="/track-record.html">Track Record</a>
+<a href="/mw-tops-attribution.html">Attribution</a>
+<a href="/mw-tops-transactions.html">Transactions</a>
+<a href="/portfolio.html">Portfolio</a>
+<a href="/stock.html">Stock</a>
+<a href="/pipeline.html">Pipeline</a>
+<a href="/research-log.html" class="active">Research</a>
+</div>
+
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="section">
+    <h2>New Research</h2>
+    <div class="subtitle">Triggers a Phase R session. Result appears in this log when complete (~90s).</div>
+    <form class="brain-research-form" id="brain-new-research">
+      <label>Symbol
+        <input type="text" id="brain-new-symbol" placeholder="4042" required style="width:140px">
+      </label>
+      <label>Tier
+        <select id="brain-new-tier">
+          <option value="1">Tier 1</option>
+          <option value="2" selected>Tier 2</option>
+        </select>
+      </label>
+      <button class="brain-rerun-btn" type="submit">Run research</button>
+    </form>
+  </div>
+
+  <div class="section">
+    <h2>Past Sessions</h2>
+    <div class="subtitle">click row to view full synthesis</div>
+    <div id="brain-research-log"></div>
+  </div>
+</div>
+
+<div class="brain-modal-backdrop" id="brain-modal">
+  <div class="brain-modal">
+    <div class="brain-modal-header">
+      <h2 id="brain-modal-title">Research</h2>
+      <button class="brain-modal-close" type="button" id="brain-modal-close">&times;</button>
+    </div>
+    <div class="brain-modal-body" id="brain-modal-body"></div>
+  </div>
+</div>
+
+</div>
+<script type="module" src="/js/page-research-log.js"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+/* Brain integration pages — additive tokens layered on top of the
+   existing static-pages convention (--navy, --gold, --cream, --line,
+   --muted, --green, --red are already defined per-page). */
+
+:root {
+  --brain-emerald: #059669;
+  --brain-emerald-bg: rgba(16, 185, 129, 0.1);
+  --brain-rose: #e11d48;
+  --brain-rose-bg: rgba(244, 63, 94, 0.1);
+  --brain-amber: #d97706;
+  --brain-amber-bg: rgba(245, 158, 11, 0.1);
+  --brain-zinc: #71717a;
+  --brain-zinc-bg: rgba(113, 113, 122, 0.1);
+  --brain-card-radius: 4px;
+  --brain-spacing: 16px;
+}
+
+/* Sign-in card — mirrors index.html .login-card spacing/feel so users
+   don't feel like they hit a different app. */
+.brain-login-wrap { min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.brain-login-card { background: white; border: 1px solid var(--line, #e0d8c4); padding: 3rem; max-width: 420px; width: 100%; box-shadow: 0 8px 30px rgba(26, 39, 68, .08); }
+.brain-login-card h1 { font-family: 'Cormorant Garamond', serif; font-size: 28pt; margin-bottom: .3em; border-bottom: 2px solid var(--gold, #c9a84c); padding-bottom: .4em; color: var(--navy, #1a2744); }
+.brain-login-card h1 span { color: var(--gold, #c9a84c); }
+.brain-login-subtitle { color: var(--muted, #8b8680); font-size: 10pt; margin-bottom: 2rem; }
+.brain-login-card label { display: block; font-size: 9pt; text-transform: uppercase; letter-spacing: 1px; color: var(--navy, #1a2744); margin-bottom: .4em; margin-top: 1rem; font-weight: 500; }
+.brain-login-card input { width: 100%; padding: 10px 12px; border: 1px solid var(--line, #e0d8c4); font-family: inherit; font-size: 11pt; background: var(--cream, #f7f5f0); }
+.brain-login-card input:focus { outline: 2px solid var(--gold, #c9a84c); outline-offset: -2px; }
+.brain-login-btn { width: 100%; padding: 12px; background: var(--navy, #1a2744); color: white; border: none; font-family: inherit; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; font-size: 10pt; cursor: pointer; margin-top: 1.5rem; transition: background .15s; }
+.brain-login-btn:hover { background: #0f1a2e; }
+.brain-login-btn.brain-login-magic { background: transparent; color: var(--navy, #1a2744); border: 1px solid var(--navy, #1a2744); margin-top: .6rem; }
+.brain-login-btn.brain-login-magic:hover { background: var(--navy, #1a2744); color: white; }
+.brain-login-err { color: var(--red, #b71c1c); font-size: 10pt; margin-top: .8rem; }
+.brain-login-ok { color: var(--green, #2e7d32); font-size: 10pt; margin-top: .8rem; }
+
+/* Conviction stars */
+.brain-stars { color: var(--gold, #c9a84c); font-size: 14px; }
+.brain-stars-empty { color: rgba(201, 168, 76, 0.3); }
+
+/* Direction & verdict badges */
+.brain-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+.brain-badge-long { background: var(--brain-emerald-bg); color: var(--brain-emerald); }
+.brain-badge-short { background: var(--brain-rose-bg); color: var(--brain-rose); }
+.brain-badge-pair { background: #6b46c1; color: white; }
+.brain-badge-confirmed { background: var(--brain-emerald-bg); color: var(--brain-emerald); }
+.brain-badge-flagged { background: var(--brain-amber-bg); color: var(--brain-amber); }
+.brain-badge-rejected { background: var(--brain-rose-bg); color: var(--brain-rose); }
+.brain-badge-failed { background: var(--brain-zinc-bg); color: var(--brain-zinc); }
+.brain-badge-pending { background: var(--brain-zinc-bg); color: var(--brain-zinc); font-style: italic; }
+
+/* RSI */
+.brain-rsi { display: inline-block; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; }
+.brain-rsi-oversold { background: var(--brain-emerald-bg); color: var(--brain-emerald); }
+.brain-rsi-overbought { background: var(--brain-rose-bg); color: var(--brain-rose); }
+.brain-rsi-neutral { background: var(--brain-zinc-bg); color: var(--brain-zinc); }
+
+/* Theme chips */
+.brain-chip { display: inline-block; padding: 2px 8px; margin: 2px; border-radius: 12px; background: rgba(26, 39, 68, 0.08); color: var(--navy, #1a2744); font-size: 11px; }
+
+/* Idea cards */
+.brain-idea-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--brain-spacing); }
+.brain-idea-card { display: block; padding: var(--brain-spacing); border-radius: var(--brain-card-radius); background: white; border: 1px solid var(--line, #e0d8c4); cursor: pointer; transition: transform 0.1s, box-shadow 0.1s; text-decoration: none; color: inherit; }
+.brain-idea-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); border-color: var(--gold, #c9a84c); }
+.brain-idea-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.brain-idea-card-symbol { font-family: monospace; font-weight: 700; color: var(--navy, #1a2744); font-size: 13pt; }
+.brain-idea-card-name { font-size: 12pt; color: var(--sumi, #2a2a2a); margin-bottom: 8px; font-family: 'Cormorant Garamond', serif; }
+.brain-idea-card-metrics { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; font-size: 10pt; color: var(--muted, #8b8680); }
+.brain-idea-card-thesis { font-size: 10pt; color: var(--sumi, #2a2a2a); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; margin-top: 6px; }
+.brain-idea-card small { display: block; margin-top: 6px; font-size: 9pt; color: var(--muted, #8b8680); }
+
+/* Tables */
+.brain-table { width: 100%; border-collapse: collapse; }
+.brain-table th, .brain-table td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--line, #e0d8c4); font-size: 10pt; }
+.brain-table th { font-weight: 500; background: var(--cream, #f7f5f0); color: var(--navy, #1a2744); font-size: 9pt; text-transform: uppercase; letter-spacing: 1px; }
+.brain-table tr.clickable { cursor: pointer; }
+.brain-table tr.clickable:hover { background: var(--cream, #f7f5f0); }
+.brain-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Filter bar */
+.brain-filter-bar { display: flex; gap: 12px; align-items: center; padding: 12px; margin-bottom: 16px; background: white; border: 1px solid var(--line, #e0d8c4); border-radius: var(--brain-card-radius); flex-wrap: wrap; font-size: 10pt; }
+.brain-filter-bar label { display: flex; align-items: center; gap: 6px; }
+.brain-filter-bar input[type="search"], .brain-filter-bar select { padding: 6px 8px; border: 1px solid var(--line, #e0d8c4); font-family: inherit; font-size: 10pt; }
+.brain-filter-bar input[type="search"]:focus, .brain-filter-bar select:focus { outline: 2px solid var(--gold, #c9a84c); outline-offset: -2px; }
+
+/* Skeleton loader */
+.brain-skeleton { display: inline-block; height: 1em; background: linear-gradient(90deg, rgba(0,0,0,0.06) 25%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.06) 75%); background-size: 200% 100%; animation: brain-skeleton-pulse 1.5s infinite; border-radius: 4px; vertical-align: middle; }
+@keyframes brain-skeleton-pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* Empty / error / auth-prompt states */
+.brain-empty, .brain-error-state, .brain-auth-prompt { padding: 32px; text-align: center; color: var(--muted, #8b8680); background: white; border: 1px solid var(--line, #e0d8c4); border-radius: var(--brain-card-radius); }
+.brain-error-state { color: var(--brain-rose); }
+.brain-retry-btn { margin-top: 12px; padding: 6px 16px; border: 1px solid currentColor; background: transparent; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 10pt; color: inherit; }
+.brain-retry-btn:hover { background: rgba(0, 0, 0, 0.04); }
+
+/* Stock detail layout */
+.brain-stock-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+@media (max-width: 768px) { .brain-stock-grid { grid-template-columns: 1fr; } }
+.brain-stock-main > section, .brain-stock-side > section { background: white; border: 1px solid var(--line, #e0d8c4); padding: 1.5rem; margin-bottom: 1rem; }
+.brain-stock-main h2, .brain-stock-side h3 { font-family: 'Cormorant Garamond', serif; color: var(--navy, #1a2744); margin-bottom: .5em; border-bottom: 2px solid var(--gold, #c9a84c); padding-bottom: .3em; display: inline-block; }
+.brain-stock-side h3 { font-size: 13pt; }
+.brain-stock-main h2 { font-size: 16pt; }
+.brain-back { display: inline-block; margin-bottom: 1rem; color: var(--navy, #1a2744); text-decoration: none; font-size: 10pt; }
+.brain-back:hover { color: var(--gold, #c9a84c); }
+
+/* Header metrics row on stock page */
+.brain-stock-header { background: white; border: 1px solid var(--line, #e0d8c4); padding: 1.5rem; margin-bottom: 1rem; }
+.brain-stock-header h1 { font-family: 'Cormorant Garamond', serif; color: var(--navy, #1a2744); font-size: 24pt; margin-bottom: 8px; }
+.brain-symbol-suffix { font-family: monospace; color: var(--muted, #8b8680); font-size: 14pt; margin-left: 8px; }
+.brain-stock-metrics { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; font-size: 10pt; color: var(--sumi, #2a2a2a); }
+.brain-price { font-family: 'Cormorant Garamond', serif; font-size: 18pt; font-weight: 600; color: var(--navy, #1a2744); }
+.brain-up { color: var(--green, #2e7d32); font-weight: 600; }
+.brain-down { color: var(--red, #b71c1c); font-weight: 600; }
+
+/* Yuki Book card */
+.brain-yuki-book { padding: 1.5rem; background: linear-gradient(135deg, rgba(26, 39, 68, 0.04), rgba(201, 168, 76, 0.06)); border: 1px solid rgba(26, 39, 68, 0.12); }
+.brain-yuki-book .brain-stage { display: inline-block; margin: 0 8px; padding: 2px 8px; background: var(--cream, #f7f5f0); border-radius: 4px; font-size: 10pt; }
+
+/* Synthesis panel */
+.brain-synthesis-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.brain-synthesis-header h2 { margin-bottom: 0; }
+.brain-synthesis-meta { font-size: 9pt; color: var(--muted, #8b8680); margin-bottom: 12px; }
+.brain-synthesis-md { font-size: 10pt; line-height: 1.6; max-height: 240px; overflow: hidden; transition: max-height 0.3s; position: relative; }
+.brain-synthesis-md.expanded { max-height: 100vh; }
+.brain-synthesis-md h1, .brain-synthesis-md h2, .brain-synthesis-md h3 { font-family: inherit; font-size: 11pt; margin: .8em 0 .3em; color: var(--navy, #1a2744); border: none; padding: 0; }
+.brain-synthesis-toggle { display: inline-block; margin-top: 8px; color: var(--gold, #c9a84c); cursor: pointer; font-size: 10pt; }
+
+/* Re-research button */
+.brain-rerun-btn { padding: 8px 16px; background: var(--gold, #c9a84c); color: var(--navy, #1a2744); border: 0; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: inherit; font-size: 10pt; }
+.brain-rerun-btn:hover { background: #b59734; }
+.brain-rerun-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.brain-rerun-status { font-size: 10pt; color: var(--muted, #8b8680); }
+
+/* Recent alerts list (sidebar) */
+.brain-alert { padding: 8px 0; border-bottom: 1px solid var(--line, #e0d8c4); font-size: 10pt; }
+.brain-alert:last-child { border-bottom: none; }
+.brain-alert strong { color: var(--navy, #1a2744); }
+.brain-alert .brain-alert-meta { font-size: 9pt; color: var(--muted, #8b8680); }
+.brain-alert p { margin-top: 4px; color: var(--sumi, #2a2a2a); }
+
+/* Modal (research-log new-research flow + full-synthesis viewer) */
+.brain-modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(26, 39, 68, .7); z-index: 1000; display: none; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
+.brain-modal-backdrop.open { display: flex; }
+.brain-modal { background: white; border: 1px solid var(--line, #e0d8c4); max-width: 800px; width: 100%; box-shadow: 0 16px 48px rgba(0, 0, 0, .3); }
+.brain-modal-header { background: var(--navy, #1a2744); color: white; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+.brain-modal-header h2 { font-size: 14pt; color: white; font-family: 'Cormorant Garamond', serif; margin: 0; }
+.brain-modal-close { background: none; border: none; color: white; font-size: 18pt; cursor: pointer; line-height: 1; padding: 0 4px; }
+.brain-modal-body { padding: 1.5rem; }
+
+/* Significance row tooltips on /pipeline */
+.brain-significance-major-downward { background: var(--brain-rose-bg); }
+.brain-significance-major-upward { background: var(--brain-emerald-bg); }
