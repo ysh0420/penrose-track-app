@@ -1,6 +1,6 @@
 # Penrose Japan Track Record — Methodology
 
-**Last updated**: 2026-04-23
+**Last updated**: 2026-04-30
 
 ## Portfolio
 
@@ -8,108 +8,66 @@
 - **Display name**: MW TOPS (PENROSE-JP-LON)
 - **Platform**: Marshall Wace TOPS (alpha capture platform)
 - **Inception**: 2025-04-30
-- **Book size**: USD 30M (target); $21M deployed as of Apr 23 2026
+- **Book size**: USD 30M (target); $22M deployed as of Apr 30 2026
 - **Base currency**: USD
 - **Benchmark**: TOPIX
 - **Strategy**: long_short, Japan equities
-- **Max positions**: typically 8-12
-- **Reporting**: monthly AC basis
 
 ## Performance Measurement — Alpha Capture Basis
-
-The **alpha capture basis** (AC) is the primary performance metric:
 
 ```
 AC = (alpha_vs_TOPIX + absolute_return) / 2
    = absolute_return - TOPIX_return / 2
 ```
 
-### Examples
+## Sign Convention (CRITICAL)
 
-| Period | Absolute | TOPIX | Alpha | AC |
-|---|---|---|---|---|
-| Apr 30 2025 → Dec 30 2025 | +38.9% | +26.5% | +12.4pp | +25.65% |
-| Apr 30 2025 → Mar 19 2026 | +71.2% | +34.7% | +36.5pp | +53.85% |
+**Portal red cells = NEGATIVE values.** This applies to:
+- % columns (% Chg On Position, % Chg Today, % Chg MTD)
+- $ P&L columns (Total PL MTD, Total PL Since Inception)
 
-### Monthly vs Cumulative
+When transcribing portal data to backups/dashboards, **always store with proper sign**:
+- Black/no-color number = positive (store as positive)
+- Red number = negative (store as negative, prepend `-`)
 
-- **Monthly AC**: `(alpha_monthly + absolute_monthly) / 2` — compound these to get cumulative trajectory
-- **Cumulative AC (point-to-point)**: `(alpha_cum + absolute_cum) / 2` applied at each period boundary — equivalent to compounding monthly ACs when returns are small
+**Examples** (Apr 30 2026):
+- Fast Retailing (9983) SHORT: avg 70,118 → last 73,590 (price up 4.95%) → Total PL MTD shown as `99,039` in red on portal = **stored as `-99,039`**
+- Yamato (9064) SHORT: Total PL Since Inception shown as `29,700` in red = **stored as `-29,700`**
+- Nippon Sanso (4091) LONG: Total PL Since Inception shown as `210,876` in red = **stored as `-210,876`**
 
-For this portfolio:
-- **CY2025 monthly AC returns** are derived from Koyfin daily CSV (point-to-point at each month end)
-- **CY2026 monthly AC returns** are MW platform reported figures
+**Why portal uses this convention**: portal displays absolute value of $ amount and uses color to indicate sign. Without the color, just the number, you'd misread loss as profit.
 
-### MW Platform Formula (official)
+## NAV Trajectory (Alpha Capture basis)
 
-The MW portal calculates **Overall Performance** slightly differently:
-
-```
-Overall Performance = (Skill Factor + % Return from Target Fund Size) / 2
-```
-
-Where:
-- **Skill Factor**: MW proprietary quality-adjusted metric
-- **% Return from Target Fund Size**: P&L / Target Fund Size (30M)
-
-For practical purposes, MW's Overall Performance ≈ our AC basis (same average-of-two logic, slightly different components).
+| Date | Cum AC | NAV $M | Source |
+|---|---|---|---|
+| 2025-04-30 | 0.00% | 30.000 | Inception |
+| 2025-12-30 | +25.65% | 37.695 | Koyfin CSV |
+| 2026-01-30 | +30.05% | 39.014 | MW Jan +3.50% |
+| 2026-02-27 | +45.01% | 43.501 | MW Feb +11.50% (peak) |
+| 2026-03-31 | +34.13% | 40.238 | MW Mar -7.50% |
+| 2026-04-30 | +39.96% | 41.989 | MW Apr +4.35% (12-month milestone) |
 
 ## Data Sources
 
 ### CY2025 (May-Dec 2025)
-- **Source**: Koyfin daily CSV export (`mw_tops_full_tracking.xlsx` Daily Return tab)
-- **Method**: 217 daily points → extracted month-end cumulative Portfolio % and TOPIX %
-- **Cum AC** at each month end computed via formula above
-- **Monthly AC** = change between consecutive month-end Cum AC values
-- **Evidence level**: `documented`
+Koyfin daily CSV export, 217 trading days. Monthly AC computed from cumulative point-to-point.
 
 ### CY2026 (Jan-Apr)
-- **Source**: MW TOPS platform (PENROSE-JP-LON) monthly reports
-- **Method**: Overall Performance % as-reported by MW
-- **NAV trajectory**: compound from Dec 2025 end ($37.695M AC) using monthly AC returns
-- **Evidence level**: `partial` (portal snapshots, not fully audited)
+MW TOPS platform (PENROSE-JP-LON) monthly Overall Performance reports.
 
-### Position Attribution (CY2025 reference)
-- **Source**: `mw_tops_full_tracking.xlsx` aggregate tab (10 positions)
-- **Period**: Apr 30 2025 → Dec 31 2025 (reframed from original xlsx Mar 19 2026 end)
-- **Note**: xlsx shows position-level returns × weights on $165M notional — this reflects 10 trades rotated on $30M book, not simultaneous holdings. Book NAV trajectory (+25.65% AC to Dec 2025) differs from position-aggregate (+53.85% AC)
-- **Evidence level**: `partial`
+### Daily evolution (Apr 2026)
+8 portal snapshots: Apr 10, 14, 17, 23, 24, 27, 28, 30.
 
-### Current Holdings (live)
-- **Source**: MW TOPS portal screenshots (Apr 10, 14, 17, 23 for evolution; Apr 23 for current state)
-- **Evidence level**: `partial`
-- **Live tracking starts**: 2026-04-23
+## Sign Audit Log
 
-## Key NAV Trajectory Points
-
-| Date | Cum AC | NAV (AC $M) | Source |
-|---|---|---|---|
-| 2025-04-30 | 0.00% | 30.000 | Inception (documented) |
-| 2025-12-30 | +25.65% | 37.695 | Koyfin CSV month-end |
-| 2026-01-30 | +30.05% | 39.014 | MW Jan +3.50% |
-| 2026-02-27 | +45.01% | 43.501 | MW Feb +11.50% (peak) |
-| 2026-03-31 | +34.13% | 40.238 | MW Mar -7.50% |
-| 2026-04-22 | +36.64% | 40.992 | MW Apr MTD +1.87% |
-
-## Evidence Levels
-
-- `documented` — fully verifiable (Koyfin CSV, primary data)
-- `partial` — approximate (MW portal snapshots, xlsx aggregates)
-- `best_recall` — reconstructed from memory
+- **2026-04-30**: Comprehensive sign audit. All backup snapshots reviewed and corrected. Apr 27, 28, 30 backups updated to reflect proper negative signs for losing positions (Fast Retailing short -$99K MTD/LTD, Yamato short -$30K LTD, Nippon Sanso LTD -$211K). Earlier backups (Apr 23, 24) verified — no sign changes needed since 9983 short was still in profit (price had moved down) and 9064 had not yet accumulated enough loss.
 
 ## Recovery Instructions
 
-If data is lost or system needs rebuilding:
-
-1. **HTML files**: Clone `ysh0420/penrose-track-app` → `track-record.html` (public) and `mw-tops-attribution.html` (private)
-2. **Data**: Restore from `backups/YYYY-MM-DD-snapshot.json` (most recent)
-3. **Edge functions**: Recreate from `edge-functions/*.ts` source files in this repo
-4. **Supabase schema**: Refer to `schema/` folder (migrations 033-043)
+1. **HTML files**: Clone `ysh0420/penrose-track-app` → `track-record.html` (public) and `mw-tops-attribution.html` + `mw-tops-transactions.html` (private)
+2. **Data**: Restore from `backups/YYYY-MM-DD-snapshot.json` (most recent: Apr 30)
+3. **Edge functions**: Recreate from `edge-functions/*.ts`
+4. **Sign convention**: Critical — see Sign Convention section above
 
 See `README.md` for full recovery runbook.
-
-## Methodology Changes Log
-
-- **2026-04-23**: Adopted "alpha actual average basis" officially — (alpha + absolute)/2 formula
-- **2026-04-23**: Reframed xlsx data as CY2025 reference only (May-Dec); CY2026 uses MW monthly reports
-- **2026-04-23**: Dec 2025 reference point corrected from +53.85% AC (xlsx aggregate) to +25.65% AC (book NAV)
