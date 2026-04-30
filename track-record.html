@@ -38,10 +38,6 @@ td.pos{color:var(--green);font-weight:600}
 td.neg{color:var(--red);font-weight:600}
 td.bold{font-weight:600;color:var(--navy)}
 .footer{text-align:center;color:var(--muted);font-size:9pt;padding:2rem 1rem;margin-top:2rem}
-.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
-.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
-.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
-.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
 @media(max-width:640px){.topbar{padding:1rem}.topbar h1{font-size:16pt}.section{padding:1.2rem}table th,table td{padding:.5rem .6rem}.chart-wrap{height:300px}}
 </style>
 </head>
@@ -49,27 +45,16 @@ td.bold{font-weight:600;color:var(--navy)}
 <div class="container">
 <div class="topbar">
 <div><h1>Penrose <span>Japan</span></h1><div class="sub">Japan Equities Alpha Capture Track Record</div></div>
-<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">Inception: Apr 30, 2025<br/>As of: Apr 28, 2026</div>
-</div>
-
-<div class="nav-links">
-<a href="/index.html">Dashboard</a>
-<a href="/track-record.html" class="active">Track Record</a>
-<a href="/mw-tops-attribution.html">Attribution</a>
-<a href="/mw-tops-transactions.html">Transactions</a>
-<a href="/portfolio.html">Portfolio</a>
-<a href="/stock.html">Stock</a>
-<a href="/pipeline.html">Pipeline</a>
-<a href="/research-log.html">Research</a>
+<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">Inception: Apr 30, 2025<br/>As of: Apr 30, 2026</div>
 </div>
 
 <div class="section">
 <h2>Performance Summary</h2>
 <div class="subtitle">Alpha capture basis = (alpha vs TOPIX + absolute return) / 2</div>
 <div class="headline">
-<div class="metric primary"><div class="label">LTD Return</div><div class="value">+38.8%</div><div class="detail">from Apr 30, 2025 inception</div></div>
+<div class="metric primary"><div class="label">LTD Return</div><div class="value">+39.96%</div><div class="detail">12 months from Apr 30, 2025 inception</div></div>
 <div class="metric positive"><div class="label">CY2025</div><div class="value">+25.7%</div><div class="detail">May-Dec 2025 (8 months)</div></div>
-<div class="metric positive"><div class="label">CY2026 YTD</div><div class="value">+10.5%</div><div class="detail">through Apr 28</div></div>
+<div class="metric positive"><div class="label">CY2026 YTD</div><div class="value">+11.4%</div><div class="detail">through Apr 30</div></div>
 <div class="metric"><div class="label">Best Month</div><div class="value">+11.5%</div><div class="detail">February 2026</div></div>
 <div class="metric"><div class="label">Worst Month</div><div class="value">-7.5%</div><div class="detail">March 2026</div></div>
 </div>
@@ -91,7 +76,7 @@ td.bold{font-weight:600;color:var(--navy)}
 </div>
 
 <div class="footer">
-Data as of 2026-04-28 · Penrose Japan Ltd
+Data as of 2026-04-30 · Penrose Japan Ltd
 </div>
 </div>
 
@@ -108,15 +93,15 @@ var months = [
   {label:'Jan 2026', monthly:3.50, cum:30.05},
   {label:'Feb 2026', monthly:11.50, cum:45.01},
   {label:'Mar 2026', monthly:-7.50, cum:34.13},
-  {label:'Apr 2026 MTD', monthly:3.49, cum:38.82}
+  {label:'Apr 2026', monthly:4.35, cum:39.96}
 ];
 
 new Chart(document.getElementById('retChart'), {
   type: 'line',
   data: {
-    labels: ["Apr 30 '25","May 30","Jun 30","Jul 31","Aug 29","Sep 30","Oct 31","Nov 28","Dec 30","Jan 30 '26","Feb 27","Mar 31","Apr 28"],
+    labels: ["Apr 30 '25","May 30","Jun 30","Jul 31","Aug 29","Sep 30","Oct 31","Nov 28","Dec 30","Jan 30 '26","Feb 27","Mar 31","Apr 30"],
     datasets: [
-      { label:'Cumulative Alpha Capture Return (%)', data:[0, 0.30, 0.10, 1.85, 12.65, 21.95, 21.95, 24.70, 25.65, 30.05, 45.01, 34.13, 38.82], borderColor:'#c9a84c', backgroundColor:'rgba(201,168,76,0.15)', borderWidth:3, tension:0.25, fill:true, pointRadius:5, pointBackgroundColor:'#1a2744', pointBorderColor:'#c9a84c', pointBorderWidth:2 },
+      { label:'Cumulative Alpha Capture Return (%)', data:[0, 0.30, 0.10, 1.85, 12.65, 21.95, 21.95, 24.70, 25.65, 30.05, 45.01, 34.13, 39.96], borderColor:'#c9a84c', backgroundColor:'rgba(201,168,76,0.15)', borderWidth:3, tension:0.25, fill:true, pointRadius:5, pointBackgroundColor:'#1a2744', pointBorderColor:'#c9a84c', pointBorderWidth:2 },
       { label:'Zero baseline', data:[0,0,0,0,0,0,0,0,0,0,0,0,0], borderColor:'rgba(139,134,128,0.4)', borderWidth:1, borderDash:[2,4], pointRadius:0, fill:false }
     ]
   },
