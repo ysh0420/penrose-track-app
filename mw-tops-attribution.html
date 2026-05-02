@@ -18,6 +18,8 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
 .topbar h1 span{color:var(--gold)}
 .topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.month-context{background:#fffbe8;border-left:4px solid var(--gold);padding:.7rem 1.2rem;margin-bottom:1.5rem;font-size:10pt;color:#5d4037}
+.month-context b{color:var(--navy)}
 .nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
 .nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
 .nav-links a:hover{background:var(--cream);border-color:var(--gold)}
@@ -54,7 +56,7 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 <div class="container">
 <div class="topbar">
 <div><h1>Penrose <span>Japan</span></h1><div class="sub">Portfolio Attribution & Holdings</div></div>
-<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">As of: Apr 30, 2026 (April close)</div>
+<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">As of: May 1, 2026 (Day 1 of new month)</div>
 </div>
 
 <div class="nav-links">
@@ -63,31 +65,36 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 <a href="/mw-tops-transactions.html">Transaction Log</a>
 </div>
 
+<div class="month-context">
+<b>New month, fresh MTD basis.</b> April closed at +4.35% AC (LTD +39.96%, locked in). May 1 figures below show single-day moves only — MTD -1.68%, AC -1.32% reflects Day 1 of May, not loss against April's accumulated gains. New LTD AC = +38.12%.
+</div>
+
 <div class="section">
-<h2>Current Holdings — April 30, 2026 (April Close)</h2>
-<div class="subtitle">9 positions (4 long / 5 short) · 7.40% net exposure · Strong April close at +4.35% AC</div>
+<h2>Current Holdings — May 1, 2026 (Day 1)</h2>
+<div class="subtitle">9 positions (4 long / 5 short) · 5.81% net exposure · MTD figures = single-day basis (May only)</div>
 <div class="stats-grid">
 <div class="stat"><div class="label">Current Fund Size</div><div class="value">$22.0M</div></div>
 <div class="stat"><div class="label">Target Fund Size</div><div class="value">$30.0M</div></div>
-<div class="stat"><div class="label">MTD P&L (Net)</div><div class="value">+$1,420K</div></div>
-<div class="stat"><div class="label">MTD Net Return</div><div class="value">+7.40%</div></div>
-<div class="stat"><div class="label">Overall Perf (AC)</div><div class="value">+4.35%</div></div>
-<div class="stat"><div class="label">Net Mkt Exposure</div><div class="value">7.40%</div></div>
+<div class="stat neg"><div class="label">May MTD P&L (Net)</div><div class="value">-$369K</div></div>
+<div class="stat neg"><div class="label">May MTD Net Return</div><div class="value">-1.68%</div></div>
+<div class="stat neg"><div class="label">May Overall Perf (AC)</div><div class="value">-1.32%</div></div>
+<div class="stat"><div class="label">Net Mkt Exposure</div><div class="value">5.81%</div></div>
 </div>
 <table>
-<thead><tr><th>Side</th><th>Ticker</th><th>Company</th><th style="text-align:right">Position ($)</th><th style="text-align:right">Avg In ¥</th><th style="text-align:right">Last ¥</th><th style="text-align:right">% Chg On Pos</th><th style="text-align:right">% Chg Today</th><th style="text-align:right">% Chg MTD</th><th style="text-align:right">Total PL MTD</th><th style="text-align:right">Total PL Since Inception</th></tr></thead>
+<thead><tr><th>Side</th><th>Ticker</th><th>Company</th><th style="text-align:right">Position ($)</th><th style="text-align:right">Avg In ¥</th><th style="text-align:right">Last ¥</th><th style="text-align:right">% Chg On Pos</th><th style="text-align:right">% Chg Today</th><th style="text-align:right">% Chg MTD</th><th style="text-align:right">May MTD PL</th><th style="text-align:right">Total PL Since Inception</th></tr></thead>
 <tbody id="holdRows"></tbody>
 </table>
 <div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
 Numbers shown match MW TOPS portal exactly. Red = negative (loss).<br/>
-Top contributors MTD: Shin-Etsu (+$537K), Oriental Land short (+$405K), Tsukishima (+$276K), Marubeni (+$244K).<br/>
-Detractors: Fast Retailing short (-$99K MTD/LTD), Yamato short (-$10K MTD / -$30K LTD), Nippon Sanso long (-$211K LTD).
+May MTD detractors: Marubeni (-$170K), Shin-Etsu (-$77K), Nippon Sanso (-$8K) — long side weak on May 1.<br/>
+May MTD contributors: Yamato short (+$27K), Oriental Land short (+$25K), Tsukishima long (+$29K).<br/>
+Reminder: Apr LTD-PL captured Apr 30 close gains; May MTD column is fresh May-only P&L.
 </div>
 </div>
 
 <div class="section">
-<h2>April 2026 Daily Evolution</h2>
-<div class="subtitle">Intra-month performance progression — 8 snapshots Apr 10 → Apr 30. April closed at +4.35% AC (best month since February).</div>
+<h2>April 2026 Daily Evolution (Now Locked)</h2>
+<div class="subtitle">8 snapshots Apr 10 → Apr 30. April closed at +4.35% AC. New month started May 1.</div>
 <div class="chart-wrap"><canvas id="aprChart"></canvas></div>
 <table>
 <thead><tr><th>Date</th><th style="text-align:right">Overall Perf (AC)</th><th style="text-align:right">MTD Net Return</th><th style="text-align:right">Fund Size</th><th style="text-align:right">Net Exposure</th><th style="text-align:right">Positions</th><th>Book Event</th></tr></thead>
@@ -99,13 +106,20 @@ Detractors: Fast Retailing short (-$99K MTD/LTD), Yamato short (-$10K MTD / -$30
 <tr><td class="bold">Apr 24</td><td class="num">+2.80%</td><td class="num">+5.33%</td><td class="num">$22.0M</td><td class="num">5.56%</td><td class="num">9</td><td style="font-size:9pt;color:var(--muted)">9983 doubled</td></tr>
 <tr><td class="bold">Apr 27</td><td class="num">+3.03%</td><td class="num">+5.64%</td><td class="num">$22.0M</td><td class="num">5.82%</td><td class="num">9</td><td style="font-size:9pt;color:var(--muted)">long names rally</td></tr>
 <tr><td class="bold">Apr 28</td><td class="num">+3.49%</td><td class="num">+6.30%</td><td class="num">$22.0M</td><td class="num">6.30%</td><td class="num">9</td><td style="font-size:9pt;color:var(--muted)">long-side dominance</td></tr>
-<tr><td class="bold">Apr 30</td><td class="num">+4.35%</td><td class="num">+7.40%</td><td class="num">$22.0M</td><td class="num">7.40%</td><td class="num">9</td><td style="font-size:9pt;color:var(--muted)">Oriental Land surge — April close</td></tr>
+<tr class="total"><td class="bold">Apr 30 close</td><td class="num">+4.35%</td><td class="num">+7.40%</td><td class="num">$22.0M</td><td class="num">7.40%</td><td class="num">9</td><td style="font-size:9pt;color:var(--navy)"><b>April final — Oriental Land surge</b></td></tr>
 </tbody>
 </table>
-<div style="margin-top:1rem;font-size:9pt;color:var(--muted);font-style:italic">
-Apr 30: Oriental Land short (-10.10% intraday) accelerated MTD-PL to +$405K — biggest one-day move of the month. Fast Retailing short widened loss to -$99K. Net: +0.86pp AC gain on the day, monthly gross +$1.44M.<br/>
-For detailed transaction-level audit trail, see <a href="/mw-tops-transactions.html" style="color:var(--navy)">Transaction Log</a>.
 </div>
+
+<div class="section">
+<h2>May 2026 Daily Evolution (In Progress)</h2>
+<div class="subtitle">Day-by-day MTD progression for May. Fresh basis from $0.</div>
+<table>
+<thead><tr><th>Date</th><th style="text-align:right">Overall Perf (AC)</th><th style="text-align:right">MTD Net Return</th><th style="text-align:right">MTD P&L (Net)</th><th style="text-align:right">Fund Size</th><th style="text-align:right">Net Exposure</th><th>Day Note</th></tr></thead>
+<tbody>
+<tr><td class="bold">May 1</td><td class="num neg">-1.32%</td><td class="num neg">-1.68%</td><td class="num neg">-369,103</td><td class="num">$22.0M</td><td class="num">5.81%</td><td style="font-size:9pt;color:var(--muted)">Day 1 — Marubeni gave back $170K, Shin-Etsu -1.96%</td></tr>
+</tbody>
+</table>
 </div>
 
 <div class="section">
@@ -121,48 +135,34 @@ For detailed transaction-level audit trail, see <a href="/mw-tops-transactions.h
 <div style="font-size:9pt;color:var(--muted);margin-top:1rem;font-style:italic">Note: +71.2%/+53.85% are aggregate metrics (position-level returns × weights on $165M notional). Actual book NAV trajectory is +25.65% AC by Dec 2025 — see public dashboard for book-level track record.</div>
 </div>
 
-<div class="section">
-<h2>Feb 2026 Month-End Holdings</h2>
-<div class="subtitle">Positions held at Feb 28, 2026 close — peak NAV month (+45.01% LTD AC)</div>
-<div class="placeholder">Positions data to be added — please provide holdings list for Feb month-end.</div>
-</div>
-
 <div class="footer">
-Data as of Apr 30, 2026 · Penrose Japan Ltd · 12-month inception milestone
+Data as of May 1, 2026 · Penrose Japan Ltd
 </div>
 </div>
 
 <script>
-// Apr 30 portal red cells = negative numbers. All red P&L stored as negative.
-// Verified cell-by-cell from portal screenshot:
-// 4091 LONG: %ChgPos -6.36 RED, %Today -2.41 RED, %MTD +0.13, MTD-PL 3,549, LTD-PL -210,876 RED
-// 8002 LONG: %ChgPos +8.56, %Today -0.20 RED, %MTD +8.08, MTD-PL 243,506, LTD-PL 284,510
-// 6332 LONG: %ChgPos +13.42, %Today -3.40 RED, %MTD +16.21, MTD-PL 276,104, LTD-PL 268,476
-// 4613 SHORT: %ChgPos -1.56, %Today -1.39 RED, %MTD -0.04, MTD-PL 841, LTD-PL 31,124
-// 4661 SHORT: %ChgPos -20.26, %Today -10.10 RED, %MTD N/A, MTD-PL 405,116, LTD-PL 405,116
-// 9020 SHORT: %ChgPos -3.94, %Today -1.83 RED, %MTD N/A, MTD-PL 78,701, LTD-PL 78,701
-// 9983 SHORT: %ChgPos +4.95 RED, %Today +0.57, %MTD +1.57 RED, MTD-PL -99,039 RED, LTD-PL -99,039 RED
-// 9064 SHORT: %ChgPos +0.11, %Today -2.11 RED, %MTD +1.15, MTD-PL -9,861 RED, LTD-PL -29,700 RED
+// May 1 portal red cells = negative values. CRITICAL: New month = fresh MTD basis.
+// Cell-by-cell verified from May 1 portal screenshot:
 
 var holdings = [
-  {side:'LONG', sideClass:'side-long', ticker:'4063', name:'Shin-Etsu Chemical', pos:3000000, avgIn:5509.9, last:7246,
-    chgPos:31.51, today:2.33, mtdChg:15.77, mtdPnl:537193, ltdPnl:1351100},
-  {side:'LONG', sideClass:'side-long', ticker:'4091', name:'Nippon Sanso Holdings', pos:3000000, avgIn:5916.4, last:5540,
-    chgPos:-6.36, today:-2.41, mtdChg:0.13, mtdPnl:3549, ltdPnl:-210876},
-  {side:'LONG', sideClass:'side-long', ticker:'8002', name:'Marubeni Corp', pos:3000000, avgIn:5593.3, last:6072,
-    chgPos:8.56, today:-0.20, mtdChg:8.08, mtdPnl:243506, ltdPnl:284510},
-  {side:'LONG', sideClass:'side-long', ticker:'6332', name:'Tsukishima Holdings', pos:2000000, avgIn:2755.2, last:3125,
-    chgPos:13.42, today:-3.40, mtdChg:16.21, mtdPnl:276104, ltdPnl:268476},
-  {side:'SHORT', sideClass:'side-short', ticker:'4613', name:'Kansai Paint', pos:2000000, avgIn:2379.5, last:2342.5,
-    chgPos:-1.56, today:-1.39, mtdChg:-0.04, mtdPnl:841, ltdPnl:31124},
-  {side:'SHORT', sideClass:'side-short', ticker:'4661', name:'Oriental Land Co', pos:2000000, avgIn:2744.4, last:2188.5,
-    chgPos:-20.26, today:-10.10, mtdChg:null, mtdPnl:405116, ltdPnl:405116},
-  {side:'SHORT', sideClass:'side-short', ticker:'9020', name:'East Japan Railway', pos:2000000, avgIn:3526.8, last:3388,
-    chgPos:-3.94, today:-1.83, mtdChg:null, mtdPnl:78701, ltdPnl:78701},
-  {side:'SHORT', sideClass:'side-short', ticker:'9983', name:'Fast Retailing', pos:2000000, avgIn:70117.8, last:73590,
-    chgPos:4.95, today:0.57, mtdChg:1.57, mtdPnl:-99039, ltdPnl:-99039},
-  {side:'SHORT', sideClass:'side-short', ticker:'9064', name:'Yamato Holdings', pos:3000000, avgIn:1762.5, last:1764.5,
-    chgPos:0.11, today:-2.11, mtdChg:1.15, mtdPnl:-9861, ltdPnl:-29700}
+  {side:'LONG', sideClass:'side-long', ticker:'4063', name:'Shin-Etsu Chemical', pos:3000000, avgIn:5509.9, last:7104,
+    chgPos:28.93, today:0.00, mtdChg:-1.96, mtdPnl:-77315, ltdPnl:1273785},
+  {side:'LONG', sideClass:'side-long', ticker:'4091', name:'Nippon Sanso Holdings', pos:3000000, avgIn:5916.4, last:5524,
+    chgPos:-6.63, today:0.00, mtdChg:-0.29, mtdPnl:-8113, ltdPnl:-218989},
+  {side:'LONG', sideClass:'side-long', ticker:'8002', name:'Marubeni Corp', pos:3000000, avgIn:5593.3, last:5755,
+    chgPos:2.89, today:0.00, mtdChg:-5.22, mtdPnl:-170025, ltdPnl:114485},
+  {side:'LONG', sideClass:'side-long', ticker:'6332', name:'Tsukishima Holdings', pos:2000000, avgIn:2755.2, last:3165,
+    chgPos:14.88, today:0.00, mtdChg:1.28, mtdPnl:29037, ltdPnl:297513},
+  {side:'SHORT', sideClass:'side-short', ticker:'4613', name:'Kansai Paint', pos:2000000, avgIn:2379.5, last:2328,
+    chgPos:-2.17, today:0.00, mtdChg:-0.62, mtdPnl:12187, ltdPnl:43311},
+  {side:'SHORT', sideClass:'side-short', ticker:'4661', name:'Oriental Land Co', pos:2000000, avgIn:2744.4, last:2223,
+    chgPos:-19.00, today:0.00, mtdChg:1.58, mtdPnl:25142, ltdPnl:379974},
+  {side:'SHORT', sideClass:'side-short', ticker:'9020', name:'East Japan Railway', pos:2000000, avgIn:3526.8, last:3700,
+    chgPos:4.91, today:0.00, mtdChg:9.21, mtdPnl:-176932, ltdPnl:-98231},
+  {side:'SHORT', sideClass:'side-short', ticker:'9983', name:'Fast Retailing', pos:2000000, avgIn:70117.8, last:72890,
+    chgPos:3.95, today:0.00, mtdChg:-0.95, mtdPnl:19966, ltdPnl:-79073},
+  {side:'SHORT', sideClass:'side-short', ticker:'9064', name:'Yamato Holdings', pos:3000000, avgIn:1762.5, last:1748.5,
+    chgPos:-0.79, today:0.00, mtdChg:-0.91, mtdPnl:27234, ltdPnl:2465}
 ];
 
 function pctCell(v){
@@ -194,28 +194,20 @@ holdings.forEach(function(h, i){
     dolCell(h.mtdPnl) +
     dolCell(h.ltdPnl) +
     '</tr>';
-  
   if (i === 3) {
     var sum = holdings.slice(0,4).reduce(function(s,x){return s + x.mtdPnl;}, 0);
     var sumLtd = holdings.slice(0,4).reduce(function(s,x){return s + x.ltdPnl;}, 0);
-    html += '<tr class="subtotal"><td colspan="3">LONG SUBTOTAL (4 positions)</td>' +
-      '<td class="num">11,000,000</td><td></td><td></td><td></td><td></td><td></td>' +
-      dolCell(sum) + dolCell(sumLtd) + '</tr>';
+    html += '<tr class="subtotal"><td colspan="3">LONG SUBTOTAL (4)</td><td class="num">11,000,000</td><td></td><td></td><td></td><td></td><td></td>' + dolCell(sum) + dolCell(sumLtd) + '</tr>';
   }
   if (i === 8) {
     var sum = holdings.slice(4,9).reduce(function(s,x){return s + x.mtdPnl;}, 0);
     var sumLtd = holdings.slice(4,9).reduce(function(s,x){return s + x.ltdPnl;}, 0);
-    html += '<tr class="subtotal"><td colspan="3">SHORT SUBTOTAL (5 positions)</td>' +
-      '<td class="num">11,000,000</td><td></td><td></td><td></td><td></td><td></td>' +
-      dolCell(sum) + dolCell(sumLtd) + '</tr>';
+    html += '<tr class="subtotal"><td colspan="3">SHORT SUBTOTAL (5)</td><td class="num">11,000,000</td><td></td><td></td><td></td><td></td><td></td>' + dolCell(sum) + dolCell(sumLtd) + '</tr>';
   }
 });
 var totalMtd = holdings.reduce(function(s,x){return s + x.mtdPnl;}, 0);
 var totalLtd = holdings.reduce(function(s,x){return s + x.ltdPnl;}, 0);
-html += '<tr class="total"><td colspan="3">PORTFOLIO TOTAL (9 positions)</td>' +
-  '<td class="num">22,000,000</td><td></td><td></td><td></td><td></td><td></td>' +
-  dolCell(totalMtd) + dolCell(totalLtd) + '</tr>';
-
+html += '<tr class="total"><td colspan="3">PORTFOLIO TOTAL (9)</td><td class="num">22,000,000</td><td></td><td></td><td></td><td></td><td></td>' + dolCell(totalMtd) + dolCell(totalLtd) + '</tr>';
 document.getElementById('holdRows').innerHTML = html;
 
 new Chart(document.getElementById('aprChart'), {
