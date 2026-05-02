@@ -1,0 +1,125 @@
+{
+    "summary": {
+        "ltd_ac": 38.12,
+        "cy2025_ac": 25.65,
+        "positions": 9,
+        "ltd_ac_nav": 41434800,
+        "net_exposure": 5.81,
+        "cy2026_ytd_ac": 9.94,
+        "may_mtd_pnl_net": -369103,
+        "apr2026_close_ac": 4.35,
+        "may_mtd_pnl_gross": -369103
+    },
+    "description": "May 1 EOD - new month start. Day 1 AC -1.32%, MTD Net -1.68%. LTD now +38.12%.",
+    "critical_note": "NEW MONTH = MTD basis resets. May 1 -1.32% is single-day move only. April closed at +4.35% AC and is now locked into LTD.",
+    "holdings_may1": [
+        {
+            "last": 7104,
+            "side": "LONG",
+            "ticker": "4063",
+            "ltd_pnl": 1273785,
+            "mtd_pct": -1.96,
+            "mtd_pnl": -77315,
+            "today_pct": 0.00,
+            "chg_pos_pct": 28.93
+        },
+        {
+            "last": 5524,
+            "side": "LONG",
+            "ticker": "4091",
+            "ltd_pnl": -218989,
+            "mtd_pct": -0.29,
+            "mtd_pnl": -8113,
+            "today_pct": 0.00,
+            "chg_pos_pct": -6.63
+        },
+        {
+            "last": 5755,
+            "side": "LONG",
+            "ticker": "8002",
+            "ltd_pnl": 114485,
+            "mtd_pct": -5.22,
+            "mtd_pnl": -170025,
+            "today_pct": 0.00,
+            "chg_pos_pct": 2.89
+        },
+        {
+            "last": 3165,
+            "side": "LONG",
+            "ticker": "6332",
+            "ltd_pnl": 297513,
+            "mtd_pct": 1.28,
+            "mtd_pnl": 29037,
+            "today_pct": 0.00,
+            "chg_pos_pct": 14.88
+        },
+        {
+            "last": 2328,
+            "side": "SHORT",
+            "ticker": "4613",
+            "ltd_pnl": 43311,
+            "mtd_pct": -0.62,
+            "mtd_pnl": 12187,
+            "today_pct": 0.00,
+            "chg_pos_pct": -2.17
+        },
+        {
+            "last": 2223,
+            "side": "SHORT",
+            "ticker": "4661",
+            "ltd_pnl": 379974,
+            "mtd_pct": 1.58,
+            "mtd_pnl": 25142,
+            "today_pct": 0.00,
+            "chg_pos_pct": -19.00
+        },
+        {
+            "last": 3700,
+            "side": "SHORT",
+            "ticker": "9020",
+            "ltd_pnl": -98231,
+            "mtd_pct": 9.21,
+            "mtd_pnl": -176932,
+            "today_pct": 0.00,
+            "chg_pos_pct": 4.91
+        },
+        {
+            "last": 72890,
+            "side": "SHORT",
+            "ticker": "9983",
+            "ltd_pnl": -79073,
+            "mtd_pct": -0.95,
+            "mtd_pnl": 19966,
+            "today_pct": 0.00,
+            "chg_pos_pct": 3.95
+        },
+        {
+            "last": 1748.5,
+            "side": "SHORT",
+            "ticker": "9064",
+            "ltd_pnl": 2465,
+            "mtd_pct": -0.91,
+            "mtd_pnl": 27234,
+            "today_pct": 0.00,
+            "chg_pos_pct": -0.79
+        }
+    ],
+    "snapshot_date": "2026-05-01",
+    "schema_version": "1.3",
+    "sign_convention": "Portal red cells = NEGATIVE values. All P&L $ stored with proper sign.",
+    "may_2026_evolution": [
+        {
+            "date": "2026-05-01",
+            "event": "Day 1 - long side weak (Marubeni gave back $170K)",
+            "mtd_net": -1.68,
+            "net_exp": 5.81,
+            "fund_size": 22000000,
+            "mtd_gross": -1.68,
+            "positions": 9,
+            "mtd_pnl_net": -369103,
+            "skill_factor": -1.42,
+            "mtd_pnl_gross": -369103,
+            "overall_perf_ac": -1.32
+        }
+    ]
+}
