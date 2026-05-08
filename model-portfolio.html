@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Portfolio — Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c;--blue:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1280px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
+.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
+.topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+.topbar-right a:hover{border-bottom-color:var(--gold)}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
+.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
+.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
+.mp-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:1rem;flex-wrap:wrap}
+.mp-toolbar h2{font-size:20pt;border-bottom:2px solid var(--gold);padding-bottom:.3em;display:inline-block}
+.mp-toolbar small{display:block;color:var(--muted);font-size:10pt;margin-top:.35rem}
+.mp-refresh{border:1px solid var(--navy);background:white;color:var(--navy);padding:.55rem .9rem;border-radius:4px;font-family:inherit;cursor:pointer}
+.mp-refresh:hover{border-color:var(--gold);color:var(--gold)}
+.mp-summary{display:grid;grid-template-columns:repeat(6,minmax(150px,1fr));gap:12px;margin-bottom:1rem}
+.mp-metric{background:white;border:1px solid var(--line);padding:1rem;min-height:96px}
+.mp-metric .label{font-size:8.5pt;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.45rem}
+.mp-metric .value{font-family:'Cormorant Garamond',serif;font-size:20pt;color:var(--navy);line-height:1.05;white-space:nowrap}
+.mp-metric .sub{font-size:9.5pt;color:var(--muted);margin-top:.45rem}
+.mp-up{color:var(--green)!important}.mp-down{color:var(--red)!important}.mp-flat{color:var(--muted)!important}
+.mp-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,.9fr);gap:16px;margin-bottom:1rem}
+.mp-section{background:white;border:1px solid var(--line);padding:1.25rem;margin-bottom:1rem}
+.mp-section h3{font-size:16pt;margin-bottom:.8rem}
+.mp-chart{width:100%;height:300px;display:block;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fbfaf6}
+.mp-chart-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:9pt;margin-top:.6rem;gap:12px;flex-wrap:wrap}
+.mp-table-wrap{overflow-x:auto}
+.mp-table{width:100%;border-collapse:collapse}
+.mp-table th,.mp-table td{padding:8px 10px;border-bottom:1px solid var(--line);font-size:10pt;text-align:left;vertical-align:top}
+.mp-table th{background:var(--cream);color:var(--navy);font-size:8.5pt;text-transform:uppercase;letter-spacing:.8px}
+.mp-table td.num,.mp-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+.mp-table tr.clickable{cursor:pointer}
+.mp-table tr.clickable:hover{background:var(--cream)}
+.mp-pill{display:inline-block;border:1px solid var(--line);border-radius:12px;padding:2px 8px;font-size:8.5pt;color:var(--navy);background:#fbfaf6;white-space:nowrap}
+.mp-action-buy,.mp-action-add,.mp-action-replace_in{color:var(--green);font-weight:600}
+.mp-action-trim,.mp-action-sell,.mp-action-replace_out{color:var(--red);font-weight:600}
+.mp-risk-list{display:grid;gap:8px}
+.mp-risk-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px;font-size:10pt}
+.mp-risk-row span:first-child{color:var(--muted)}
+.mp-note{font-size:10pt;line-height:1.5;color:var(--sumi);border-left:3px solid var(--gold);padding-left:12px;margin-top:8px}
+@media(max-width:1020px){.mp-summary{grid-template-columns:repeat(3,1fr)}.mp-grid{grid-template-columns:1fr}}
+@media(max-width:640px){body{padding:1rem .75rem}.topbar{padding:1rem}.mp-summary{grid-template-columns:1fr 1fr}.mp-metric .value{font-size:17pt}.mp-chart{height:220px}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">USD100M model book</div></div>
+<div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
+</div>
+
+<div class="nav-links">
+<a href="/index.html">Dashboard</a>
+<a href="/track-record.html">Track Record</a>
+<a href="/mw-tops-attribution.html">Attribution</a>
+<a href="/mw-tops-transactions.html">Transactions</a>
+<a href="/portfolio.html">Portfolio</a>
+<a href="/model-portfolio.html" class="active">Model Book</a>
+<a href="/stock.html">Stock</a>
+<a href="/pipeline.html">Pipeline</a>
+<a href="/research-log.html">Research</a>
+</div>
+
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="mp-toolbar">
+    <div>
+      <h2>Penrose Brain Model Book</h2>
+      <small id="mp-subtitle">Loading portfolio state…</small>
+    </div>
+    <button id="mp-refresh" class="mp-refresh" type="button">Refresh</button>
+  </div>
+
+  <div id="mp-summary" class="mp-summary"></div>
+
+  <div class="mp-grid">
+    <div>
+      <section class="mp-section">
+        <h3>NAV Track Record</h3>
+        <div id="mp-chart"></div>
+      </section>
+
+      <section class="mp-section">
+        <h3>Current Positions</h3>
+        <div id="mp-positions"></div>
+      </section>
+    </div>
+
+    <div>
+      <section class="mp-section">
+        <h3>Risk Snapshot</h3>
+        <div id="mp-risk"></div>
+      </section>
+
+      <section class="mp-section">
+        <h3>Deck Metrics</h3>
+        <div id="mp-deck"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="mp-section">
+    <h3>Recent Rebalance Log</h3>
+    <div id="mp-trades"></div>
+  </section>
+</div>
+
+</div>
+<script type="module" src="/js/page-model-portfolio.js"></script>
+</body>
+</html>

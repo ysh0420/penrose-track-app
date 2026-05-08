@@ -9,6 +9,15 @@ export function getActiveIdeas() {
   return brainQuery("fn_get_active_ideas");
 }
 
+/** USD100M Penrose Brain model portfolio dashboard payload. */
+export function getModelPortfolioDashboard(portfolioSlug = "penrose-brain-usd100m") {
+  return brainQuery("fn_get_model_portfolio_dashboard", {
+    p_portfolio_slug: portfolioSlug,
+    p_days: 180,
+    p_trade_limit: 50,
+  });
+}
+
 /** Slim header data for stock detail page. */
 export function getStockHeader(symbol) {
   return brainQuery("fn_get_stock_header", { p_symbol: symbol });
