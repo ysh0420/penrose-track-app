@@ -2,7 +2,7 @@
 // Single source of truth for all Brain RPC calls.
 // To change a query, edit only this file.
 
-import { brainQuery } from "./brain-client.js";
+import { brainAuth, brainQuery } from "./brain-client.js";
 
 /** Active ideas (Yuki Book) — used by /portfolio. */
 export function getActiveIdeas() {
@@ -10,12 +10,14 @@ export function getActiveIdeas() {
 }
 
 /** USD100M Penrose Brain model portfolio dashboard payload. */
-export function getModelPortfolioDashboard(portfolioSlug = "penrose-brain-usd100m") {
-  return brainQuery("fn_get_model_portfolio_dashboard", {
+export async function getModelPortfolioDashboard(portfolioSlug = "penrose-brain-usd100m") {
+  const { data, error } = await brainAuth.rpc("fn_get_model_portfolio_dashboard", {
     p_portfolio_slug: portfolioSlug,
     p_days: 180,
     p_trade_limit: 50,
   });
+  if (error) throw error;
+  return data;
 }
 
 /** Slim header data for stock detail page. */
