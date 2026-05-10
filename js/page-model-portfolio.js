@@ -66,13 +66,57 @@ function metricHTML(label, value, sub = "", cls = "") {
   `;
 }
 
-function researchLinkHTML(symbol, sessionId) {
+function titleCase(value) {
+  return String(value ?? "")
+    .trim()
+    .replace(/[_-]+/g, " ")
+    .replace(/\w\S*/g, (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+}
+
+function safeExternalUrl(value) {
+  const url = typeof value === "string" ? value.trim() : "";
+  return /^https?:\/\//i.test(url) ? url : "";
+}
+
+function researchLabel({ name, provider, date }) {
+  const cleanName = typeof name === "string" ? name.trim() : "";
+  if (cleanName) return cleanName;
+  const providerLabel = titleCase(provider);
+  const displayDate = date ? formatDate(date) : "";
+  if (providerLabel && displayDate !== "—") return `${providerLabel} ${displayDate}`;
+  return providerLabel || "Research";
+}
+
+function researchAnchorHTML({ symbol, sessionId, url, name, provider, date }) {
+  const externalUrl = safeExternalUrl(url);
+  const label = researchLabel({ name, provider, date });
+  if (externalUrl) {
+    return `<a class="mp-research-link" href="${escapeHTML(externalUrl)}" target="_blank" rel="noopener noreferrer">${escapeHTML(label)}</a>`;
+  }
+
   const id = typeof sessionId === "string" ? sessionId.trim() : "";
-  if (!id) return "—";
+  if (!id) return "";
   const params = new URLSearchParams();
   if (symbol) params.set("symbol", String(symbol));
   params.set("session", id);
-  return `<a class="mp-research-link" href="/research-log.html?${escapeHTML(params.toString())}">Research</a>`;
+  return `<a class="mp-research-link" href="/research-log.html?${escapeHTML(params.toString())}">${escapeHTML(label)}</a>`;
+}
+
+function researchLinkHTML(details) {
+  const links = Array.isArray(details.links) ? details.links : [];
+  const renderedLinks = links
+    .map((link) => researchAnchorHTML({
+      symbol: details.symbol,
+      sessionId: link.session_id ?? link.research_session_id,
+      url: link.url ?? link.provider_url ?? link.research_url,
+      name: link.name ?? link.research_name,
+      provider: link.provider ?? link.research_provider,
+      date: link.date ?? link.research_date,
+    }))
+    .filter(Boolean);
+
+  if (renderedLinks.length) return renderedLinks.join("<br>");
+  return researchAnchorHTML(details) || "—";
 }
 
 function renderLoading() {
@@ -223,7 +267,15 @@ function renderPositions(rows) {
                 <td class="num">${escapeHTML(formatUsd(r.market_value_usd, 2))}</td>
                 <td>${escapeHTML(r.sector ?? "—")}</td>
                 <td>${themeChipsHTML(r.theme_tags)}</td>
-                <td>${researchLinkHTML(r.symbol, r.latest_research_session_id)}</td>
+                <td>${researchLinkHTML({
+                  symbol: r.symbol,
+                  sessionId: r.latest_research_session_id,
+                  url: r.latest_research_url,
+                  name: r.latest_research_name,
+                  provider: r.latest_research_provider,
+                  date: r.latest_research_date,
+                  links: r.latest_research_links,
+                })}</td>
               </tr>
             `;
           }).join("")}
@@ -307,7 +359,15 @@ function renderTrades(rows) {
                 <td class="num">${escapeHTML(formatUsd(r.notional_usd, 2))}</td>
                 <td class="num">${escapeHTML(formatWeight(r.weight_before))}</td>
                 <td class="num">${escapeHTML(formatWeight(r.weight_after))}</td>
-                <td>${researchLinkHTML(r.symbol, r.research_session_id)}</td>
+                <td>${researchLinkHTML({
+                  symbol: r.symbol,
+                  sessionId: r.research_session_id,
+                  url: r.research_url,
+                  name: r.research_name,
+                  provider: r.research_provider,
+                  date: r.research_date,
+                  links: r.research_links,
+                })}</td>
                 <td>${escapeHTML(r.reason ?? "")}</td>
               </tr>
             `;
