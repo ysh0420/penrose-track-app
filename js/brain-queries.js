@@ -46,6 +46,11 @@ export function getSynthesisForSymbol(symbol) {
   return brainQuery("fn_get_synthesis_for_symbol", { p_symbol: symbol });
 }
 
+/** Exact Phase R session payload for /research-log deep links. */
+export function getResearchSession(sessionId) {
+  return brainQuery("get_research_session", { p_session_id: sessionId });
+}
+
 /** Major guidance revisions for /pipeline. */
 export function getPipelineRevisions(days = 30) {
   return brainQuery("fn_get_pipeline_revisions", { p_days: days });

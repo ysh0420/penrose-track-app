@@ -1,7 +1,7 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
 import {
-  getResearchLog, startResearchSession, getSynthesisForSymbol,
+  getResearchLog, getResearchSession, startResearchSession, getSynthesisForSymbol,
 } from "./brain-queries.js";
 import {
   verdictBadgeHTML, formatRelativeTime, renderMarkdown, escapeHTML,
@@ -19,6 +19,51 @@ function openModal(title, bodyHTML) {
 }
 function closeModal() {
   document.getElementById("brain-modal").classList.remove("open");
+}
+
+function firstValue(...values) {
+  return values.find((value) => typeof value === "string" && value.trim() && value.trim() !== "?") ?? "";
+}
+
+function parseVerdict(md) {
+  const match = String(md ?? "").match(/Synthesis \(verdict: ([^)]+)\)/i);
+  return match?.[1] ?? "completed";
+}
+
+function parseConvictionRecommendation(md) {
+  const match = String(md ?? "").match(/## Conviction recommendation\s+\*\*([^*]+)\*\*/i);
+  return match?.[1] ?? null;
+}
+
+async function openSessionFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session");
+  if (!sessionId) return;
+
+  openModal("Research", `<div class="brain-empty">Loading session...</div>`);
+  try {
+    const payload = await getResearchSession(sessionId);
+    const session = Array.isArray(payload) ? payload[0] : payload;
+    if (!session?.content_md) {
+      openModal("Research", `<div class="brain-empty">No synthesis text returned for this session.</div>`);
+      return;
+    }
+
+    const prompts = session.prompts ?? {};
+    const row = {
+      symbol: session.symbol,
+      company_name_jp: firstValue(prompts.name_jp, session.name_jp, prompts.name_en),
+      company_name: firstValue(prompts.name_en, session.name_en),
+      verdict: parseVerdict(session.content_md),
+      conviction_recommendation: parseConvictionRecommendation(session.content_md),
+      created_at: session.created_at,
+      completed_at: session.updated_at,
+    };
+    const title = session.title ?? `${row.symbol ?? ""} ${row.company_name_jp ?? ""}`.trim();
+    openModal(title, modalBodyHTML(row, session.content_md));
+  } catch (e) {
+    openModal("Research", `<div class="brain-error-state"><p>Failed to load session: ${escapeHTML(e.message)}</p></div>`);
+  }
 }
 
 async function loadLog() {
@@ -194,5 +239,6 @@ mountBrainAuthGate({
     wireModalClose();
     wireNewResearch();
     loadLog();
+    openSessionFromUrl();
   },
 });
