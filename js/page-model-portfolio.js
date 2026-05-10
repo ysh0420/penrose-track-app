@@ -262,7 +262,7 @@ function renderPositions(rows) {
             return `
               <tr class="clickable" data-symbol="${sym}">
                 <td><strong>${sym}</strong></td>
-                <td>${escapeHTML(r.company_name ?? r.symbol ?? "")}</td>
+                <td>${escapeHTML(r.company_name_jp ?? r.company_name ?? r.symbol ?? "")}</td>
                 <td class="num">${escapeHTML(formatWeight(r.weight))}</td>
                 <td class="num">${escapeHTML(formatUsd(r.market_value_usd, 2))}</td>
                 <td>${escapeHTML(r.sector ?? "—")}</td>
@@ -338,6 +338,7 @@ function renderTrades(rows) {
           <tr>
             <th>Date</th>
             <th>Symbol</th>
+            <th>Name</th>
             <th>Action</th>
             <th class="num">Notional</th>
             <th class="num">Before</th>
@@ -355,6 +356,7 @@ function renderTrades(rows) {
               <tr class="clickable" data-symbol="${sym}">
                 <td>${escapeHTML(formatDate(r.trade_date))}</td>
                 <td><strong>${sym}</strong></td>
+                <td>${escapeHTML(r.company_name_jp ?? r.company_name ?? r.symbol ?? "")}</td>
                 <td class="${escapeHTML(cls)}">${escapeHTML(action.replace(/_/g, " "))}</td>
                 <td class="num">${escapeHTML(formatUsd(r.notional_usd, 2))}</td>
                 <td class="num">${escapeHTML(formatWeight(r.weight_before))}</td>
