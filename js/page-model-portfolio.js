@@ -66,13 +66,22 @@ function metricHTML(label, value, sub = "", cls = "") {
   `;
 }
 
+function researchLinkHTML(symbol, sessionId) {
+  const id = typeof sessionId === "string" ? sessionId.trim() : "";
+  if (!id) return "—";
+  const params = new URLSearchParams();
+  if (symbol) params.set("symbol", String(symbol));
+  params.set("session", id);
+  return `<a class="mp-research-link" href="/research-log.html?${escapeHTML(params.toString())}">Research</a>`;
+}
+
 function renderLoading() {
   $("mp-summary").innerHTML = Array.from({ length: 6 })
     .map(() => metricHTML("Loading", "—", ""))
     .join("");
   $("mp-chart").innerHTML = `<div class="brain-empty">${skeletonRowHTML("70%")}</div>`;
-  $("mp-positions").innerHTML = skeletonTable(7);
-  $("mp-trades").innerHTML = skeletonTable(6);
+  $("mp-positions").innerHTML = skeletonTable(7, 7);
+  $("mp-trades").innerHTML = skeletonTable(6, 8);
   $("mp-risk").innerHTML = `<div class="brain-empty">${skeletonRowHTML("80%")}</div>`;
   $("mp-deck").innerHTML = `<div class="brain-empty">${skeletonRowHTML("75%")}</div>`;
 }
@@ -200,6 +209,7 @@ function renderPositions(rows) {
             <th class="num">Market Value</th>
             <th>Sector</th>
             <th>Themes</th>
+            <th>Research</th>
           </tr>
         </thead>
         <tbody>
@@ -213,6 +223,7 @@ function renderPositions(rows) {
                 <td class="num">${escapeHTML(formatUsd(r.market_value_usd, 2))}</td>
                 <td>${escapeHTML(r.sector ?? "—")}</td>
                 <td>${themeChipsHTML(r.theme_tags)}</td>
+                <td>${researchLinkHTML(r.symbol, r.latest_research_session_id)}</td>
               </tr>
             `;
           }).join("")}
@@ -279,6 +290,7 @@ function renderTrades(rows) {
             <th class="num">Notional</th>
             <th class="num">Before</th>
             <th class="num">After</th>
+            <th>Research</th>
             <th>Reason</th>
           </tr>
         </thead>
@@ -295,6 +307,7 @@ function renderTrades(rows) {
                 <td class="num">${escapeHTML(formatUsd(r.notional_usd, 2))}</td>
                 <td class="num">${escapeHTML(formatWeight(r.weight_before))}</td>
                 <td class="num">${escapeHTML(formatWeight(r.weight_after))}</td>
+                <td>${researchLinkHTML(r.symbol, r.research_session_id)}</td>
                 <td>${escapeHTML(r.reason ?? "")}</td>
               </tr>
             `;
@@ -308,19 +321,20 @@ function renderTrades(rows) {
 
 function wireStockRows(container) {
   container.querySelectorAll("tr.clickable").forEach((row) => {
-    row.addEventListener("click", () => {
+    row.addEventListener("click", (event) => {
+      if (event.target instanceof Element && event.target.closest("a")) return;
       const sym = /** @type {HTMLElement} */(row).dataset.symbol;
       if (sym) location.href = `/stock.html?symbol=${encodeURIComponent(sym)}`;
     });
   });
 }
 
-function skeletonTable(rowCount) {
+function skeletonTable(rowCount, colCount = 7) {
   return `
     <table class="mp-table">
-      <thead><tr><th colspan="7">${skeletonRowHTML("60%")}</th></tr></thead>
+      <thead><tr><th colspan="${colCount}">${skeletonRowHTML("60%")}</th></tr></thead>
       <tbody>
-        ${Array.from({ length: rowCount }).map(() => `<tr><td colspan="7">${skeletonRowHTML("100%")}</td></tr>`).join("")}
+        ${Array.from({ length: rowCount }).map(() => `<tr><td colspan="${colCount}">${skeletonRowHTML("100%")}</td></tr>`).join("")}
       </tbody>
     </table>
   `;
