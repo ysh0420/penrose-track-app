@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Penrose Japan — Track Record</title>
+<title>Penrose Japan - Track Record</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<link rel="stylesheet" href="/css/platform-pages.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
@@ -18,6 +20,8 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
 .topbar h1 span{color:var(--gold)}
 .topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-meta{text-align:right;font-size:10pt;color:rgba(255,255,255,.85)}
+.topbar-meta a{color:white;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.35)}
 .section{background:white;border:1px solid var(--line);padding:2rem;margin-bottom:1.5rem}
 .section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.4em;display:inline-block}
 .section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1.5rem}
@@ -46,8 +50,14 @@ td.bold{font-weight:600;color:var(--navy)}
 <div class="container">
 <div class="topbar">
 <div><h1>Penrose <span>Japan</span></h1><div class="sub">Japan Equities Alpha Capture Track Record</div></div>
-<div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">Inception: Apr 30, 2025<br/>As of: May 1, 2026</div>
+<div class="topbar-meta">
+  Inception: Apr 30, 2025<br/>
+  As of: May 1, 2026<br/>
+  <span id="brain-user-email"></span> <a id="brain-signout" href="#" style="display:none">Sign out</a>
 </div>
+</div>
+
+<div data-platform-nav data-active-nav="track"></div>
 
 <div class="section">
 <h2>Performance Summary</h2>
@@ -74,6 +84,15 @@ td.bold{font-weight:600;color:var(--navy)}
 <thead><tr><th>Month</th><th style="text-align:right">Monthly</th><th style="text-align:right">Cum from Inception</th></tr></thead>
 <tbody id="monthRows"></tbody>
 </table>
+</div>
+
+<div class="section">
+<h2>MW Account NAV History</h2>
+<div class="subtitle">Private account implementation record. MW is one source account, not the master portfolio itself.</div>
+<div id="brain-login"></div>
+<div id="brain-app" style="display:none">
+  <div id="track-record-root"></div>
+</div>
 </div>
 
 <div class="footer">
@@ -128,5 +147,7 @@ document.getElementById('monthRows').innerHTML = months.map(function(m){
   return '<tr><td class="bold">' + m.label + '</td><td class="num ' + mClass + '">' + mSign + m.monthly.toFixed(2) + '%</td><td class="num ' + cClass + '">' + cSign + m.cum.toFixed(2) + '%</td></tr>';
 }).join('');
 </script>
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module" src="/js/page-track-record.js"></script>
 </body>
 </html>

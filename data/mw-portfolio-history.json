@@ -1,0 +1,178 @@
+{
+  "accounts": [
+    {
+      "accountCode": "MW",
+      "displayName": "MW / TOPS Portfolio - PENROSE-JP-LON",
+      "firmName": "MW",
+      "baseCurrency": "JPY",
+      "sourceMethod": "user_screenshot",
+      "records": [
+        {
+          "asOfDate": "2026-05-11",
+          "sourceLabel": "TOPS Portfolio screenshot",
+          "sourceNote": "Prices are at most 50 seconds delayed in the source screen.",
+          "summary": {
+            "mtdFundReturnNetPct": -1.07,
+            "mtdFundReturnGrossPct": -0.97,
+            "totalPnlNet": -230162,
+            "totalPnlGross": -208689,
+            "returnOnLongIdeasPct": -0.52,
+            "returnOnShortIdeasPct": -1.33,
+            "currentFundSize": 19000000,
+            "targetFundSize": 30000000,
+            "netMarketExposurePct": -6.26,
+            "skillFactorPct": -0.88,
+            "returnFromTargetFundSizePct": -0.77,
+            "overallPerformancePct": -0.82
+          },
+          "openPortfolio": {
+            "longs": { "exposure": 8000000, "pnl": -81451 },
+            "shorts": { "exposure": -11000000, "pnl": -153528 },
+            "total": { "exposure": -3000000, "pnl": -234980 }
+          },
+          "closedPositions": {
+            "longs": { "capitalEmployed": 3000000, "pnl": 38572 },
+            "shorts": { "capitalEmployed": 2000000, "pnl": -12282 },
+            "total": { "capitalEmployed": 5000000, "pnl": 26290 }
+          },
+          "fundsStatistics": {
+            "longs": {
+              "averageFundSize": 10500000,
+              "totalCapitalEmployed": 11000000,
+              "turnover": 3000000,
+              "transactionCost": 13908
+            },
+            "shorts": {
+              "averageFundSize": 11000000,
+              "totalCapitalEmployed": 13000000,
+              "turnover": 4000000,
+              "transactionCost": 7564
+            },
+            "total": {
+              "averageFundSize": 21500000,
+              "totalCapitalEmployed": 24000000,
+              "turnover": 7000000,
+              "transactionCost": 21473
+            }
+          },
+          "comparativePerformance": {
+            "index": "TPX",
+            "todayIndexReturnPct": 0.30,
+            "mtdIndexReturnPct": 3.05,
+            "fundExpectedReturnPct": 0.00
+          },
+          "positions": [
+            {
+              "ticker": "4063 JP",
+              "symbol": "4063",
+              "security": "SHIN-ETSU CHEM",
+              "side": "LONG",
+              "position": 3000000,
+              "averageInPrice": 5509.9,
+              "lastPrice": 7574,
+              "periodEndPrice": 7246,
+              "changeOnPositionPct": 37.46,
+              "changeTodayPct": 1.26,
+              "changeMtdPct": 4.53,
+              "totalPnlMtd": 178586,
+              "totalPnlSinceInception": 1529686
+            },
+            {
+              "ticker": "8002 JP",
+              "symbol": "8002",
+              "security": "MARUBENI CORP",
+              "side": "LONG",
+              "position": 3000000,
+              "averageInPrice": 5533.3,
+              "lastPrice": 5418,
+              "periodEndPrice": 6072,
+              "changeOnPositionPct": -3.13,
+              "changeTodayPct": 0.00,
+              "changeMtdPct": -10.77,
+              "totalPnlMtd": -350777,
+              "totalPnlSinceInception": 66267
+            },
+            {
+              "ticker": "6332 JP",
+              "symbol": "6332",
+              "security": "TSUKISHIMA HOLDI",
+              "side": "LONG",
+              "position": 2000000,
+              "averageInPrice": 2755.2,
+              "lastPrice": 3250,
+              "periodEndPrice": 3125,
+              "changeOnPositionPct": 17.96,
+              "changeTodayPct": -0.31,
+              "changeMtdPct": 4.00,
+              "totalPnlMtd": 90739,
+              "totalPnlSinceInception": 359215
+            },
+            {
+              "ticker": "4613 JP",
+              "symbol": "4613",
+              "security": "KANSAI PAINT",
+              "side": "SHORT",
+              "position": 2000000,
+              "averageInPrice": 2379.5,
+              "lastPrice": 2366,
+              "periodEndPrice": 2342.5,
+              "changeOnPositionPct": -0.57,
+              "changeTodayPct": 0.94,
+              "changeMtdPct": 1.00,
+              "totalPnlMtd": 19752,
+              "totalPnlSinceInception": 11372
+            },
+            {
+              "ticker": "9020 JP",
+              "symbol": "9020",
+              "security": "EAST JAPAN RAIL",
+              "side": "SHORT",
+              "position": 2000000,
+              "averageInPrice": 3526.8,
+              "lastPrice": 3639,
+              "periodEndPrice": 3388,
+              "changeOnPositionPct": 3.18,
+              "changeTodayPct": -0.16,
+              "changeMtdPct": 7.41,
+              "totalPnlMtd": 142340,
+              "totalPnlSinceInception": 63639
+            },
+            {
+              "ticker": "9064 JP",
+              "symbol": "9064",
+              "security": "YAMATO HOLDINGS",
+              "side": "SHORT",
+              "position": 3000000,
+              "averageInPrice": 1762.5,
+              "lastPrice": 1730.5,
+              "periodEndPrice": 1764.5,
+              "changeOnPositionPct": -1.82,
+              "changeTodayPct": -3.86,
+              "changeMtdPct": -7.93,
+              "totalPnlMtd": 57873,
+              "totalPnlSinceInception": 28173
+            },
+            {
+              "ticker": "4661 JP",
+              "symbol": "4661",
+              "security": "ORIENTAL LAND CO",
+              "side": "SHORT",
+              "position": 4000000,
+              "averageInPrice": 2417.5,
+              "lastPrice": 2202.5,
+              "periodEndPrice": 2188.5,
+              "changeOnPositionPct": -8.90,
+              "changeTodayPct": -1.74,
+              "changeMtdPct": 0.64,
+              "totalPnlMtd": 49309,
+              "totalPnlSinceInception": 355807
+            }
+          ],
+          "alerts": [
+            "Quarterly earnings report due to be released in the next 3 days"
+          ]
+        }
+      ]
+    }
+  ]
+}
