@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News — Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1200px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
+.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
+.topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+.topbar-right a:hover{border-bottom-color:var(--gold)}
+.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
+.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
+.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
+.news-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.news-toolbar h2{font-size:20pt;border-bottom:2px solid var(--gold);padding-bottom:.3em;display:inline-block}
+.news-toolbar .subtitle{font-size:10pt;color:var(--muted);margin-top:.35rem}
+.news-refresh{border:1px solid var(--navy);background:white;color:var(--navy);padding:.55rem .9rem;border-radius:4px;font-family:inherit;cursor:pointer}
+.news-refresh:hover{border-color:var(--gold);color:var(--gold)}
+.news-summary{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:12px;margin-bottom:1rem}
+.news-metric{background:white;border:1px solid var(--line);padding:1rem;min-height:88px}
+.news-metric .label{font-size:8.5pt;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.45rem}
+.news-metric .value{font-family:'Cormorant Garamond',serif;font-size:20pt;color:var(--navy);line-height:1.05}
+.news-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(340px,.75fr);gap:16px;align-items:start}
+.news-section{background:white;border:1px solid var(--line);padding:1.25rem;margin-bottom:1rem}
+.news-section h3{font-size:16pt;margin-bottom:.8rem}
+.news-brief-md{font-size:10.5pt;line-height:1.65}
+.news-brief-md h1,.news-brief-md h2,.news-brief-md h3{font-family:'DM Sans',sans-serif;font-size:12pt;margin:1em 0 .35em;border:none;padding:0}
+.news-brief-md a{color:var(--navy)}
+.news-items{display:grid;gap:10px}
+.news-item{border-bottom:1px solid var(--line);padding-bottom:10px;font-size:10pt;line-height:1.45}
+.news-item:last-child{border-bottom:0;padding-bottom:0}
+.news-item a{color:var(--navy);text-decoration:none;border-bottom:1px solid rgba(26,39,68,.2)}
+.news-item a:hover{border-bottom-color:var(--gold);color:var(--gold)}
+.news-meta{font-size:8.5pt;color:var(--muted);margin-bottom:.25rem}
+.news-chip{display:inline-block;border:1px solid var(--line);border-radius:12px;padding:1px 7px;margin:2px 3px 0 0;color:var(--navy);background:#fbfaf6;font-size:8.5pt}
+.news-positive{color:var(--green);font-weight:600}.news-negative{color:var(--red);font-weight:600}.news-mixed{color:#8a5b00;font-weight:600}
+@media(max-width:920px){.news-grid{grid-template-columns:1fr}.news-summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){body{padding:1rem .75rem}.topbar{padding:1rem}.news-summary{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Japanese daily news brief</div></div>
+<div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
+</div>
+
+<div class="nav-links">
+<a href="/index.html">Dashboard</a>
+<a href="/track-record.html">Track Record</a>
+<a href="/mw-tops-attribution.html">Attribution</a>
+<a href="/mw-tops-transactions.html">Transactions</a>
+<a href="/portfolio.html">Portfolio</a>
+<a href="/model-portfolio.html">Model Book</a>
+<a href="/stock.html">Stock</a>
+<a href="/pipeline.html">Pipeline</a>
+<a href="/research-log.html">Research</a>
+<a href="/news.html" class="active">News</a>
+</div>
+
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="news-toolbar">
+    <div>
+      <h2>Daily News Brief</h2>
+      <div class="subtitle" id="news-subtitle">Loading latest brief...</div>
+    </div>
+    <button id="news-refresh" class="news-refresh" type="button">Refresh</button>
+  </div>
+
+  <div id="news-summary" class="news-summary"></div>
+
+  <div class="news-grid">
+    <section class="news-section">
+      <h3>日本語ブリーフ</h3>
+      <div id="news-brief"></div>
+    </section>
+
+    <section class="news-section">
+      <h3>元ニュース</h3>
+      <div id="news-items"></div>
+    </section>
+  </div>
+</div>
+</div>
+<script type="module" src="/js/page-news.js"></script>
+</body>
+</html>

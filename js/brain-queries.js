@@ -20,6 +20,13 @@ export async function getModelPortfolioDashboard(portfolioSlug = "penrose-brain-
   return data;
 }
 
+/** Latest Japanese daily news brief and normalized recent news items. */
+export async function getLatestNewsBrief(days = 7) {
+  const { data, error } = await brainAuth.rpc("fn_get_latest_news_brief", { p_days: days });
+  if (error) throw error;
+  return data;
+}
+
 /** Slim header data for stock detail page. */
 export function getStockHeader(symbol) {
   return brainQuery("fn_get_stock_header", { p_symbol: symbol });
