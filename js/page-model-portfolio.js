@@ -88,6 +88,12 @@ function safeExternalUrl(value) {
   return /^https?:\/\//i.test(url) ? url : "";
 }
 
+function isKoyfinSource({ provider, url }) {
+  const providerText = String(provider ?? "").trim().toLowerCase();
+  const urlText = String(url ?? "").trim().toLowerCase();
+  return providerText === "koyfin" || urlText.includes("app.koyfin.com");
+}
+
 function researchLabel({ name, provider, date }) {
   const cleanName = typeof name === "string" ? name.trim() : "";
   if (cleanName) return cleanName;
@@ -115,6 +121,10 @@ function researchAnchorHTML({ symbol, sessionId, url, name, provider, date }) {
 function researchLinkHTML(details) {
   const links = Array.isArray(details.links) ? details.links : [];
   const renderedLinks = links
+    .filter((link) => !isKoyfinSource({
+      provider: link.provider ?? link.research_provider,
+      url: link.url ?? link.provider_url ?? link.research_url,
+    }))
     .map((link) => researchAnchorHTML({
       symbol: details.symbol,
       sessionId: link.session_id ?? link.research_session_id,
@@ -126,6 +136,9 @@ function researchLinkHTML(details) {
     .filter(Boolean);
 
   if (renderedLinks.length) return renderedLinks.join("<br>");
+  if (isKoyfinSource({ provider: details.provider, url: details.url ?? details.provider_url })) {
+    return "—";
+  }
   return researchAnchorHTML(details) || "—";
 }
 
