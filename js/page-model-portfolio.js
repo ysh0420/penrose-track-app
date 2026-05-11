@@ -32,6 +32,16 @@ function formatUsd(value, decimals = 1) {
   return `${sign}$${abs.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 }
 
+function formatJpy(value, decimals = 0) {
+  if (value == null) return "â€”";
+  const n = numberValue(value, NaN);
+  if (!Number.isFinite(n)) return "â€”";
+  return `JPY ${n.toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })}`;
+}
+
 function formatPctDecimal(value, decimals = 1) {
   if (value == null) return "—";
   const n = numberValue(value, NaN);
@@ -124,8 +134,8 @@ function renderLoading() {
     .map(() => metricHTML("Loading", "—", ""))
     .join("");
   $("mp-chart").innerHTML = `<div class="brain-empty">${skeletonRowHTML("70%")}</div>`;
-  $("mp-positions").innerHTML = skeletonTable(7, 7);
-  $("mp-trades").innerHTML = skeletonTable(6, 8);
+  $("mp-positions").innerHTML = skeletonTable(7, 8);
+  $("mp-trades").innerHTML = skeletonTable(6, 11);
   $("mp-risk").innerHTML = `<div class="brain-empty">${skeletonRowHTML("80%")}</div>`;
   $("mp-deck").innerHTML = `<div class="brain-empty">${skeletonRowHTML("75%")}</div>`;
 }
@@ -251,6 +261,7 @@ function renderPositions(rows) {
             <th>Name</th>
             <th class="num">Weight</th>
             <th class="num">Market Value</th>
+            <th class="num">Price</th>
             <th>Sector</th>
             <th>Themes</th>
             <th>Research</th>
@@ -265,6 +276,7 @@ function renderPositions(rows) {
                 <td>${escapeHTML(r.company_name_jp ?? r.company_name ?? r.symbol ?? "")}</td>
                 <td class="num">${escapeHTML(formatWeight(r.weight))}</td>
                 <td class="num">${escapeHTML(formatUsd(r.market_value_usd, 2))}</td>
+                <td class="num">${escapeHTML(formatJpy(r.price_jpy))}</td>
                 <td>${escapeHTML(r.sector ?? "—")}</td>
                 <td>${themeChipsHTML(r.theme_tags)}</td>
                 <td>${researchLinkHTML({
@@ -343,6 +355,8 @@ function renderTrades(rows) {
             <th class="num">Notional</th>
             <th class="num">Before</th>
             <th class="num">After</th>
+            <th>Status</th>
+            <th class="num">Exec Px</th>
             <th>Research</th>
             <th>Reason</th>
           </tr>
@@ -361,6 +375,8 @@ function renderTrades(rows) {
                 <td class="num">${escapeHTML(formatUsd(r.notional_usd, 2))}</td>
                 <td class="num">${escapeHTML(formatWeight(r.weight_before))}</td>
                 <td class="num">${escapeHTML(formatWeight(r.weight_after))}</td>
+                <td>${escapeHTML(String(r.execution_status ?? "—").replace(/_/g, " "))}</td>
+                <td class="num">${escapeHTML(formatJpy(r.execution_price_jpy))}</td>
                 <td>${researchLinkHTML({
                   symbol: r.symbol,
                   sessionId: r.research_session_id,
