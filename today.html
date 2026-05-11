@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Today - Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<link rel="stylesheet" href="/css/platform-pages.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1280px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
+.topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+.today-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.today-toolbar h2{font-size:20pt;border-bottom:2px solid var(--gold);padding-bottom:.3em;display:inline-block}
+.today-refresh{border:1px solid var(--navy);background:white;color:var(--navy);padding:.55rem .9rem;border-radius:4px;font-family:inherit;cursor:pointer}
+.today-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:16px}
+.news-brief-md{font-size:10.5pt;line-height:1.65}.news-brief-md h1,.news-brief-md h2,.news-brief-md h3{font-family:'DM Sans',sans-serif;font-size:12pt;margin:1em 0 .35em;border:none;padding:0}
+@media(max-width:920px){.today-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Daily monitor</div></div>
+<div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
+</div>
+
+<div data-platform-nav data-active-nav="today"></div>
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="today-toolbar">
+    <div>
+      <h2>Today</h2>
+      <div class="platform-subtitle">News, research, validation book, and immediate decision queue.</div>
+    </div>
+    <button id="today-refresh" class="today-refresh" type="button">Refresh</button>
+  </div>
+
+  <div id="today-metrics" class="platform-metrics"></div>
+
+  <div class="today-grid">
+    <div>
+      <section class="platform-section">
+        <h3>Action Queue</h3>
+        <div id="today-actions"></div>
+      </section>
+      <section class="platform-section">
+        <h3>Japanese Brief</h3>
+        <div id="today-news"></div>
+      </section>
+    </div>
+    <div>
+      <section class="platform-section">
+        <h3>Research</h3>
+        <div id="today-research"></div>
+      </section>
+      <section class="platform-section">
+        <h3>Validation Book</h3>
+        <div id="today-validation"></div>
+      </section>
+    </div>
+  </div>
+</div>
+</div>
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module" src="/js/page-today.js"></script>
+</body>
+</html>

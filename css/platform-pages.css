@@ -1,0 +1,41 @@
+:root{
+  --navy:#1a2744;
+  --gold:#c9a84c;
+  --cream:#f7f5f0;
+  --sumi:#2a2a2a;
+  --line:#e0d8c4;
+  --muted:#8b8680;
+  --green:#2e7d32;
+  --red:#b71c1c;
+}
+
+.platform-nav{display:flex;gap:.65rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
+.platform-nav a{color:var(--navy);text-decoration:none;padding:.45rem .75rem;border:1px solid var(--line);background:white;border-radius:3px}
+.platform-nav a:hover{background:var(--cream);border-color:var(--gold)}
+.platform-nav a.active{background:var(--navy);color:white;border-color:var(--navy)}
+
+.platform-shell-grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px;margin-bottom:1rem}
+.platform-card{background:white;border:1px solid var(--line);padding:1.15rem}
+.platform-card h3{font-size:14pt;margin-bottom:.35rem;color:var(--navy)}
+.platform-card p{font-size:10pt;line-height:1.55;color:var(--sumi);margin-bottom:.7rem}
+.platform-card a{color:var(--navy);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(26,39,68,.25)}
+.platform-card a:hover{color:var(--gold);border-bottom-color:var(--gold)}
+.platform-section{background:white;border:1px solid var(--line);padding:1.25rem;margin-bottom:1rem}
+.platform-section h2,.platform-section h3{border-bottom:2px solid var(--gold);padding-bottom:.3em;display:inline-block;margin-bottom:.75rem}
+.platform-subtitle{font-size:10pt;color:var(--muted);margin-bottom:1rem}
+.platform-metrics{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px;margin-bottom:1rem}
+.platform-metric{background:white;border:1px solid var(--line);padding:1rem;min-height:88px}
+.platform-metric .label{font-size:8.5pt;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:.4rem}
+.platform-metric .value{font-family:'Cormorant Garamond',serif;font-size:20pt;color:var(--navy);line-height:1.05}
+.platform-list{display:grid;gap:10px}
+.platform-item{border-bottom:1px solid var(--line);padding-bottom:10px;font-size:10pt;line-height:1.5}
+.platform-item:last-child{border-bottom:0;padding-bottom:0}
+.platform-meta{font-size:8.5pt;color:var(--muted);margin-bottom:.25rem}
+.platform-pill{display:inline-block;border:1px solid var(--line);border-radius:12px;padding:1px 7px;margin:2px 3px 0 0;color:var(--navy);background:#fbfaf6;font-size:8.5pt}
+
+@media(max-width:960px){
+  .platform-shell-grid,.platform-metrics{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .platform-shell-grid,.platform-metrics{grid-template-columns:1fr}
+}

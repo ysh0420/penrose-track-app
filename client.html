@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client View - Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<link rel="stylesheet" href="/css/platform-pages.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1180px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
+.topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Approved disclosure snapshots</div></div>
+<div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
+</div>
+
+<div data-platform-nav data-active-nav="client"></div>
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <section class="platform-section">
+    <h2>Client View</h2>
+    <div class="platform-subtitle">Only approved snapshots should appear here. Internal notes and raw provider links stay out.</div>
+    <div class="platform-shell-grid">
+      <div class="platform-card">
+        <h3>Approved Snapshots</h3>
+        <p>Client disclosure should be generated from frozen master-portfolio snapshots, not from live internal tables.</p>
+      </div>
+      <div class="platform-card">
+        <h3>Redactions</h3>
+        <p>Hide raw Koyfin links, account screenshots, unapproved reports, internal AI disagreement logs, and private notes.</p>
+      </div>
+      <div class="platform-card">
+        <h3>Next Build Step</h3>
+        <p>Add client snapshot storage, approval state, and a renderer that reads only approved snapshot payloads.</p>
+      </div>
+    </div>
+  </section>
+</div>
+</div>
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module" src="/js/page-platform-shell.js"></script>
+</body>
+</html>

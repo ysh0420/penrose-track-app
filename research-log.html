@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/brain-pages.css">
+<link rel="stylesheet" href="/css/platform-pages.css">
 <style>
 :root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -21,10 +22,6 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
 .topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
 .topbar-right a:hover{border-bottom-color:var(--gold)}
-.nav-links{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt}
-.nav-links a{color:var(--navy);text-decoration:none;padding:.4rem .8rem;border:1px solid var(--line);background:white;border-radius:3px}
-.nav-links a:hover{background:var(--cream);border-color:var(--gold)}
-.nav-links a.active{background:var(--navy);color:white;border-color:var(--navy)}
 .section{background:white;border:1px solid var(--line);padding:1.5rem;margin-bottom:1.5rem}
 .section h2{font-size:18pt;margin-bottom:.3em;border-bottom:2px solid var(--gold);padding-bottom:.3em;display:inline-block}
 .section .subtitle{font-size:10pt;color:var(--muted);font-style:italic;margin-bottom:1rem}
@@ -41,18 +38,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 <div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
 </div>
 
-<div class="nav-links">
-<a href="/index.html">Dashboard</a>
-<a href="/track-record.html">Track Record</a>
-<a href="/mw-tops-attribution.html">Attribution</a>
-<a href="/mw-tops-transactions.html">Transactions</a>
-<a href="/portfolio.html">Portfolio</a>
-<a href="/model-portfolio.html">Model Book</a>
-<a href="/stock.html">Stock</a>
-<a href="/pipeline.html">Pipeline</a>
-<a href="/research-log.html" class="active">Research</a>
-<a href="/news.html">News</a>
-</div>
+<div data-platform-nav data-active-nav="research"></div>
 
 <div id="brain-login"></div>
 
@@ -92,6 +78,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 </div>
 
 </div>
+<script type="module" src="/js/platform-nav.js"></script>
 <script type="module" src="/js/page-research-log.js"></script>
 </body>
 </html>
