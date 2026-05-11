@@ -1,5 +1,4 @@
 // @ts-check
-import { mountBrainAuthGate } from "./brain-client.js";
 
 const DATA_URL = "/data/mw-portfolio-history.json";
 
@@ -280,10 +279,8 @@ async function loadTrackRecord() {
   }
 }
 
-mountBrainAuthGate({
-  onAuthed: () => {
-    const signout = document.getElementById("brain-signout");
-    if (signout) signout.style.display = "";
-    loadTrackRecord();
-  },
-});
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", loadTrackRecord);
+} else {
+  loadTrackRecord();
+}

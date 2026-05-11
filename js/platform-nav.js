@@ -1,14 +1,17 @@
 // @ts-check
 
 const NAV_ITEMS = [
-  { id: "today", label: "Today", href: "/today.html" },
-  { id: "ideas", label: "Ideas", href: "/ideas.html" },
-  { id: "master", label: "Master Portfolio", href: "/master-portfolio.html" },
-  { id: "track", label: "Track Record", href: "/track-record.html" },
-  { id: "research", label: "Research", href: "/research-log.html" },
-  { id: "companies", label: "Companies", href: "/stock.html" },
-  { id: "client", label: "Client View", href: "/client.html" },
+  { id: "today", label: "Today", href: "/today.html", group: "Daily" },
+  { id: "ideas", label: "Ideas", href: "/ideas.html", group: "Pipeline" },
+  { id: "master", label: "Master Book", href: "/master-portfolio.html", group: "Portfolio" },
+  { id: "track", label: "Track Record / MW", href: "/track-record.html", group: "Portfolio" },
+  { id: "model", label: "Model Book", href: "/model-portfolio.html", group: "Portfolio" },
+  { id: "research", label: "Research Log", href: "/research-log.html", group: "Research" },
+  { id: "companies", label: "Companies", href: "/stock.html", group: "Research" },
+  { id: "client", label: "Client View", href: "/client.html", group: "External" },
 ];
+
+const NAV_GUIDE = "Today: daily monitor | Master Book: intended portfolio | Track Record / MW: account history | Model Book: validation book";
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({
@@ -25,11 +28,12 @@ export function renderPlatformNav(container, activeId) {
   container.innerHTML = `
     <nav class="platform-nav" aria-label="Platform navigation">
       ${NAV_ITEMS.map((item) => `
-        <a href="${escapeHTML(item.href)}" class="${item.id === active ? "active" : ""}">
+        <a href="${escapeHTML(item.href)}" class="${item.id === active ? "active" : ""}" data-group="${escapeHTML(item.group)}" ${item.id === active ? 'aria-current="page"' : ""}>
           ${escapeHTML(item.label)}
         </a>
       `).join("")}
     </nav>
+    <div class="platform-nav-guide">${escapeHTML(NAV_GUIDE)}</div>
   `;
 }
 
