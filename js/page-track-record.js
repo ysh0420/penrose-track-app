@@ -1,6 +1,7 @@
 // @ts-check
 
 const DATA_URL = "/data/mw-portfolio-history.json";
+let returnChart = null;
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({
@@ -39,6 +40,19 @@ function metric(label, value, detail = "", valueClass = "") {
       ${detail ? `<div class="platform-meta">${escapeHTML(detail)}</div>` : ""}
     </div>
   `;
+}
+
+function sortedRecords(account, direction = "desc") {
+  return [...(account?.records || [])].sort((a, b) => {
+    const result = String(a.asOfDate || "").localeCompare(String(b.asOfDate || ""));
+    return direction === "asc" ? result : -result;
+  });
+}
+
+function formatMonthLabel(dateString) {
+  const date = new Date(`${dateString}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return String(dateString || "-");
+  return `${date.toLocaleString("en-US", { month: "short", timeZone: "UTC" })} ${date.getUTCFullYear()} MTD`;
 }
 
 function row(label, cells) {
@@ -216,6 +230,93 @@ function renderPositions(record) {
   `;
 }
 
+function renderPerformanceSummary(account, latest) {
+  const root = document.getElementById("mw-summary-root");
+  if (!root) return;
+  root.innerHTML = `
+    ${metric("Overall / Cumulative Return", formatPct(latest.summary.overallPerformancePct), latest.asOfDate, signedClass(latest.summary.overallPerformancePct))}
+    ${metric("MTD Fund Return Net", formatPct(latest.summary.mtdFundReturnNetPct), "Resets monthly", signedClass(latest.summary.mtdFundReturnNetPct))}
+    ${metric("MTD Fund Return Gross", formatPct(latest.summary.mtdFundReturnGrossPct), "Before net adjustments", signedClass(latest.summary.mtdFundReturnGrossPct))}
+    ${metric("Total P&L Net", formatNumber(latest.summary.totalPnlNet), account.baseCurrency, signedClass(latest.summary.totalPnlNet))}
+    ${metric("Current Fund Size", formatNumber(latest.summary.currentFundSize), `Target ${formatNumber(latest.summary.targetFundSize)}`)}
+    ${metric("Net Market Exposure", formatPct(latest.summary.netMarketExposurePct), "Open portfolio", signedClass(latest.summary.netMarketExposurePct))}
+  `;
+}
+
+function renderMonthlyPerformance(account) {
+  const body = document.getElementById("monthRows");
+  if (!body) return;
+  const records = sortedRecords(account, "desc");
+  body.innerHTML = records.map((record) => `
+    <tr>
+      <td class="bold">${escapeHTML(formatMonthLabel(record.asOfDate))}</td>
+      <td class="num ${signedClass(record.summary.mtdFundReturnNetPct)}">${formatPct(record.summary.mtdFundReturnNetPct)}</td>
+      <td class="num ${signedClass(record.summary.overallPerformancePct)}">${formatPct(record.summary.overallPerformancePct)}</td>
+      <td class="num ${signedClass(record.summary.totalPnlNet)}">${formatNumber(record.summary.totalPnlNet)}</td>
+      <td>${escapeHTML(record.asOfDate)}</td>
+    </tr>
+  `).join("");
+}
+
+function renderReturnChart(account) {
+  const canvas = document.getElementById("retChart");
+  const ChartCtor = globalThis.window?.Chart;
+  if (!canvas || typeof ChartCtor !== "function") return;
+  const records = sortedRecords(account, "asc");
+  if (!records.length) return;
+  if (returnChart) returnChart.destroy();
+  returnChart = new ChartCtor(canvas, {
+    type: "line",
+    data: {
+      labels: records.map((record) => record.asOfDate),
+      datasets: [
+        {
+          label: "Overall / cumulative return (%)",
+          data: records.map((record) => Number(record.summary.overallPerformancePct)),
+          borderColor: "#c9a84c",
+          backgroundColor: "rgba(201,168,76,0.15)",
+          borderWidth: 3,
+          tension: 0.2,
+          fill: true,
+          pointRadius: 5,
+          pointBackgroundColor: "#1a2744",
+          pointBorderColor: "#c9a84c",
+          pointBorderWidth: 2,
+        },
+        {
+          label: "Zero baseline",
+          data: records.map(() => 0),
+          borderColor: "rgba(139,134,128,0.4)",
+          borderWidth: 1,
+          borderDash: [2, 4],
+          pointRadius: 0,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "bottom" },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.dataset.label}: ${Number(context.parsed.y).toFixed(2)}%`,
+          },
+        },
+      },
+      scales: {
+        y: {
+          title: { display: true, text: "Overall Performance (%)" },
+          grid: { color: "#e0d8c4" },
+          ticks: { callback: (value) => `${Number(value) > 0 ? "+" : ""}${value}%` },
+        },
+        x: { grid: { color: "#f0ebe0" } },
+      },
+    },
+  });
+}
+
 function render(data) {
   const root = document.getElementById("track-record-root");
   if (!root) return;
@@ -225,19 +326,12 @@ function render(data) {
     root.innerHTML = `<div class="platform-empty">No account history loaded.</div>`;
     return;
   }
+  renderPerformanceSummary(account, latest);
+  renderMonthlyPerformance(account);
+  renderReturnChart(account);
 
   root.innerHTML = `
     <div class="platform-meta">${escapeHTML(account.displayName)} / ${escapeHTML(latest.asOfDate)} / ${escapeHTML(latest.sourceLabel)}</div>
-    <div class="platform-metrics">
-      ${metric("MTD Fund Return Net", formatPct(latest.summary.mtdFundReturnNetPct), "MW account", signedClass(latest.summary.mtdFundReturnNetPct))}
-      ${metric("Overall Performance", formatPct(latest.summary.overallPerformancePct), "Skill factor included", signedClass(latest.summary.overallPerformancePct))}
-      ${metric("Total P&L Net", formatNumber(latest.summary.totalPnlNet), account.baseCurrency, signedClass(latest.summary.totalPnlNet))}
-      ${metric("Current Fund Size", formatNumber(latest.summary.currentFundSize), `Target ${formatNumber(latest.summary.targetFundSize)}`)}
-      ${metric("Net Market Exposure", formatPct(latest.summary.netMarketExposurePct), "Open portfolio", signedClass(latest.summary.netMarketExposurePct))}
-      ${metric("Long Ideas Return", formatPct(latest.summary.returnOnLongIdeasPct), "MTD", signedClass(latest.summary.returnOnLongIdeasPct))}
-      ${metric("Short Ideas Return", formatPct(latest.summary.returnOnShortIdeasPct), "MTD", signedClass(latest.summary.returnOnShortIdeasPct))}
-      ${metric("TPX MTD", formatPct(latest.comparativePerformance.mtdIndexReturnPct), `Today ${formatPct(latest.comparativePerformance.todayIndexReturnPct)}`, signedClass(latest.comparativePerformance.mtdIndexReturnPct))}
-    </div>
 
     <section class="platform-subsection">
       <h3>MW NAV History</h3>
