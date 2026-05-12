@@ -14,6 +14,7 @@
 .platform-nav a:hover{background:var(--cream);border-color:var(--gold)}
 .platform-nav a.active{background:var(--navy);color:white;border-color:var(--navy)}
 .platform-nav a[data-group="Portfolio"]{border-color:#d4c17d}
+.platform-nav a[data-group="Research"]{border-color:#b9c4da}
 .platform-nav-guide{font-size:9pt;color:var(--muted);line-height:1.45;margin-bottom:1.5rem}
 
 .platform-shell-grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px;margin-bottom:1rem}
@@ -48,10 +49,24 @@
 .negative{color:var(--red)!important}
 .track-grid{display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:14px}
 .platform-empty{padding:1rem;border:1px solid var(--line);background:#fbfaf6;color:var(--muted);font-size:10pt}
+.platform-actions{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.platform-button{border:1px solid var(--navy);background:white;color:var(--navy);padding:.55rem .85rem;border-radius:4px;font-family:inherit;font-size:10pt;text-decoration:none;cursor:pointer}
+.platform-button:hover{border-color:var(--gold);color:var(--gold)}
+.report-grid{display:grid;grid-template-columns:repeat(2,minmax(260px,1fr));gap:14px}
+.report-card{background:white;border:1px solid var(--line);padding:1rem;display:grid;gap:.55rem}
+.report-card h3{font-size:15pt;margin:0;color:var(--navy)}
+.report-title-row{display:flex;justify-content:space-between;gap:.75rem;align-items:flex-start}
+.report-score{font-variant-numeric:tabular-nums;font-size:9pt;color:var(--muted);white-space:nowrap}
+.report-missing{font-size:9pt;color:var(--muted);line-height:1.45}
+.report-status{display:inline-block;border:1px solid var(--line);border-radius:12px;padding:2px 8px;font-size:8.5pt;background:#fbfaf6;color:var(--navy)}
+.report-status.decision{border-color:rgba(46,125,50,.35);color:var(--green);background:#f4fbf4}
+.report-status.draft{border-color:rgba(183,28,28,.3);color:var(--red);background:#fff7f5}
+.report-status.candidate{border-color:#d4c17d;color:var(--navy);background:#fffdf2}
 
 @media(max-width:960px){
   .platform-shell-grid,.platform-metrics{grid-template-columns:1fr 1fr}
   .track-grid{grid-template-columns:1fr}
+  .report-grid{grid-template-columns:1fr}
 }
 @media(max-width:640px){
   .platform-shell-grid,.platform-metrics{grid-template-columns:1fr}

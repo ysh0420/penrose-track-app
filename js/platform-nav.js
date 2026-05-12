@@ -3,15 +3,14 @@
 const NAV_ITEMS = [
   { id: "today", label: "Today", href: "/today.html", group: "Daily" },
   { id: "ideas", label: "Ideas", href: "/ideas.html", group: "Pipeline" },
-  { id: "master", label: "Master Book", href: "/master-portfolio.html", group: "Portfolio" },
-  { id: "track", label: "Track Record / MW", href: "/track-record.html", group: "Portfolio" },
-  { id: "model", label: "Model Book", href: "/model-portfolio.html", group: "Portfolio" },
-  { id: "research", label: "Research Log", href: "/research-log.html", group: "Research" },
+  { id: "master", label: "Master Portfolio", href: "/master-portfolio.html", group: "Portfolio" },
+  { id: "reports", label: "Reports", href: "/reports.html", group: "Research" },
   { id: "companies", label: "Companies", href: "/stock.html", group: "Research" },
+  { id: "track", label: "Track Record", href: "/track-record.html", group: "Portfolio" },
   { id: "client", label: "Client View", href: "/client.html", group: "External" },
 ];
 
-const NAV_GUIDE = "Today: daily monitor | Master Book: intended portfolio | Track Record / MW: account history | Model Book: validation book";
+const NAV_GUIDE = "Today: daily monitor | Master Portfolio: Yuki intended book | Reports: decision-grade research | Track Record: accounts and validation";
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({
