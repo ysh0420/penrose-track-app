@@ -288,11 +288,13 @@ function renderDisclosures(payload) {
     <div class="platform-actions">
       ${links.tdnet ? `<a class="platform-button" href="${escapeHTML(links.tdnet)}" target="_blank" rel="noreferrer">TDnet all ${escapeHTML(String(counts.tdnet ?? "-"))}</a>` : ""}
       ${links.edinet ? `<a class="platform-button" href="${escapeHTML(links.edinet)}" target="_blank" rel="noreferrer">EDINET ${escapeHTML(String(counts.edinet ?? "-"))}</a>` : ""}
+      ${links.koyfin_watchlist ? `<a class="platform-button" href="${escapeHTML(links.koyfin_watchlist)}" target="_blank" rel="noreferrer">Koyfin watchlist</a>` : ""}
     </div>
     <div class="platform-subtitle">
       Full-day source count: ${escapeHTML(String(counts.total ?? "-"))}.
       Portfolio symbols: ${escapeHTML(String(list(universe.portfolio_symbols).length))};
-      watchlist symbols: ${escapeHTML(String(list(universe.watchlist_symbols).length))}.
+      watchlist symbols: ${escapeHTML(String(list(universe.watchlist_symbols).length))}
+      ${universe.watchlist_source ? `from ${escapeHTML(String(universe.watchlist_source))}` : ""}.
     </div>
   `;
   if (!rows.length) {
