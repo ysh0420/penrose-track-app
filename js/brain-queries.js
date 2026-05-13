@@ -20,6 +20,19 @@ export async function getModelPortfolioDashboard(portfolioSlug = "penrose-brain-
   return data;
 }
 
+/** Read-only AI screened model portfolio preview over the Koyfin Japan monitor universe. */
+export async function getAiModelPortfolioPreview(date = "", limit = 80) {
+  const params = {
+    p_limit: limit,
+    p_source_key: "koyfin_japan_monitor",
+    p_nav_usd: 100000000,
+  };
+  if (date) params.p_run_date = date;
+  const { data, error } = await brainAuth.rpc("fn_platform_ai_model_portfolio_preview", params);
+  if (error) throw error;
+  return data;
+}
+
 /** Latest Japanese daily news brief and normalized recent news items. */
 export async function getLatestNewsBrief(days = 7) {
   const { data, error } = await brainAuth.rpc("fn_get_latest_news_brief", { p_days: days });

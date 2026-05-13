@@ -1,10 +1,12 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
-import { getModelPortfolioDashboard } from "./brain-queries.js";
+import { getAiModelPortfolioPreview, getModelPortfolioDashboard } from "./brain-queries.js";
 import { escapeHTML, skeletonRowHTML, themeChipsHTML } from "./brain-components.js";
 import { showError } from "./brain-error.js";
 
 let dashboard = null;
+let aiPreview = null;
+let aiPreviewError = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -54,6 +56,13 @@ function formatWeight(value) {
   return formatPctDecimal(value, 2);
 }
 
+function formatScore(value) {
+  if (value == null) return "â€”";
+  const n = numberValue(value, NaN);
+  if (!Number.isFinite(n)) return "â€”";
+  return n.toFixed(1);
+}
+
 function formatDate(value) {
   if (!value) return "—";
   return String(value).slice(0, 10);
@@ -64,6 +73,10 @@ function valueClass(value) {
   if (n > 0) return "mp-up";
   if (n < 0) return "mp-down";
   return "mp-flat";
+}
+
+function previewDateParam() {
+  return new URLSearchParams(location.search).get("date") || "";
 }
 
 function metricHTML(label, value, sub = "", cls = "") {
@@ -151,14 +164,32 @@ function renderLoading() {
   $("mp-trades").innerHTML = skeletonTable(6, 11);
   $("mp-risk").innerHTML = `<div class="brain-empty">${skeletonRowHTML("80%")}</div>`;
   $("mp-deck").innerHTML = `<div class="brain-empty">${skeletonRowHTML("75%")}</div>`;
+  $("mp-ai-meta").innerHTML = `${skeletonRowHTML("45%")}`;
+  $("mp-ai-counts").innerHTML = Array.from({ length: 4 })
+    .map(() => `<span class="mp-ai-count">${skeletonRowHTML("42px")}</span>`)
+    .join("");
+  $("mp-ai-preview").innerHTML = skeletonTable(5, 10);
 }
 
 async function load() {
   renderLoading();
-  try {
-    dashboard = await getModelPortfolioDashboard();
-  } catch (e) {
-    const error = /** @type {Error} */(e);
+  const [dashboardResult, previewResult] = await Promise.allSettled([
+    getModelPortfolioDashboard(),
+    getAiModelPortfolioPreview(previewDateParam(), 80),
+  ]);
+
+  if (previewResult.status === "fulfilled") {
+    aiPreview = previewResult.value;
+    aiPreviewError = null;
+  } else {
+    aiPreview = null;
+    aiPreviewError = previewResult.reason instanceof Error
+      ? previewResult.reason
+      : new Error(String(previewResult.reason));
+  }
+
+  if (dashboardResult.status === "rejected") {
+    const error = /** @type {Error} */(dashboardResult.reason);
     showError({
       container: $("mp-chart"),
       message: `Model portfolio load failed: ${error.message}`,
@@ -170,8 +201,10 @@ async function load() {
     $("mp-trades").innerHTML = "";
     $("mp-risk").innerHTML = "";
     $("mp-deck").innerHTML = "";
+    renderAiPreview(aiPreview, aiPreviewError);
     return;
   }
+  dashboard = dashboardResult.value;
   render();
 }
 
@@ -184,6 +217,7 @@ function render() {
     $("mp-trades").innerHTML = "";
     $("mp-risk").innerHTML = "";
     $("mp-deck").innerHTML = "";
+    renderAiPreview(aiPreview, aiPreviewError);
     return;
   }
 
@@ -203,6 +237,7 @@ function render() {
   renderRisk(dashboard.latest_risk, nav);
   renderDeck(listValue(dashboard.deck_metrics));
   renderTrades(trades);
+  renderAiPreview(aiPreview, aiPreviewError);
 }
 
 function renderSummary(nav, positions, trades, series) {
@@ -216,6 +251,98 @@ function renderSummary(nav, positions, trades, series) {
     metricHTML("Positions", String(positions.length), topPosition ? `top ${topPosition.symbol} ${formatWeight(topPosition.weight)}` : "no active holdings"),
     metricHTML("Trades", String(trades.length), "latest rebalance log"),
   ].join("");
+}
+
+function renderAiPreview(payload, error) {
+  if (error) {
+    $("mp-ai-meta").innerHTML = "";
+    $("mp-ai-counts").innerHTML = "";
+    showError({
+      container: $("mp-ai-preview"),
+      message: `AI screening preview failed: ${error.message}`,
+      onRetry: load,
+      error,
+    });
+    return;
+  }
+
+  const items = listValue(payload?.items);
+  const counts = payload?.counts ?? {};
+  const universe = payload?.universe ?? {};
+  const links = payload?.source_links ?? {};
+  $("mp-ai-meta").innerHTML = [
+    `date ${escapeHTML(formatDate(payload?.date))}`,
+    `${escapeHTML(String(universe.count ?? 0))} names`,
+    `price ${escapeHTML(formatDate(universe.price_date))}`,
+    sourceAnchor("Koyfin", links.koyfin_watchlist),
+    sourceAnchor("TDnet", links.tdnet),
+    sourceAnchor("EDINET", links.edinet),
+  ].filter(Boolean).join("<span>Â·</span>");
+  $("mp-ai-counts").innerHTML = ["long_candidate", "short_candidate", "research_queue", "research_only_liquidity"]
+    .map((key) => `<span class="mp-ai-count">${escapeHTML(titleCase(key))}: <strong>${escapeHTML(String(counts[key] ?? 0))}</strong></span>`)
+    .join("");
+
+  if (!items.length) {
+    $("mp-ai-preview").innerHTML = `<div class="brain-empty">No AI screening rows returned</div>`;
+    return;
+  }
+
+  $("mp-ai-preview").innerHTML = `
+    <div class="mp-ai-table-wrap">
+      <table class="mp-table">
+        <thead>
+          <tr>
+            <th>Side</th>
+            <th>Symbol</th>
+            <th>Name</th>
+            <th>Sector</th>
+            <th class="num">Target</th>
+            <th class="num">Long</th>
+            <th class="num">Short</th>
+            <th class="num">F / G / T / L</th>
+            <th class="num">ADV</th>
+            <th>Tags</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items.map((row) => renderAiPreviewRow(row)).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+  wireStockRows($("mp-ai-preview"));
+}
+
+function sourceAnchor(label, url) {
+  const href = safeExternalUrl(url);
+  if (!href) return "";
+  return `<a href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer">${escapeHTML(label)}</a>`;
+}
+
+function renderAiPreviewRow(row) {
+  const sym = escapeHTML(row.symbol ?? "");
+  const side = String(row.side ?? "watch");
+  const rag = String(row.global_rag ?? "amber");
+  const tags = Array.isArray(row.reason_tags) ? row.reason_tags.join("; ") : "";
+  return `
+    <tr class="clickable" data-symbol="${sym}">
+      <td><span class="mp-ai-side mp-ai-side-${escapeHTML(side)}">${escapeHTML(side)}</span></td>
+      <td><strong>${sym}</strong></td>
+      <td>${escapeHTML(row.company_name ?? row.symbol ?? "")}</td>
+      <td>${escapeHTML(row.sector ?? "â€”")}</td>
+      <td class="num">${escapeHTML(formatWeight(row.target_weight))}</td>
+      <td class="num">${escapeHTML(formatScore(row.long_score))}</td>
+      <td class="num">${escapeHTML(formatScore(row.short_score))}</td>
+      <td class="num">
+        ${escapeHTML(formatScore(row.fundamental_score))} /
+        <span class="mp-rag-${escapeHTML(rag)}">${escapeHTML(formatScore(row.global_rag_score))}</span> /
+        ${escapeHTML(formatScore(row.technical_score))} /
+        ${escapeHTML(formatScore(row.liquidity_score))}
+      </td>
+      <td class="num">${escapeHTML(formatUsd(row.adv_usd_20d, 1))}</td>
+      <td class="mp-tags">${escapeHTML(tags)}</td>
+    </tr>
+  `;
 }
 
 function renderChart(series) {
