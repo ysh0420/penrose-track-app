@@ -300,7 +300,7 @@ function renderAiPreview(payload, error) {
             <th class="num">Long</th>
             <th class="num">Short</th>
             <th class="num">F / G / T / L</th>
-            <th class="num">ADV</th>
+            <th class="num">ADV USD</th>
             <th>Tags</th>
           </tr>
         </thead>
