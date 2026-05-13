@@ -60,13 +60,21 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .mp-ai-meta a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(37,99,235,.35)}
 .mp-ai-counts{display:flex;gap:8px;flex-wrap:wrap}
 .mp-ai-count{border:1px solid var(--line);background:#fbfaf6;padding:6px 9px;font-size:9pt;color:var(--navy);font-variant-numeric:tabular-nums}
-.mp-ai-table-wrap{max-height:560px;overflow:auto;scrollbar-gutter:stable;border-top:1px solid var(--line)}
+.mp-ai-table-wrap{max-height:620px;overflow:auto;scrollbar-gutter:stable;border:1px solid var(--line);background:white}
+.mp-ai-sheet{min-width:1320px;border-collapse:separate;border-spacing:0}
+.mp-ai-sheet th,.mp-ai-sheet td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px 8px;font-size:9.5pt;line-height:1.25;white-space:nowrap}
+.mp-ai-sheet th{position:sticky;top:0;z-index:2;background:#f0eadc;color:var(--navy);box-shadow:0 1px 0 var(--line)}
+.mp-ai-sheet tr:nth-child(even) td{background:#fbfaf6}
+.mp-ai-sheet tr:hover td{background:#f4f0e6}
+.mp-ai-sheet td:first-child,.mp-ai-sheet th:first-child{border-left:0}
+.mp-ai-rank{color:var(--muted);font-variant-numeric:tabular-nums}
 .mp-ai-side{font-weight:700;text-transform:uppercase;font-size:8pt;letter-spacing:.8px}
 .mp-ai-side-long{color:var(--green)}
 .mp-ai-side-short{color:var(--red)}
 .mp-ai-side-watch{color:var(--muted)}
+.mp-ai-decision{font-size:8.5pt;color:var(--navy);text-transform:uppercase;letter-spacing:.4px}
 .mp-rag-green{color:var(--green);font-weight:700}.mp-rag-amber{color:#b7791f;font-weight:700}.mp-rag-red{color:var(--red);font-weight:700}
-.mp-tags{max-width:260px;color:var(--muted);font-size:9pt;line-height:1.35}
+.mp-tags{min-width:260px;max-width:360px;color:var(--muted);font-size:9pt;line-height:1.35;white-space:normal!important}
 @media(max-width:1020px){.mp-summary{grid-template-columns:repeat(3,1fr)}.mp-grid{grid-template-columns:1fr}}
 @media(max-width:640px){body{padding:1rem .75rem}.topbar{padding:1rem}.mp-summary{grid-template-columns:1fr 1fr}.mp-metric .value{font-size:17pt}.mp-chart{height:220px}}
 </style>

@@ -75,6 +75,10 @@ function valueClass(value) {
   return "mp-flat";
 }
 
+function convictionScore(row) {
+  return Math.max(numberValue(row?.long_score, 0), numberValue(row?.short_score, 0));
+}
+
 function previewDateParam() {
   return new URLSearchParams(location.search).get("date") || "";
 }
@@ -289,23 +293,29 @@ function renderAiPreview(payload, error) {
 
   $("mp-ai-preview").innerHTML = `
     <div class="mp-ai-table-wrap">
-      <table class="mp-table">
+      <table class="mp-table mp-ai-sheet">
         <thead>
           <tr>
+            <th class="num">Rank</th>
+            <th>Decision</th>
             <th>Side</th>
             <th>Symbol</th>
             <th>Name</th>
             <th>Sector</th>
             <th class="num">Target</th>
+            <th class="num">Conv.</th>
             <th class="num">Long</th>
             <th class="num">Short</th>
-            <th class="num">F / G / T / L</th>
+            <th class="num">F</th>
+            <th class="num">G</th>
+            <th class="num">T</th>
+            <th class="num">L</th>
             <th class="num">ADV USD</th>
             <th>Tags</th>
           </tr>
         </thead>
         <tbody>
-          ${items.map((row) => renderAiPreviewRow(row)).join("")}
+          ${items.map((row, index) => renderAiPreviewRow(row, index)).join("")}
         </tbody>
       </table>
     </div>
@@ -319,26 +329,28 @@ function sourceAnchor(label, url) {
   return `<a href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer">${escapeHTML(label)}</a>`;
 }
 
-function renderAiPreviewRow(row) {
+function renderAiPreviewRow(row, index) {
   const sym = escapeHTML(row.symbol ?? "");
   const side = String(row.side ?? "watch");
   const rag = String(row.global_rag ?? "amber");
   const tags = Array.isArray(row.reason_tags) ? row.reason_tags.join("; ") : "";
+  const decision = String(row.decision ?? "");
   return `
     <tr class="clickable" data-symbol="${sym}">
+      <td class="num mp-ai-rank">${escapeHTML(String(index + 1))}</td>
+      <td><span class="mp-ai-decision">${escapeHTML(titleCase(decision))}</span></td>
       <td><span class="mp-ai-side mp-ai-side-${escapeHTML(side)}">${escapeHTML(side)}</span></td>
       <td><strong>${sym}</strong></td>
       <td>${escapeHTML(row.company_name ?? row.symbol ?? "")}</td>
       <td>${escapeHTML(row.sector ?? "â€”")}</td>
       <td class="num">${escapeHTML(formatWeight(row.target_weight))}</td>
+      <td class="num"><strong>${escapeHTML(formatScore(convictionScore(row)))}</strong></td>
       <td class="num">${escapeHTML(formatScore(row.long_score))}</td>
       <td class="num">${escapeHTML(formatScore(row.short_score))}</td>
-      <td class="num">
-        ${escapeHTML(formatScore(row.fundamental_score))} /
-        <span class="mp-rag-${escapeHTML(rag)}">${escapeHTML(formatScore(row.global_rag_score))}</span> /
-        ${escapeHTML(formatScore(row.technical_score))} /
-        ${escapeHTML(formatScore(row.liquidity_score))}
-      </td>
+      <td class="num">${escapeHTML(formatScore(row.fundamental_score))}</td>
+      <td class="num"><span class="mp-rag-${escapeHTML(rag)}">${escapeHTML(formatScore(row.global_rag_score))}</span></td>
+      <td class="num">${escapeHTML(formatScore(row.technical_score))}</td>
+      <td class="num">${escapeHTML(formatScore(row.liquidity_score))}</td>
       <td class="num">${escapeHTML(formatUsd(row.adv_usd_20d, 1))}</td>
       <td class="mp-tags">${escapeHTML(tags)}</td>
     </tr>
