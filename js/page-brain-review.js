@@ -1,6 +1,7 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
 import {
+  getBrainCompanyNames,
   getBrainPortfolioDisclosures,
   getBrainReviewDashboard,
   recordBrainReviewDecision,
@@ -56,6 +57,40 @@ function metric(label, value) {
 
 function badge(text, cls = "") {
   return `<span class="review-badge ${escapeHTML(cls)}">${escapeHTML(text)}</span>`;
+}
+
+function symbolLabel(symbol, companyNames = {}) {
+  const code = String(symbol || "").trim();
+  if (!code) return "";
+  const name = companyNames[code];
+  return name ? `${code} ${name}` : code;
+}
+
+function payloadCompanyNames(payload, disclosurePayload) {
+  const names = {};
+  list(payload?.market_snapshots).forEach((row) => {
+    if (row.symbol && row.name) names[String(row.symbol)] = row.name;
+  });
+  list(payload?.disclosure_items).forEach((row) => {
+    if (row.issuer_code && row.issuer_name) names[String(row.issuer_code)] = row.issuer_name;
+  });
+  list(disclosurePayload?.relevant_disclosures).forEach((row) => {
+    if (row.issuer_code && row.issuer_name) names[String(row.issuer_code)] = row.issuer_name;
+  });
+  list(payload?.signal_candidates).forEach((signal) => {
+    const match = String(signal.title || "").match(/^(.+?)\s*->\s*([0-9]{4}[A-Z]?)$/);
+    if (match?.[1] && match?.[2]) names[match[2]] = match[1].trim();
+  });
+  return names;
+}
+
+function signalSymbols(payload) {
+  return [...new Set(
+    list(payload?.signal_candidates)
+      .flatMap((signal) => list(signal.related_symbols))
+      .map((symbol) => String(symbol || "").trim())
+      .filter(Boolean)
+  )];
 }
 
 function normTitle(value) {
@@ -191,7 +226,7 @@ function renderSummary(payload) {
   `;
 }
 
-function renderSignals(payload) {
+function renderSignals(payload, companyNames = {}) {
   const signals = list(payload?.signal_candidates);
   if (!signals.length) return `<div class="brain-empty">No signal candidates for this run.</div>`;
 
@@ -203,7 +238,7 @@ function renderSignals(payload) {
       badge(signal.confidence || "low"),
       signal.promote_to && signal.promote_to !== "none" ? badge(signal.promote_to) : "",
       signal.related_theme ? badge(signal.related_theme) : "",
-      ...symbols.slice(0, 5).map((symbol) => badge(symbol)),
+      ...symbols.slice(0, 5).map((symbol) => badge(symbolLabel(symbol, companyNames))),
     ].filter(Boolean).join("");
     return `
       <article class="review-card">
@@ -364,6 +399,10 @@ async function loadReview() {
       getBrainReviewDashboard(date, 100),
       getBrainPortfolioDisclosures(date, 100),
     ]);
+    const companyNames = {
+      ...payloadCompanyNames(payload, disclosurePayload),
+      ...(await getBrainCompanyNames(signalSymbols(payload))),
+    };
     const counts = payload?.counts || {};
     $("review-metrics").innerHTML = [
       metric("Run Date", payload?.run?.run_date || date || "-"),
@@ -374,7 +413,7 @@ async function loadReview() {
       metric("Saved Decisions", String(counts.review_decisions ?? 0)),
     ].join("");
     $("review-summary").innerHTML = renderSummary(payload);
-    $("review-signals").innerHTML = renderSignals(payload);
+    $("review-signals").innerHTML = renderSignals(payload, companyNames);
     $("review-disclosures").innerHTML = renderDisclosures(disclosurePayload);
     $("review-markets").innerHTML = renderMarkets(payload?.market_snapshots);
     $("review-ai").innerHTML = renderAI(payload?.ai_enrichments);

@@ -51,6 +51,15 @@ export async function getBrainPortfolioDisclosures(date = "", limit = 100) {
   return data;
 }
 
+/** Symbol-to-company-name lookup for Brain review labels. */
+export async function getBrainCompanyNames(symbols = []) {
+  const unique = [...new Set((symbols || []).map((symbol) => String(symbol || "").trim()).filter(Boolean))];
+  if (!unique.length) return {};
+  const { data, error } = await brainAuth.rpc("fn_brain_v0_company_names", { p_symbols: unique });
+  if (error) throw error;
+  return data || {};
+}
+
 /** Persist one Brain signal review decision. */
 export async function recordBrainReviewDecision(signalId, decision, note = "") {
   const { data, error } = await brainAuth.rpc("fn_brain_v0_record_review_decision", {
