@@ -51,6 +51,12 @@ function fmtNum(value) {
   return n.toLocaleString("en-US", { maximumFractionDigits: 2 });
 }
 
+function fmtLeadPct(value, digits = 2) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "-";
+  return `${n > 0 ? "+" : ""}${n.toFixed(digits)}%`;
+}
+
 function metric(label, value) {
   return `<div class="platform-metric"><div class="label">${escapeHTML(label)}</div><div class="value">${escapeHTML(value)}</div></div>`;
 }
@@ -204,7 +210,7 @@ function loading() {
   $("review-metrics").innerHTML = Array.from({ length: 6 })
     .map(() => `<div class="platform-metric">${skeletonRowHTML("65%")}<br><br>${skeletonRowHTML("40%")}</div>`)
     .join("");
-  ["review-signals", "review-disclosures", "review-markets", "review-ai", "review-summary"].forEach((id) => {
+  ["review-signals", "review-disclosures", "review-leadlag", "review-markets", "review-ai", "review-summary"].forEach((id) => {
     $(id).innerHTML = `<div class="brain-empty">Loading...</div>`;
   });
 }
@@ -378,6 +384,56 @@ function renderMarkets(markets) {
   `;
 }
 
+function renderLeadLagRows(title, rows) {
+  if (!rows.length) return "";
+  return `
+    <div class="platform-subsection">
+      <h3>${escapeHTML(title)}</h3>
+      <div class="platform-table-wrap">
+        <table class="platform-table compact">
+          <thead><tr><th>Bucket</th><th>Sector</th><th class="num">Names</th><th class="num">Avg 1D</th><th class="num">Breadth +</th><th class="num">Rel Vol</th></tr></thead>
+          <tbody>
+            ${rows.map((row) => {
+              const move = Number(row.avgOneDayPct);
+              const cls = Number.isFinite(move) && move < 0 ? "negative" : Number.isFinite(move) && move > 0 ? "positive" : "";
+              return `
+                <tr>
+                  <td>${escapeHTML(row.bucket || "-")}</td>
+                  <td>${escapeHTML(row.sector || "-")}</td>
+                  <td class="num">${escapeHTML(String(row.count ?? "-"))}</td>
+                  <td class="num ${cls}">${escapeHTML(fmtLeadPct(row.avgOneDayPct))}</td>
+                  <td class="num">${escapeHTML(fmtLeadPct(row.positiveBreadthPct, 0))}</td>
+                  <td class="num">${escapeHTML(fmtNum(row.avgRelVolume))}</td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderLeadLag(payload) {
+  const source = list(payload?.source_items).find((row) => row.source_type === "global_lead_lag");
+  const meta = source?.raw_metadata || {};
+  const strength = list(meta.strength).slice(0, 5);
+  const weakness = list(meta.weakness).slice(0, 5);
+  if (!source && !strength.length && !weakness.length) {
+    return `<div class="brain-empty">No Koyfin US lead-lag input in this run.</div>`;
+  }
+  const files = list(meta.csv_files).join(", ");
+  return `
+    <div class="platform-subtitle">
+      ${meta.as_of_date ? `Koyfin CSV date: ${escapeHTML(meta.as_of_date)}. ` : ""}
+      ${meta.row_count ? `Rows: ${escapeHTML(String(meta.row_count))}. ` : ""}
+      ${files ? `Files: ${escapeHTML(files)}.` : ""}
+    </div>
+    ${renderLeadLagRows("US Strength", strength)}
+    ${renderLeadLagRows("US Weakness", weakness)}
+  `;
+}
+
 function renderAI(enrichments) {
   const rows = list(enrichments);
   if (!rows.length) return `<div class="brain-empty">No AI collector notes for this run.</div>`;
@@ -415,6 +471,7 @@ async function loadReview() {
     $("review-summary").innerHTML = renderSummary(payload);
     $("review-signals").innerHTML = renderSignals(payload, companyNames);
     $("review-disclosures").innerHTML = renderDisclosures(disclosurePayload);
+    $("review-leadlag").innerHTML = renderLeadLag(payload);
     $("review-markets").innerHTML = renderMarkets(payload?.market_snapshots);
     $("review-ai").innerHTML = renderAI(payload?.ai_enrichments);
     wireDecisionButtons($("review-signals"));
@@ -425,7 +482,7 @@ async function loadReview() {
       onRetry: loadReview,
       error,
     });
-    ["review-signals", "review-disclosures", "review-markets", "review-ai"].forEach((id) => {
+    ["review-signals", "review-disclosures", "review-leadlag", "review-markets", "review-ai"].forEach((id) => {
       $(id).innerHTML = `<div class="brain-empty">Waiting for a successful Brain review load.</div>`;
     });
   }
