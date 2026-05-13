@@ -1,6 +1,10 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
-import { getBrainReviewDashboard, recordBrainReviewDecision } from "./brain-queries.js";
+import {
+  getBrainPortfolioDisclosures,
+  getBrainReviewDashboard,
+  recordBrainReviewDecision,
+} from "./brain-queries.js";
 import { escapeHTML, renderMarkdown, skeletonRowHTML } from "./brain-components.js";
 import { showError } from "./brain-error.js";
 
@@ -11,19 +15,25 @@ function list(value) {
 }
 
 function todayISO() {
-  return new Date().toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }
 
 function fmtDateTime(value) {
   if (!value) return "-";
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return String(value).slice(0, 16);
-  return d.toLocaleString("ja-JP", {
+  return `${d.toLocaleString("ja-JP", {
+    timeZone: "Asia/Tokyo",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
-  });
+  })} JST`;
 }
 
 function fmtPct(value) {
@@ -106,7 +116,7 @@ function renderSummary(payload) {
     <div class="platform-subsection">
       <div class="platform-list">
         <div class="platform-item"><div class="platform-meta">Run date</div><div>${escapeHTML(run.run_date)} (${escapeHTML(run.status)})</div></div>
-        <div class="platform-item"><div class="platform-meta">Completed</div><div>${escapeHTML(fmtDateTime(run.completed_at || run.updated_at))}</div></div>
+        <div class="platform-item"><div class="platform-meta">Completed (JST)</div><div>${escapeHTML(fmtDateTime(run.completed_at || run.updated_at))}</div></div>
         <div class="platform-item"><div class="platform-meta">Operator</div><div>${escapeHTML(run.operator || "-")}</div></div>
       </div>
     </div>
@@ -148,17 +158,35 @@ function renderSignals(payload) {
   return `<div class="review-card-list">${cards}</div>`;
 }
 
-function renderDisclosures(disclosures) {
-  const rows = list(disclosures);
-  if (!rows.length) return `<div class="brain-empty">No disclosures returned for this run.</div>`;
+function renderDisclosures(payload) {
+  const rows = list(payload?.relevant_disclosures);
+  const counts = payload?.source_counts || {};
+  const links = payload?.source_links || {};
+  const universe = payload?.universe || {};
+  const header = `
+    <div class="platform-actions">
+      ${links.tdnet ? `<a class="platform-button" href="${escapeHTML(links.tdnet)}" target="_blank" rel="noreferrer">TDnet all ${escapeHTML(String(counts.tdnet ?? "-"))}</a>` : ""}
+      ${links.edinet ? `<a class="platform-button" href="${escapeHTML(links.edinet)}" target="_blank" rel="noreferrer">EDINET ${escapeHTML(String(counts.edinet ?? "-"))}</a>` : ""}
+    </div>
+    <div class="platform-subtitle">
+      Full-day source count: ${escapeHTML(String(counts.total ?? "-"))}.
+      Portfolio symbols: ${escapeHTML(String(list(universe.portfolio_symbols).length))};
+      watchlist symbols: ${escapeHTML(String(list(universe.watchlist_symbols).length))}.
+    </div>
+  `;
+  if (!rows.length) {
+    return `${header}<div class="brain-empty">No portfolio/watchlist disclosures for this date.</div>`;
+  }
   return `
+    ${header}
     <div class="platform-table-wrap">
       <table class="platform-table review-table">
-        <thead><tr><th>Time</th><th>Code</th><th>Issuer</th><th>Title</th><th>Source</th></tr></thead>
+        <thead><tr><th>Time (JST)</th><th>List</th><th>Code</th><th>Issuer</th><th>Title</th><th>Source</th></tr></thead>
         <tbody>
           ${rows.map((row) => `
             <tr>
               <td>${escapeHTML(fmtDateTime(row.filed_at))}</td>
+              <td>${escapeHTML(row.list_bucket || "-")}</td>
               <td class="symbol-cell">${escapeHTML(row.issuer_code || "-")}</td>
               <td>${escapeHTML(row.issuer_name || "-")}</td>
               <td class="title-cell">${row.url ? `<a href="${escapeHTML(row.url)}" target="_blank" rel="noreferrer">${escapeHTML(row.title || "Disclosure")}</a>` : escapeHTML(row.title || "Disclosure")}</td>
@@ -214,19 +242,22 @@ async function loadReview() {
   loading();
   const date = /** @type {HTMLInputElement} */($("review-date")).value;
   try {
-    const payload = await getBrainReviewDashboard(date, 25);
+    const [payload, disclosurePayload] = await Promise.all([
+      getBrainReviewDashboard(date, 25),
+      getBrainPortfolioDisclosures(date, 100),
+    ]);
     const counts = payload?.counts || {};
     $("review-metrics").innerHTML = [
       metric("Run Date", payload?.run?.run_date || date || "-"),
       metric("Market Rows", String(counts.market_snapshots ?? 0)),
-      metric("Disclosures", String(counts.disclosure_items ?? 0)),
+      metric("Disclosure Sample", String(counts.disclosure_items ?? 0)),
       metric("Signals", String(counts.signal_candidates ?? 0)),
       metric("AI Notes", String(counts.ai_enrichments ?? 0)),
       metric("Saved Decisions", String(counts.review_decisions ?? 0)),
     ].join("");
     $("review-summary").innerHTML = renderSummary(payload);
     $("review-signals").innerHTML = renderSignals(payload);
-    $("review-disclosures").innerHTML = renderDisclosures(payload?.disclosure_items);
+    $("review-disclosures").innerHTML = renderDisclosures(disclosurePayload);
     $("review-markets").innerHTML = renderMarkets(payload?.market_snapshots);
     $("review-ai").innerHTML = renderAI(payload?.ai_enrichments);
     wireDecisionButtons($("review-signals"));

@@ -39,6 +39,18 @@ export async function getBrainReviewDashboard(date = "", limit = 25) {
   return data;
 }
 
+/** TDnet/EDINET links and portfolio/watchlist-matched disclosures. */
+export async function getBrainPortfolioDisclosures(date = "", limit = 100) {
+  const params = {
+    p_limit: limit,
+    p_portfolio_slug: "penrose-brain-usd100m",
+  };
+  if (date) params.p_run_date = date;
+  const { data, error } = await brainAuth.rpc("fn_brain_v0_portfolio_disclosures", params);
+  if (error) throw error;
+  return data;
+}
+
 /** Persist one Brain signal review decision. */
 export async function recordBrainReviewDecision(signalId, decision, note = "") {
   const { data, error } = await brainAuth.rpc("fn_brain_v0_record_review_decision", {
