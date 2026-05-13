@@ -39,6 +39,17 @@ export async function getBrainReviewDashboard(date = "", limit = 25) {
   return data;
 }
 
+/** Persist one Brain signal review decision. */
+export async function recordBrainReviewDecision(signalId, decision, note = "") {
+  const { data, error } = await brainAuth.rpc("fn_brain_v0_record_review_decision", {
+    p_signal_id: signalId,
+    p_decision: decision,
+    p_note: note || null,
+  });
+  if (error) throw error;
+  return data;
+}
+
 /** Slim header data for stock detail page. */
 export function getStockHeader(symbol) {
   return brainQuery("fn_get_stock_header", { p_symbol: symbol });

@@ -1,6 +1,6 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
-import { getBrainReviewDashboard } from "./brain-queries.js";
+import { getBrainReviewDashboard, recordBrainReviewDecision } from "./brain-queries.js";
 import { escapeHTML, renderMarkdown, skeletonRowHTML } from "./brain-components.js";
 import { showError } from "./brain-error.js";
 
@@ -47,36 +47,42 @@ function badge(text, cls = "") {
   return `<span class="review-badge ${escapeHTML(cls)}">${escapeHTML(text)}</span>`;
 }
 
-function reviewKey(runId, signalId) {
-  return `brain-review:${runId}:${signalId}`;
+function setSignalSaving(container, signalId, isSaving) {
+  container.querySelectorAll(`[data-signal-id="${CSS.escape(signalId)}"]`).forEach((btn) => {
+    /** @type {HTMLButtonElement} */(btn).disabled = isSaving;
+  });
 }
 
-function getLocalDecision(runId, signalId) {
-  try {
-    return localStorage.getItem(reviewKey(runId, signalId)) || "";
-  } catch {
-    return "";
-  }
+function setSignalStatus(container, signalId, kind, text) {
+  const status = container.querySelector(`[data-status-for="${CSS.escape(signalId)}"]`);
+  if (!status) return;
+  status.className = `review-save-status ${kind}`;
+  status.textContent = text;
 }
 
-function setLocalDecision(runId, signalId, decision) {
-  try {
-    localStorage.setItem(reviewKey(runId, signalId), decision);
-  } catch {
-    /* Ignore local storage failures. */
-  }
+function markDecision(container, signalId, decision) {
+  container.querySelectorAll(`[data-signal-id="${CSS.escape(signalId)}"]`).forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.decision === decision);
+  });
 }
 
-function wireDecisionButtons(container, runId) {
+function wireDecisionButtons(container) {
   container.querySelectorAll("[data-signal-id][data-decision]").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const signalId = button.dataset.signalId;
       const decision = button.dataset.decision;
       if (!signalId || !decision) return;
-      setLocalDecision(runId, signalId, decision);
-      container.querySelectorAll(`[data-signal-id="${CSS.escape(signalId)}"]`).forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.decision === decision);
-      });
+      setSignalSaving(container, signalId, true);
+      setSignalStatus(container, signalId, "", "Saving...");
+      try {
+        await recordBrainReviewDecision(signalId, decision);
+        markDecision(container, signalId, decision);
+        setSignalStatus(container, signalId, "ok", "Saved to Brain.");
+      } catch (error) {
+        setSignalStatus(container, signalId, "err", `Save failed: ${error?.message ?? error}`);
+      } finally {
+        setSignalSaving(container, signalId, false);
+      }
     });
   });
 }
@@ -108,12 +114,11 @@ function renderSummary(payload) {
 }
 
 function renderSignals(payload) {
-  const runId = payload?.run?.id;
   const signals = list(payload?.signal_candidates);
-  if (!runId || !signals.length) return `<div class="brain-empty">No signal candidates for this run.</div>`;
+  if (!signals.length) return `<div class="brain-empty">No signal candidates for this run.</div>`;
 
   const cards = signals.map((signal) => {
-    const decision = getLocalDecision(runId, signal.id);
+    const decision = signal.review_decision || "";
     const symbols = list(signal.related_symbols).filter(Boolean);
     const pills = [
       badge(signal.urgency || "medium", signal.urgency || ""),
@@ -128,12 +133,14 @@ function renderSignals(payload) {
         <h3>${escapeHTML(signal.title || "Untitled signal")}</h3>
         ${signal.why_it_matters ? `<p>${escapeHTML(signal.why_it_matters)}</p>` : ""}
         ${signal.next_check ? `<div class="platform-meta">Next check: ${escapeHTML(signal.next_check)}</div>` : ""}
-        <div class="review-actions" aria-label="Local review decision">
+        ${signal.review_note ? `<div class="platform-meta">Saved note: ${escapeHTML(signal.review_note)}</div>` : ""}
+        <div class="review-actions" aria-label="Review decision">
           ${["Promote", "Follow-up", "Ignore"].map((label) => {
-            const value = label.toLowerCase();
+            const value = label.toLowerCase().replace("-", "_");
             return `<button type="button" data-signal-id="${escapeHTML(signal.id)}" data-decision="${escapeHTML(value)}" class="${decision === value ? "active" : ""}">${escapeHTML(label)}</button>`;
           }).join("")}
         </div>
+        <div class="review-save-status" data-status-for="${escapeHTML(signal.id)}">${signal.review_updated_at ? `Saved ${escapeHTML(fmtDateTime(signal.review_updated_at))}` : ""}</div>
       </article>
     `;
   }).join("");
@@ -215,14 +222,14 @@ async function loadReview() {
       metric("Disclosures", String(counts.disclosure_items ?? 0)),
       metric("Signals", String(counts.signal_candidates ?? 0)),
       metric("AI Notes", String(counts.ai_enrichments ?? 0)),
-      metric("Human Reviews", String(counts.human_reviews ?? 0)),
+      metric("Saved Decisions", String(counts.review_decisions ?? 0)),
     ].join("");
     $("review-summary").innerHTML = renderSummary(payload);
     $("review-signals").innerHTML = renderSignals(payload);
     $("review-disclosures").innerHTML = renderDisclosures(payload?.disclosure_items);
     $("review-markets").innerHTML = renderMarkets(payload?.market_snapshots);
     $("review-ai").innerHTML = renderAI(payload?.ai_enrichments);
-    if (payload?.run?.id) wireDecisionButtons($("review-signals"), payload.run.id);
+    wireDecisionButtons($("review-signals"));
   } catch (error) {
     showError({
       container: $("review-summary"),
