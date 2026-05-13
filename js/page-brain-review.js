@@ -200,9 +200,57 @@ function renderDisclosures(payload) {
   `;
 }
 
+function pctValue(row) {
+  const pct = Number(row?.change_pct);
+  return Number.isFinite(pct) ? pct : null;
+}
+
+function renderMarketTable(title, rows) {
+  if (!rows.length) return "";
+  return `
+    <div class="platform-subsection">
+      <h3>${escapeHTML(title)}</h3>
+      <div class="platform-table-wrap">
+        <table class="platform-table compact">
+          <thead><tr><th>Symbol</th><th>Name</th><th>Type</th><th class="num">Price</th><th class="num">1D Move</th></tr></thead>
+          <tbody>
+            ${rows.map((row) => {
+              const pct = pctValue(row);
+              const cls = pct !== null && pct < 0 ? "negative" : pct !== null && pct > 0 ? "positive" : "";
+              return `
+                <tr>
+                  <td class="symbol-cell">${escapeHTML(row.symbol || "-")}</td>
+                  <td>${escapeHTML(row.name || row.asset_type || "-")}</td>
+                  <td>${escapeHTML(row.asset_type || "-")}</td>
+                  <td class="num">${escapeHTML(fmtNum(row.price))}</td>
+                  <td class="num ${cls}">${escapeHTML(fmtPct(row.change_pct))}</td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
 function renderMarkets(markets) {
   const rows = list(markets);
   if (!rows.length) return `<div class="brain-empty">No market snapshots returned for this run.</div>`;
+  const movers = rows.filter((row) => pctValue(row) !== null);
+  const gainers = movers
+    .filter((row) => (pctValue(row) ?? 0) > 0)
+    .sort((a, b) => (pctValue(b) ?? 0) - (pctValue(a) ?? 0))
+    .slice(0, 10);
+  const decliners = movers
+    .filter((row) => (pctValue(row) ?? 0) < 0)
+    .sort((a, b) => (pctValue(a) ?? 0) - (pctValue(b) ?? 0))
+    .slice(0, 10);
+  const tables = [
+    renderMarketTable("Top Gainers", gainers),
+    renderMarketTable("Top Decliners", decliners),
+  ].filter(Boolean).join("");
+  if (tables) return tables;
   return `
     <div class="platform-table-wrap">
       <table class="platform-table compact">
