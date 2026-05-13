@@ -200,6 +200,17 @@ function renderSignalEvidence(signal, payload) {
   `;
 }
 
+function signalEvidenceCellHTML(signal, payload) {
+  const items = collectSignalEvidence(signal, payload);
+  if (!items.length) return `<span class="platform-meta">not linked</span>`;
+  return items.map((item) => {
+    const label = item.detail ? `${item.label} (${item.detail})` : item.label;
+    return item.url
+      ? `<a href="${escapeHTML(item.url)}" target="_blank" rel="noreferrer">${escapeHTML(label)}</a>`
+      : escapeHTML(label);
+  }).join("<br>");
+}
+
 function setSignalSaving(container, signalId, isSaving) {
   container.querySelectorAll(`[data-signal-id="${CSS.escape(signalId)}"]`).forEach((btn) => {
     /** @type {HTMLButtonElement} */(btn).disabled = isSaving;
@@ -270,40 +281,63 @@ function renderSignals(payload, companyNames = {}, candidateBiases = {}) {
   const signals = list(payload?.signal_candidates);
   if (!signals.length) return `<div class="brain-empty">No signal candidates for this run.</div>`;
 
-  const cards = signals.map((signal) => {
+  const rows = signals.map((signal, index) => {
     const decision = signal.review_decision || "";
     const symbols = list(signal.related_symbols).filter(Boolean);
-    const pills = [
+    const symbolPills = symbols.slice(0, 6).map((symbol) => {
+        const bias = candidateBiases[String(symbol)];
+        const label = bias ? `${symbolLabel(symbol, companyNames)} ${bias}` : symbolLabel(symbol, companyNames);
+        return badge(label, biasClass(bias));
+      }).join("");
+    const metaPills = [
       badge(signal.urgency || "medium", signal.urgency || ""),
       badge(signal.confidence || "low"),
       signal.promote_to && signal.promote_to !== "none" ? badge(signal.promote_to) : "",
       signal.related_theme ? badge(signal.related_theme) : "",
-      ...symbols.slice(0, 5).map((symbol) => {
-        const bias = candidateBiases[String(symbol)];
-        const label = bias ? `${symbolLabel(symbol, companyNames)} ${bias}` : symbolLabel(symbol, companyNames);
-        return badge(label, biasClass(bias));
-      }),
     ].filter(Boolean).join("");
     return `
-      <article class="review-card">
-        <div class="review-meta">${pills}</div>
-        <h3>${escapeHTML(signal.title || "Untitled signal")}</h3>
-        ${signal.why_it_matters ? `<p>${escapeHTML(signal.why_it_matters)}</p>` : ""}
-        ${renderSignalEvidence(signal, payload)}
-        ${signal.next_check ? `<div class="platform-meta">Next check: ${escapeHTML(signal.next_check)}</div>` : ""}
-        ${signal.review_note ? `<div class="platform-meta">Saved note: ${escapeHTML(signal.review_note)}</div>` : ""}
-        <div class="review-actions" aria-label="Review decision">
+      <tr>
+        <td class="num">${escapeHTML(String(index + 1))}</td>
+        <td>${metaPills}</td>
+        <td class="title-cell">
+          <div class="review-sheet-title">${escapeHTML(signal.title || "Untitled signal")}</div>
+          ${signal.why_it_matters ? `<div class="review-sheet-sub">${escapeHTML(signal.why_it_matters)}</div>` : ""}
+        </td>
+        <td class="reason-cell">${symbolPills || "-"}</td>
+        <td class="source-cell">${signalEvidenceCellHTML(signal, payload)}</td>
+        <td class="detail-cell">${escapeHTML(signal.next_check || "-")}</td>
+        <td>
+          <div class="review-inline-actions" aria-label="Review decision">
           ${["Promote", "Follow-up", "Ignore"].map((label) => {
             const value = label.toLowerCase().replace("-", "_");
             return `<button type="button" data-signal-id="${escapeHTML(signal.id)}" data-decision="${escapeHTML(value)}" class="${decision === value ? "active" : ""}">${escapeHTML(label)}</button>`;
           }).join("")}
-        </div>
-        <div class="review-save-status" data-status-for="${escapeHTML(signal.id)}">${signal.review_updated_at ? `Saved ${escapeHTML(fmtDateTime(signal.review_updated_at))}` : ""}</div>
-      </article>
+          </div>
+          <div class="review-save-status" data-status-for="${escapeHTML(signal.id)}">${signal.review_updated_at ? `Saved ${escapeHTML(fmtDateTime(signal.review_updated_at))}` : ""}</div>
+          ${signal.review_note ? `<div class="platform-meta">Note: ${escapeHTML(signal.review_note)}</div>` : ""}
+        </td>
+      </tr>
     `;
   }).join("");
 
-  return `<div class="review-card-list">${cards}</div>`;
+  return `
+    <div class="review-sheet-wrap">
+      <table class="review-sheet">
+        <thead>
+          <tr>
+            <th class="num">Rank</th>
+            <th>Flags</th>
+            <th>Signal</th>
+            <th>Symbols</th>
+            <th>Source</th>
+            <th>Next Check</th>
+            <th>Decision</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
 }
 
 function renderDisclosures(payload) {
@@ -351,7 +385,7 @@ function renderDisclosures(payload) {
 
 function renderWatchlistTiers(payload) {
   if (!payload) return `<div class="brain-empty">No watchlist tier payload returned.</div>`;
-  const items = list(payload.items).slice(0, 20);
+  const items = list(payload.items).slice(0, 60);
   const counts = payload.tier_counts || {};
   const sourceUrl = payload.source_url || "";
   const countLine = [
@@ -371,26 +405,48 @@ function renderWatchlistTiers(payload) {
 
   return `
     ${header}
-    <div class="watchlist-priority-list">
-      ${items.map((row) => {
-        const bias = candidateBias(row);
-        return `
-          <div class="watchlist-priority-item">
-            <div class="review-meta">
-              ${badge(row.tier || "-")}
-              ${badge(bias, biasClass(bias))}
-              ${badge(`score ${row.priority_score ?? "-"}`)}
-              ${row.model_candidate_decision ? badge(`candidate ${row.model_candidate_decision}`) : ""}
-            </div>
-            <div class="watchlist-priority-title">
-              <strong>${escapeHTML(row.symbol || "-")}</strong>
-              <span>${escapeHTML(row.company_name || "-")}</span>
-            </div>
-            <div class="platform-meta">${escapeHTML([row.sector, row.industry].filter(Boolean).join(" / ") || "-")}</div>
-            <div class="watchlist-priority-reasons">${list(row.reasons).map((reason) => badge(String(reason))).join("")}</div>
-          </div>
-        `;
-      }).join("")}
+    <div class="watchlist-sheet-wrap">
+      <table class="review-sheet">
+        <thead>
+          <tr>
+            <th class="num">Rank</th>
+            <th>Tier</th>
+            <th>Bias</th>
+            <th class="num">Score</th>
+            <th>Symbol</th>
+            <th>Company</th>
+            <th>Sector / Industry</th>
+            <th>Model</th>
+            <th class="num">Brain</th>
+            <th class="num">Disc.</th>
+            <th>Reasons</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items.map((row, index) => {
+            const bias = candidateBias(row);
+            const modelParts = [
+              row.is_model_position ? `position ${row.model_position_side || ""}`.trim() : "",
+              row.is_model_candidate ? `candidate ${row.model_candidate_decision || ""}`.trim() : "",
+            ].filter(Boolean).join(" / ");
+            return `
+              <tr>
+                <td class="num">${escapeHTML(String(index + 1))}</td>
+                <td>${badge(row.tier || "-")}</td>
+                <td>${badge(bias, biasClass(bias))}</td>
+                <td class="num">${escapeHTML(String(row.priority_score ?? "-"))}</td>
+                <td class="symbol-cell">${escapeHTML(row.symbol || "-")}</td>
+                <td class="title-cell">${escapeHTML(row.company_name || "-")}</td>
+                <td class="detail-cell">${escapeHTML([row.sector, row.industry].filter(Boolean).join(" / ") || "-")}</td>
+                <td>${escapeHTML(modelParts || "-")}</td>
+                <td class="num">${escapeHTML(String(row.brain_signal_count ?? 0))}</td>
+                <td class="num">${escapeHTML(String(row.disclosure_count ?? 0))}</td>
+                <td class="reason-cell">${list(row.reasons).map((reason) => badge(String(reason))).join("") || "-"}</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
     </div>
   `;
 }
