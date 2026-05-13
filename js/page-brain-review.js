@@ -73,6 +73,28 @@ function symbolLabel(symbol, companyNames = {}) {
   return name ? `${code} ${name}` : code;
 }
 
+function candidateBias(row) {
+  const decision = String(row?.model_candidate_decision || "").toLowerCase();
+  const side = String(row?.model_position_side || "").toLowerCase();
+  if (side === "short" || decision === "short" || decision === "sell" || decision === "trim") return "Short";
+  if (side === "long" || ["buy", "add", "hold"].includes(decision)) return "Long";
+  return "Watch";
+}
+
+function biasClass(bias) {
+  return bias === "Short" ? "high" : bias === "Long" ? "medium" : "";
+}
+
+function watchlistBiasBySymbol(payload) {
+  const out = {};
+  list(payload?.items).forEach((row) => {
+    if (!row?.symbol) return;
+    const bias = candidateBias(row);
+    if (bias === "Long" || bias === "Short") out[String(row.symbol)] = bias;
+  });
+  return out;
+}
+
 function payloadCompanyNames(payload, disclosurePayload) {
   const names = {};
   list(payload?.market_snapshots).forEach((row) => {
@@ -244,7 +266,7 @@ function renderSummary(payload) {
   `;
 }
 
-function renderSignals(payload, companyNames = {}) {
+function renderSignals(payload, companyNames = {}, candidateBiases = {}) {
   const signals = list(payload?.signal_candidates);
   if (!signals.length) return `<div class="brain-empty">No signal candidates for this run.</div>`;
 
@@ -256,7 +278,11 @@ function renderSignals(payload, companyNames = {}) {
       badge(signal.confidence || "low"),
       signal.promote_to && signal.promote_to !== "none" ? badge(signal.promote_to) : "",
       signal.related_theme ? badge(signal.related_theme) : "",
-      ...symbols.slice(0, 5).map((symbol) => badge(symbolLabel(symbol, companyNames))),
+      ...symbols.slice(0, 5).map((symbol) => {
+        const bias = candidateBiases[String(symbol)];
+        const label = bias ? `${symbolLabel(symbol, companyNames)} ${bias}` : symbolLabel(symbol, companyNames);
+        return badge(label, biasClass(bias));
+      }),
     ].filter(Boolean).join("");
     return `
       <article class="review-card">
@@ -342,24 +368,29 @@ function renderWatchlistTiers(payload) {
     </div>
   `;
   if (!items.length) return `${header}<div class="brain-empty">No tiered watchlist rows.</div>`;
+
   return `
     ${header}
-    <div class="platform-table-wrap">
-      <table class="platform-table compact">
-        <thead><tr><th>Tier</th><th>Code</th><th>Name</th><th>Sector</th><th class="num">Score</th><th>Reason</th></tr></thead>
-        <tbody>
-          ${items.map((row) => `
-            <tr>
-              <td>${escapeHTML(row.tier || "-")}</td>
-              <td class="symbol-cell">${escapeHTML(row.symbol || "-")}</td>
-              <td>${escapeHTML(row.company_name || "-")}</td>
-              <td>${escapeHTML(row.sector || "-")}</td>
-              <td class="num">${escapeHTML(String(row.priority_score ?? "-"))}</td>
-              <td>${list(row.reasons).map((reason) => badge(String(reason))).join("")}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
+    <div class="watchlist-priority-list">
+      ${items.map((row) => {
+        const bias = candidateBias(row);
+        return `
+          <div class="watchlist-priority-item">
+            <div class="review-meta">
+              ${badge(row.tier || "-")}
+              ${badge(bias, biasClass(bias))}
+              ${badge(`score ${row.priority_score ?? "-"}`)}
+              ${row.model_candidate_decision ? badge(`candidate ${row.model_candidate_decision}`) : ""}
+            </div>
+            <div class="watchlist-priority-title">
+              <strong>${escapeHTML(row.symbol || "-")}</strong>
+              <span>${escapeHTML(row.company_name || "-")}</span>
+            </div>
+            <div class="platform-meta">${escapeHTML([row.sector, row.industry].filter(Boolean).join(" / ") || "-")}</div>
+            <div class="watchlist-priority-reasons">${list(row.reasons).map((reason) => badge(String(reason))).join("")}</div>
+          </div>
+        `;
+      }).join("")}
     </div>
   `;
 }
@@ -527,7 +558,7 @@ async function loadReview() {
       metric("Saved Decisions", String(counts.review_decisions ?? 0)),
     ].join("");
     $("review-summary").innerHTML = renderSummary(payload);
-    $("review-signals").innerHTML = renderSignals(payload, companyNames);
+    $("review-signals").innerHTML = renderSignals(payload, companyNames, watchlistBiasBySymbol(watchlistPayload));
     $("review-disclosures").innerHTML = renderDisclosures(disclosurePayload);
     $("review-watchlist").innerHTML = renderWatchlistTiers(watchlistPayload);
     $("review-leadlag").innerHTML = renderLeadLag(payload);
