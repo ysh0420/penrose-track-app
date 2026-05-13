@@ -124,6 +124,17 @@ function evidenceMetrics(raw = {}) {
 }
 
 function collectSignalEvidence(signal, payload) {
+  if (signal.signal_type === "global_lead_lag") {
+    const leadLagSource = list(payload?.source_items).find((row) => row.source_type === "global_lead_lag");
+    const meta = leadLagSource?.raw_metadata || {};
+    if (leadLagSource) {
+      return [{
+        label: "Koyfin local CSV",
+        detail: [meta.as_of_date, list(meta.csv_files).join(", ")].filter(Boolean).join(" / "),
+        url: leadLagSource.url || meta.source_url || "",
+      }];
+    }
+  }
   const title = normTitle(signal.title);
   const symbols = list(signal.related_symbols).map(String);
   const sources = list(payload?.source_items)
@@ -423,11 +434,13 @@ function renderLeadLag(payload) {
     return `<div class="brain-empty">No Koyfin US lead-lag input in this run.</div>`;
   }
   const files = list(meta.csv_files).join(", ");
+  const sourceUrl = source?.url || meta.source_url || "";
   return `
     <div class="platform-subtitle">
       ${meta.as_of_date ? `Koyfin CSV date: ${escapeHTML(meta.as_of_date)}. ` : ""}
       ${meta.row_count ? `Rows: ${escapeHTML(String(meta.row_count))}. ` : ""}
       ${files ? `Files: ${escapeHTML(files)}.` : ""}
+      ${sourceUrl ? ` Source: <a href="${escapeHTML(sourceUrl)}" target="_blank" rel="noreferrer">Koyfin watchlist</a>.` : ""}
     </div>
     ${renderLeadLagRows("US Strength", strength)}
     ${renderLeadLagRows("US Weakness", weakness)}
