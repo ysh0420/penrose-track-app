@@ -37,6 +37,7 @@ function fmtDateTime(value) {
 }
 
 function fmtPct(value) {
+  if (value === null || value === undefined || value === "") return "-";
   const n = Number(value);
   if (!Number.isFinite(n)) return "-";
   const pct = Math.abs(n) <= 1 ? n * 100 : n;
@@ -205,7 +206,7 @@ function renderMarkets(markets) {
   return `
     <div class="platform-table-wrap">
       <table class="platform-table compact">
-        <thead><tr><th>Symbol</th><th>Name</th><th class="num">Price</th><th class="num">Move</th></tr></thead>
+        <thead><tr><th>Symbol</th><th>Name</th><th>Type</th><th class="num">Price</th><th class="num">1D Move</th></tr></thead>
         <tbody>
           ${rows.map((row) => {
             const pct = Number(row.change_pct);
@@ -214,6 +215,7 @@ function renderMarkets(markets) {
               <tr>
                 <td class="symbol-cell">${escapeHTML(row.symbol || "-")}</td>
                 <td>${escapeHTML(row.name || row.asset_type || "-")}</td>
+                <td>${escapeHTML(row.asset_type || "-")}</td>
                 <td class="num">${escapeHTML(fmtNum(row.price))}</td>
                 <td class="num ${cls}">${escapeHTML(fmtPct(row.change_pct))}</td>
               </tr>
