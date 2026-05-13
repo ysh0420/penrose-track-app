@@ -4,6 +4,7 @@ import {
   getBrainCompanyNames,
   getBrainPortfolioDisclosures,
   getBrainReviewDashboard,
+  getWatchlistTiers,
   recordBrainReviewDecision,
 } from "./brain-queries.js";
 import { escapeHTML, renderMarkdown, skeletonRowHTML } from "./brain-components.js";
@@ -221,7 +222,7 @@ function loading() {
   $("review-metrics").innerHTML = Array.from({ length: 6 })
     .map(() => `<div class="platform-metric">${skeletonRowHTML("65%")}<br><br>${skeletonRowHTML("40%")}</div>`)
     .join("");
-  ["review-signals", "review-disclosures", "review-leadlag", "review-markets", "review-ai", "review-summary"].forEach((id) => {
+  ["review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai", "review-summary"].forEach((id) => {
     $(id).innerHTML = `<div class="brain-empty">Loading...</div>`;
   });
 }
@@ -314,6 +315,47 @@ function renderDisclosures(payload) {
               <td>${escapeHTML(row.issuer_name || "-")}</td>
               <td class="title-cell">${row.url ? `<a href="${escapeHTML(row.url)}" target="_blank" rel="noreferrer">${escapeHTML(row.title || "Disclosure")}</a>` : escapeHTML(row.title || "Disclosure")}</td>
               <td>${escapeHTML(row.source || row.filing_type || "-")}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderWatchlistTiers(payload) {
+  if (!payload) return `<div class="brain-empty">No watchlist tier payload returned.</div>`;
+  const items = list(payload.items).slice(0, 20);
+  const counts = payload.tier_counts || {};
+  const sourceUrl = payload.source_url || "";
+  const countLine = [
+    `High ${counts.high_priority ?? 0}`,
+    `Queue ${counts.research_queue ?? 0}`,
+    `Watch ${counts.watch ?? 0}`,
+  ].join(" / ");
+  const header = `
+    <div class="platform-subtitle">
+      ${escapeHTML(countLine)}.
+      Universe ${escapeHTML(String(payload.universe_count ?? "-"))};
+      Koyfin date ${escapeHTML(String(payload.as_of_date ?? "-"))}.
+      ${sourceUrl ? `<a href="${escapeHTML(sourceUrl)}" target="_blank" rel="noreferrer">Source</a>` : ""}
+    </div>
+  `;
+  if (!items.length) return `${header}<div class="brain-empty">No tiered watchlist rows.</div>`;
+  return `
+    ${header}
+    <div class="platform-table-wrap">
+      <table class="platform-table compact">
+        <thead><tr><th>Tier</th><th>Code</th><th>Name</th><th>Sector</th><th class="num">Score</th><th>Reason</th></tr></thead>
+        <tbody>
+          ${items.map((row) => `
+            <tr>
+              <td>${escapeHTML(row.tier || "-")}</td>
+              <td class="symbol-cell">${escapeHTML(row.symbol || "-")}</td>
+              <td>${escapeHTML(row.company_name || "-")}</td>
+              <td>${escapeHTML(row.sector || "-")}</td>
+              <td class="num">${escapeHTML(String(row.priority_score ?? "-"))}</td>
+              <td>${list(row.reasons).map((reason) => badge(String(reason))).join("")}</td>
             </tr>
           `).join("")}
         </tbody>
@@ -466,9 +508,10 @@ async function loadReview() {
   loading();
   const date = /** @type {HTMLInputElement} */($("review-date")).value;
   try {
-    const [payload, disclosurePayload] = await Promise.all([
+    const [payload, disclosurePayload, watchlistPayload] = await Promise.all([
       getBrainReviewDashboard(date, 100),
       getBrainPortfolioDisclosures(date, 100),
+      getWatchlistTiers(date, 80),
     ]);
     const companyNames = {
       ...payloadCompanyNames(payload, disclosurePayload),
@@ -486,6 +529,7 @@ async function loadReview() {
     $("review-summary").innerHTML = renderSummary(payload);
     $("review-signals").innerHTML = renderSignals(payload, companyNames);
     $("review-disclosures").innerHTML = renderDisclosures(disclosurePayload);
+    $("review-watchlist").innerHTML = renderWatchlistTiers(watchlistPayload);
     $("review-leadlag").innerHTML = renderLeadLag(payload);
     $("review-markets").innerHTML = renderMarkets(payload?.market_snapshots);
     $("review-ai").innerHTML = renderAI(payload?.ai_enrichments);
@@ -497,7 +541,7 @@ async function loadReview() {
       onRetry: loadReview,
       error,
     });
-    ["review-signals", "review-disclosures", "review-leadlag", "review-markets", "review-ai"].forEach((id) => {
+    ["review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai"].forEach((id) => {
       $(id).innerHTML = `<div class="brain-empty">Waiting for a successful Brain review load.</div>`;
     });
   }

@@ -51,6 +51,18 @@ export async function getBrainPortfolioDisclosures(date = "", limit = 100) {
   return data;
 }
 
+/** Mechanical priority tiers for the Koyfin Japan monitor watchlist universe. */
+export async function getWatchlistTiers(date = "", limit = 50) {
+  const params = {
+    p_limit: limit,
+    p_source_key: "koyfin_japan_monitor",
+  };
+  if (date) params.p_run_date = date;
+  const { data, error } = await brainAuth.rpc("fn_platform_watchlist_tiers", params);
+  if (error) throw error;
+  return data;
+}
+
 /** Symbol-to-company-name lookup for Brain review labels. */
 export async function getBrainCompanyNames(symbols = []) {
   const unique = [...new Set((symbols || []).map((symbol) => String(symbol || "").trim()).filter(Boolean))];
