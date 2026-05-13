@@ -27,6 +27,18 @@ export async function getLatestNewsBrief(days = 7) {
   return data;
 }
 
+/** Brain v0 daily dump review payload. */
+export async function getBrainReviewDashboard(date = "", limit = 25) {
+  const params = {
+    p_run_type: "daily",
+    p_limit: limit,
+  };
+  if (date) params.p_run_date = date;
+  const { data, error } = await brainAuth.rpc("fn_brain_v0_review_dashboard", params);
+  if (error) throw error;
+  return data;
+}
+
 /** Slim header data for stock detail page. */
 export function getStockHeader(symbol) {
   return brainQuery("fn_get_stock_header", { p_symbol: symbol });
