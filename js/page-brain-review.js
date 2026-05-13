@@ -58,6 +58,73 @@ function badge(text, cls = "") {
   return `<span class="review-badge ${escapeHTML(cls)}">${escapeHTML(text)}</span>`;
 }
 
+function normTitle(value) {
+  return String(value ?? "")
+    .replace(/[_*`"'“”‘’「」『』【】\[\]()（）]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function titleMatches(a, b) {
+  const left = normTitle(a);
+  const right = normTitle(b);
+  if (!left || !right) return false;
+  if (left === right) return true;
+  const [shorter, longer] = left.length < right.length ? [left, right] : [right, left];
+  return shorter.length >= 24 && longer.includes(shorter);
+}
+
+function evidenceMetrics(raw = {}) {
+  const parts = [];
+  if (raw.relevance_score !== undefined && raw.relevance_score !== null) parts.push(`relevance ${fmtNum(raw.relevance_score)}`);
+  if (raw.impact_score !== undefined && raw.impact_score !== null) parts.push(`impact ${fmtNum(raw.impact_score)}`);
+  if (raw.is_market_moving !== undefined && raw.is_market_moving !== null) parts.push(`market-moving ${raw.is_market_moving ? "yes" : "no"}`);
+  return parts.join(" / ");
+}
+
+function collectSignalEvidence(signal, payload) {
+  const title = normTitle(signal.title);
+  const symbols = list(signal.related_symbols).map(String);
+  const sources = list(payload?.source_items)
+    .filter((row) => titleMatches(row.title, title))
+    .map((row) => ({
+      label: row.source_name || row.source_type || "source",
+      detail: evidenceMetrics(row.raw_metadata || {}),
+      url: row.url || "",
+    }));
+  const disclosures = list(payload?.disclosure_items)
+    .filter((row) => normTitle(row.title) === title)
+    .filter((row) => !symbols.length || !row.issuer_code || symbols.includes(String(row.issuer_code)))
+    .map((row) => ({
+      label: row.source || row.filing_type || "disclosure",
+      detail: [row.issuer_code, row.filing_type].filter(Boolean).join(" / "),
+      url: row.url || "",
+    }));
+  const seen = new Set();
+  return [...sources, ...disclosures].filter((item) => {
+    const key = `${item.label}|${item.url}|${item.detail}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 3);
+}
+
+function renderSignalEvidence(signal, payload) {
+  const items = collectSignalEvidence(signal, payload);
+  if (!items.length) return `<div class="platform-meta">Source data: not linked in this run payload.</div>`;
+  return `
+    <div class="platform-meta">
+      Source data:
+      ${items.map((item) => {
+        const label = item.detail ? `${item.label} (${item.detail})` : item.label;
+        return item.url
+          ? `<a href="${escapeHTML(item.url)}" target="_blank" rel="noreferrer">${escapeHTML(label)}</a>`
+          : escapeHTML(label);
+      }).join(" · ")}
+    </div>
+  `;
+}
+
 function setSignalSaving(container, signalId, isSaving) {
   container.querySelectorAll(`[data-signal-id="${CSS.escape(signalId)}"]`).forEach((btn) => {
     /** @type {HTMLButtonElement} */(btn).disabled = isSaving;
@@ -143,6 +210,7 @@ function renderSignals(payload) {
         <div class="review-meta">${pills}</div>
         <h3>${escapeHTML(signal.title || "Untitled signal")}</h3>
         ${signal.why_it_matters ? `<p>${escapeHTML(signal.why_it_matters)}</p>` : ""}
+        ${renderSignalEvidence(signal, payload)}
         ${signal.next_check ? `<div class="platform-meta">Next check: ${escapeHTML(signal.next_check)}</div>` : ""}
         ${signal.review_note ? `<div class="platform-meta">Saved note: ${escapeHTML(signal.review_note)}</div>` : ""}
         <div class="review-actions" aria-label="Review decision">
@@ -293,7 +361,7 @@ async function loadReview() {
   const date = /** @type {HTMLInputElement} */($("review-date")).value;
   try {
     const [payload, disclosurePayload] = await Promise.all([
-      getBrainReviewDashboard(date, 25),
+      getBrainReviewDashboard(date, 100),
       getBrainPortfolioDisclosures(date, 100),
     ]);
     const counts = payload?.counts || {};
