@@ -25,6 +25,7 @@ const REQUIRED_SECTIONS = [
 ];
 
 const $ = (id) => document.getElementById(id);
+const STATIC_REPORTS_URL = "/data/research-reports.json";
 
 function firstValue(...values) {
   return values.find((value) => typeof value === "string" && value.trim() && value.trim() !== "?") ?? "";
@@ -33,6 +34,30 @@ function firstValue(...values) {
 function parseVerdict(md) {
   const match = String(md ?? "").match(/Synthesis \(verdict: ([^)]+)\)/i);
   return match?.[1] ?? "completed";
+}
+
+async function loadStaticReports() {
+  try {
+    const manifestRes = await fetch(STATIC_REPORTS_URL, { cache: "no-store" });
+    if (!manifestRes.ok) return [];
+    const manifest = await manifestRes.json();
+    if (!Array.isArray(manifest)) return [];
+    const reports = await Promise.allSettled(manifest.map(async (row) => {
+      if (!row?.markdown_url) return null;
+      const mdRes = await fetch(row.markdown_url, { cache: "no-store" });
+      if (!mdRes.ok) return null;
+      return {
+        ...row,
+        synthesis_md: await mdRes.text(),
+        completed_at: row.completed_at ?? row.updated_at ?? row.created_at,
+      };
+    }));
+    return reports
+      .filter((result) => result.status === "fulfilled" && result.value?.synthesis_md)
+      .map((result) => /** @type {PromiseFulfilledResult<any>} */(result).value);
+  } catch {
+    return [];
+  }
 }
 
 function parseConvictionRecommendation(md) {
@@ -73,8 +98,8 @@ function reportCardHTML(row, md) {
     <article class="report-card" data-symbol="${escapeHTML(symbol)}">
       <div class="report-title-row">
         <div>
-          <h3>${escapeHTML(symbol)} ${escapeHTML(name)}</h3>
-          <div class="platform-meta">${escapeHTML(formatRelativeTime(row.completed_at ?? row.updated_at ?? row.created_at))} / conviction ${escapeHTML(conviction ?? "-")}</div>
+          <h3>${escapeHTML(row.title ?? `${symbol} ${name}`)}</h3>
+          <div class="platform-meta">${escapeHTML(formatRelativeTime(row.completed_at ?? row.updated_at ?? row.created_at))} / ${row.static_report ? "saved report" : "research log"} / conviction ${escapeHTML(conviction ?? "-")}</div>
         </div>
         <span class="report-score">${Math.round(quality.score * 100)}%</span>
       </div>
@@ -126,16 +151,21 @@ async function openReport(row) {
 async function loadReports() {
   const root = $("reports-root");
   root.innerHTML = `<div class="platform-empty">${skeletonRowHTML("75%")}</div>`;
+  const staticRows = await loadStaticReports();
   let rows;
   try {
     rows = await getResearchLog(80, 0) ?? [];
   } catch (e) {
-    showError({ container: root, message: `Reports load failed: ${e.message}`, onRetry: loadReports, error: e });
+    if (staticRows.length) {
+      renderReportRows(staticRows);
+    } else {
+      showError({ container: root, message: `Reports load failed: ${e.message}`, onRetry: loadReports, error: e });
+    }
     return;
   }
 
   const symbols = [...new Set(rows.map((row) => row.symbol).filter(Boolean))].slice(0, 40);
-  if (!symbols.length) {
+  if (!symbols.length && !staticRows.length) {
     root.innerHTML = `<div class="platform-empty">No reports found yet. Run source research first, then finalized reports will appear here.</div>`;
     return;
   }
@@ -149,9 +179,12 @@ async function loadReports() {
     return synth?.synthesis_md ? { ...baseRow, ...synth, symbol } : null;
   }));
 
-  const reportRows = fetched
+  const reportRows = [
+    ...staticRows,
+    ...fetched
     .filter((result) => result.status === "fulfilled" && result.value?.synthesis_md)
-    .map((result) => /** @type {PromiseFulfilledResult<any>} */(result).value)
+    .map((result) => /** @type {PromiseFulfilledResult<any>} */(result).value),
+  ]
     .sort((a, b) => new Date(b.completed_at ?? b.updated_at ?? b.created_at ?? 0).getTime() -
       new Date(a.completed_at ?? a.updated_at ?? a.created_at ?? 0).getTime());
 
@@ -159,6 +192,11 @@ async function loadReports() {
     root.innerHTML = `<div class="platform-empty">No reports found yet. Run source research first, then finalized reports will appear here.</div>`;
     return;
   }
+  renderReportRows(reportRows);
+}
+
+function renderReportRows(reportRows) {
+  const root = $("reports-root");
   root.innerHTML = `<div class="report-grid">${reportRows.map((row) => reportCardHTML(row, row.synthesis_md ?? "")).join("")}</div>`;
   root.querySelectorAll("[data-open-report]").forEach((button, index) => {
     button.addEventListener("click", () => {
