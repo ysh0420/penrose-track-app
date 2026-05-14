@@ -5,26 +5,23 @@ const SECTIONS = [
   { id: "brain", label: "Brain", href: "/brain-review.html" },
   { id: "portfolio", label: "Portfolio", href: "/master-portfolio.html" },
   { id: "research", label: "Research", href: "/reports.html" },
-  { id: "records", label: "Records", href: "/track-record.html" },
   { id: "external", label: "External", href: "/client.html" },
 ];
 
 const NAV_ITEMS = [
   { id: "today", label: "Today", href: "/today.html", section: "main" },
   { id: "brain-review", label: "Review", href: "/brain-review.html", section: "brain" },
+  { id: "pipeline", label: "Signals", href: "/pipeline.html", section: "brain" },
   { id: "news", label: "News", href: "/news.html", section: "brain" },
-  { id: "master", label: "Main Portfolio", href: "/master-portfolio.html", section: "portfolio" },
-  { id: "portfolio", label: "Yuki Book", href: "/portfolio.html", section: "portfolio" },
+  { id: "master", label: "Main / Yuki Book", href: "/master-portfolio.html", section: "portfolio" },
   { id: "model", label: "Model Book", href: "/model-portfolio.html", section: "portfolio" },
-  { id: "ideas", label: "Ideas", href: "/ideas.html", section: "portfolio" },
-  { id: "pipeline", label: "Pipeline", href: "/pipeline.html", section: "portfolio" },
+  { id: "track", label: "MW", href: "/track-record.html", section: "portfolio" },
+  { id: "citadel", label: "Citadel", href: "/citadel.html", section: "portfolio" },
+  { id: "cfm", label: "CFM", href: "/cfm.html", section: "portfolio" },
   { id: "reports", label: "Reports", href: "/reports.html", section: "research" },
   { id: "research-log", label: "Research Log", href: "/research-log.html", section: "research" },
+  { id: "ideas", label: "Ideas", href: "/ideas.html", section: "research" },
   { id: "companies", label: "Companies", href: "/stock.html", section: "research" },
-  { id: "track", label: "Track Record", href: "/track-record.html", section: "records" },
-  { id: "ops", label: "Trading Ops", href: "/index.html", section: "records" },
-  { id: "attribution", label: "MW Attribution", href: "/mw-tops-attribution.html", section: "records" },
-  { id: "transactions", label: "MW Transactions", href: "/mw-tops-transactions.html", section: "records" },
   { id: "client", label: "Client View", href: "/client.html", section: "external" },
 ];
 

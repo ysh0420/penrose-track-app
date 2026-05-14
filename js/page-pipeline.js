@@ -1,7 +1,7 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
 import {
-  getPipelineRevisions, getPromotionCandidates, getActiveIdeas,
+  getPipelineRevisions, getActiveIdeas,
 } from "./brain-queries.js";
 import {
   convictionStarsHTML, themeChipsHTML, formatPct, formatYen, escapeHTML,
@@ -139,53 +139,6 @@ async function loadRevisions() {
   wireRowClicks(el);
 }
 
-async function loadPromotions() {
-  const el = document.getElementById("brain-promotions");
-  el.innerHTML = skeletonTable(4);
-
-  let rows;
-  try {
-    rows = await getPromotionCandidates() ?? [];
-  } catch (e) {
-    showError({ container: el, message: `Promotions load failed: ${e.message}`, onRetry: loadPromotions, error: e });
-    return;
-  }
-
-  if (!Array.isArray(rows) || rows.length === 0) {
-    el.innerHTML = `<div class="brain-empty">No promotion candidates</div>`;
-    return;
-  }
-
-  el.innerHTML = `
-    <table class="brain-table">
-      <thead>
-        <tr>
-          <th>Symbol</th>
-          <th>Name</th>
-          <th>Themes</th>
-          <th>Conviction</th>
-          <th>Watchlist State</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rows.map((r) => {
-          const sym = escapeHTML(r.symbol ?? "");
-          return `
-            <tr class="clickable" data-symbol="${sym}">
-              <td><strong>${sym}</strong></td>
-              <td>${escapeHTML(r.company_name_jp ?? r.company_name ?? "")}</td>
-              <td>${themeChipsHTML(r.themes_linked)}</td>
-              <td>${convictionStarsHTML(r.conviction_score)}</td>
-              <td>${escapeHTML(r.watchlist_state ?? "")}</td>
-            </tr>
-          `;
-        }).join("")}
-      </tbody>
-    </table>
-  `;
-  wireRowClicks(el);
-}
-
 function wireRowClicks(container) {
   container.querySelectorAll("tr.clickable").forEach((row) => {
     row.addEventListener("click", () => {
@@ -212,6 +165,5 @@ mountBrainAuthGate({
   onAuthed: () => {
     loadEdinetSignals();
     loadRevisions();
-    loadPromotions();
   },
 });

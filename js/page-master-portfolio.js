@@ -55,7 +55,7 @@ function renderTabs() {
 function renderRows() {
   const filtered = rows.filter(rowMatchesTab);
   if (!filtered.length) {
-    const label = activeTab === "All" ? "No main portfolio draft rows yet." : `No ${activeTab} implementation rows yet.`;
+    const label = activeTab === "All" ? "No Main / Yuki Book draft rows yet." : `No ${activeTab} implementation rows yet.`;
     $("mp-draft-root").innerHTML = `<div class="account-empty">${escapeHTML(label)}</div>`;
     return;
   }
