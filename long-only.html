@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CFM - Penrose Track</title>
+<title>Long Only - Penrose Track</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,27 +19,34 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
 .topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
 .topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+.lo-table-wrap{max-height:620px;overflow:auto;border:1px solid var(--line);background:white;scrollbar-gutter:stable}
+.lo-table{min-width:980px;width:100%;border-collapse:separate;border-spacing:0}
+.lo-table th,.lo-table td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 8px;font-size:9.4pt;vertical-align:top;white-space:nowrap}
+.lo-table th{position:sticky;top:0;background:#f0eadc;color:var(--navy);z-index:2;text-align:left;font-size:8.2pt;text-transform:uppercase;letter-spacing:.06em}
+.lo-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.lo-table td.notes{white-space:normal;min-width:260px;max-width:420px;color:var(--muted);line-height:1.35}
 </style>
 </head>
 <body>
 <div class="container">
 <div class="topbar">
-<div><h1>Penrose <span>Japan</span></h1><div class="sub">CFM subportfolio</div></div>
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Long Only subportfolio</div></div>
 <div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
 </div>
 
-<div data-platform-nav data-active-nav="cfm"></div>
+<div data-platform-nav data-active-nav="long-only"></div>
 <div id="brain-login"></div>
 
 <div id="brain-app" style="display:none">
   <section class="platform-section">
-    <h2>CFM</h2>
-    <div class="platform-subtitle">Subportfolio under Main Portfolio.</div>
-    <div class="platform-empty">No CFM records yet.</div>
+    <h2>Long Only</h2>
+    <div class="platform-subtitle">Auto mirror of the Long rows in Main Portfolio. Create or edit the source rows in Main Portfolio.</div>
+    <div class="platform-actions"><a class="platform-button" href="/master-portfolio.html">Open Main Portfolio</a></div>
+    <div id="long-only-root"></div>
   </section>
 </div>
 </div>
 <script type="module" src="/js/platform-nav.js"></script>
-<script type="module" src="/js/page-platform-shell.js"></script>
+<script type="module" src="/js/page-long-only.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Main / Yuki Book - Penrose Track</title>
+<title>Main Portfolio - Penrose Track</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -45,19 +45,35 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .draft-actions button{border:1px solid var(--line);background:white;color:var(--navy);font:inherit;font-size:8.4pt;padding:.28rem .42rem;border-radius:3px;cursor:pointer}
 .draft-actions button:hover{border-color:var(--gold)}
 .account-empty{border:1px solid var(--line);background:#fbfaf6;color:var(--muted);padding:1rem;font-size:10pt;line-height:1.45}
-.implementation-grid{display:grid;grid-template-columns:repeat(3,minmax(200px,1fr));gap:12px;margin-bottom:1rem}
+.implementation-grid{display:grid;grid-template-columns:repeat(4,minmax(190px,1fr));gap:12px;margin-bottom:1rem}
 .implementation-card{border:1px solid var(--line);background:white;padding:1rem;display:grid;gap:.45rem}
 .implementation-card h3{font-size:14pt;margin:0}
 .implementation-card .status{font-size:8.5pt;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 .implementation-card .links{display:flex;gap:.5rem;flex-wrap:wrap;font-size:9pt}
 .implementation-card a{color:var(--navy);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(26,39,68,.25)}
+.evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(240px,1fr));gap:12px}
+.evidence-card{border:1px solid var(--line);background:white;padding:1rem;display:grid;gap:.65rem}
+.evidence-head{display:flex;justify-content:space-between;align-items:baseline;gap:.75rem}
+.evidence-head h3{font-size:14pt;margin:0}
+.evidence-count{font-size:8.5pt;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.evidence-drop{border:1px dashed rgba(26,39,68,.35);background:#fbfaf6;min-height:108px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:9.5pt;line-height:1.45;padding:1rem;cursor:pointer}
+.evidence-drop.dragging,.evidence-drop:focus{outline:0;border-color:var(--gold);background:#fffbe8;color:var(--navy)}
+.evidence-input{display:none}
+.evidence-list{display:grid;gap:.5rem;max-height:260px;overflow:auto;scrollbar-gutter:stable}
+.evidence-row{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:.6rem;align-items:center;border-top:1px solid var(--line);padding-top:.55rem}
+.evidence-thumb{width:46px;height:34px;border:1px solid var(--line);background:#f0eadc;object-fit:cover;display:grid;place-items:center;color:var(--muted);font-size:8pt}
+.evidence-name{font-size:9.5pt;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evidence-meta{font-size:8.4pt;color:var(--muted);margin-top:.12rem}
+.evidence-actions{display:flex;gap:.35rem;align-items:center}
+.evidence-actions a,.evidence-actions button{border:1px solid var(--line);background:white;color:var(--navy);font:inherit;font-size:8.4pt;padding:.28rem .42rem;border-radius:3px;text-decoration:none;cursor:pointer}
 @media(max-width:980px){.portfolio-layout{grid-template-columns:1fr}.implementation-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
+@media(max-width:980px){.evidence-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="container">
 <div class="topbar">
-<div><h1>Penrose <span>Japan</span></h1><div class="sub">Main / Yuki Book construction</div></div>
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Main Portfolio construction</div></div>
 <div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
 </div>
 
@@ -66,12 +82,13 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 
 <div id="brain-app" style="display:none">
   <section class="platform-section">
-    <h2>Main / Yuki Book</h2>
-    <div class="platform-subtitle">Main Portfolio and Yuki Book are the same source book. MW, Citadel, and CFM are implementation sleeves generated from it.</div>
+    <h2>Main Portfolio</h2>
+    <div class="platform-subtitle">Main Portfolio is the source book. MW, Citadel, CFM, and Long Only are subportfolios generated from it.</div>
     <div class="implementation-grid">
       <div class="implementation-card">
-        <div class="status">implementation sleeve</div>
+        <div class="status">Subportfolio</div>
         <h3>MW</h3>
+        <div class="platform-meta">Live MW records and trading operations generated from Main Portfolio.</div>
         <div class="links">
           <a href="/track-record.html">Track Record</a>
           <a href="/index.html">Trading Ops</a>
@@ -79,23 +96,29 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
         </div>
       </div>
       <div class="implementation-card">
-        <div class="status">implementation sleeve</div>
+        <div class="status">Subportfolio</div>
         <h3>Citadel</h3>
-        <div class="platform-meta">Pending. Will be generated from Main / Yuki Book.</div>
+        <div class="platform-meta">Pending. Will be generated from Main Portfolio.</div>
         <div class="links"><a href="/citadel.html">Open Citadel</a></div>
       </div>
       <div class="implementation-card">
-        <div class="status">implementation sleeve</div>
+        <div class="status">Subportfolio</div>
         <h3>CFM</h3>
-        <div class="platform-meta">Pending. Will be generated from Main / Yuki Book.</div>
+        <div class="platform-meta">Pending. Will be generated from Main Portfolio.</div>
         <div class="links"><a href="/cfm.html">Open CFM</a></div>
+      </div>
+      <div class="implementation-card">
+        <div class="status">Subportfolio</div>
+        <h3>Long Only</h3>
+        <div class="platform-meta">Auto mirror of Main Portfolio long rows.</div>
+        <div class="links"><a href="/long-only.html">Open Long Only</a></div>
       </div>
     </div>
   </section>
 
   <div class="portfolio-layout">
     <section class="platform-section">
-      <h3>Main Book Ticket</h3>
+      <h3>Main Portfolio Ticket</h3>
       <form id="main-portfolio-form" class="construction-form">
         <div class="form-grid">
           <label>Symbol<input id="mp-symbol" autocomplete="off" placeholder="6361"></label>
@@ -130,12 +153,13 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
             </select>
           </label>
         </div>
-        <label>Implementation venues</label>
+        <label>Subportfolio routing</label>
         <div class="venue-checks">
           <label><input type="checkbox" name="mp-venue" value="MW"> MW</label>
           <label><input type="checkbox" name="mp-venue" value="Citadel"> Citadel</label>
           <label><input type="checkbox" name="mp-venue" value="CFM"> CFM</label>
         </div>
+        <div class="platform-meta">Long Only mirrors all Long rows automatically.</div>
         <label>Notes / construction rationale
           <textarea id="mp-notes" placeholder="Thesis, catalyst, sizing note, overlap risk"></textarea>
         </label>
@@ -144,12 +168,18 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
     </section>
 
     <section class="platform-section">
-      <h3>Main Book Drafts</h3>
-      <div class="platform-subtitle">Rows are local drafts for the Main / Yuki Book. Venue tags show where each idea may be implemented.</div>
+      <h3>Main Portfolio Drafts</h3>
+      <div class="platform-subtitle">Rows are local drafts for Main Portfolio. Subportfolio tags show where each idea may be implemented.</div>
       <div class="account-tabs" id="mp-account-tabs"></div>
       <div id="mp-draft-root"></div>
     </section>
   </div>
+
+  <section class="platform-section">
+    <h3>Subportfolio Evidence Intake</h3>
+    <div class="platform-subtitle">Drop or paste screenshots and files for MW, Citadel, and CFM. These source snapshots stay attached to the Main Portfolio workspace in this browser.</div>
+    <div id="mp-evidence-root"></div>
+  </section>
 </div>
 </div>
 <script type="module" src="/js/platform-nav.js"></script>

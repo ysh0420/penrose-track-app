@@ -110,7 +110,7 @@
 .brain-up { color: var(--green, #2e7d32); font-weight: 600; }
 .brain-down { color: var(--red, #b71c1c); font-weight: 600; }
 
-/* Yuki Book card */
+/* Main Portfolio card */
 .brain-yuki-book { padding: 1.5rem; background: linear-gradient(135deg, rgba(26, 39, 68, 0.04), rgba(201, 168, 76, 0.06)); border: 1px solid rgba(26, 39, 68, 0.12); }
 .brain-yuki-book .brain-stage { display: inline-block; margin: 0 8px; padding: 2px 8px; background: var(--cream, #f7f5f0); border-radius: 4px; font-size: 10pt; }
 

@@ -33,7 +33,7 @@ async function loadAll() {
   ]);
 
   renderHeader(header);
-  renderYukiBook(header);
+  renderMainPortfolioCard(header);
   renderFundamentals(fundamentals);
   renderSynthesis(synthesis);
   renderAlerts(alerts);
@@ -74,15 +74,15 @@ function renderHeader(res) {
   `;
 }
 
-function renderYukiBook(res) {
+function renderMainPortfolioCard(res) {
   const el = document.getElementById("brain-yuki-book");
   const h = unwrap(res);
-  // active_idea_id signals the symbol is in Yuki Book; missing → not in book.
+  // active_idea_id signals the symbol is in Main Portfolio; missing means not in book.
   if (!h?.active_idea_id) {
     el.innerHTML = `
       <div>
-        <h2>Yuki Book</h2>
-        <p style="margin:.6em 0;color:var(--muted,#8b8680)">Not in Yuki Book.</p>
+        <h2>Main Portfolio</h2>
+        <p style="margin:.6em 0;color:var(--muted,#8b8680)">Not in Main Portfolio.</p>
         <button class="brain-rerun-btn" id="brain-add-research" type="button">Run research</button>
       </div>
     `;
@@ -90,7 +90,7 @@ function renderYukiBook(res) {
     return;
   }
   el.innerHTML = `
-    <h2>Yuki Book</h2>
+    <h2>Main Portfolio</h2>
     <div style="margin:.4em 0">
       ${directionBadgeHTML(h.direction)}
       <span class="brain-stage">${escapeHTML(h.stage ?? "")}</span>
@@ -243,11 +243,11 @@ function pollForSynthesis(sessionId) {
         clearInterval(pollTimer);
         if (status) status.textContent = "Done";
         renderSynthesis({ status: "fulfilled", value: s });
-        // Yuki Book card may have been promoted from "not in book" to in
+        // Main Portfolio card may have been promoted from "not in book" to in
         // book by this run — refresh the header column too.
         try {
           const header = await getStockHeader(symbol);
-          renderYukiBook({ status: "fulfilled", value: header });
+          renderMainPortfolioCard({ status: "fulfilled", value: header });
         } catch { /* non-fatal */ }
       } else {
         const elapsed = Math.floor((Date.now() - startTs) / 1000);

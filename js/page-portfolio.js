@@ -9,7 +9,7 @@ mountBrainAuthGate({
     if (grid) {
       grid.innerHTML = `
         <div class="brain-empty">
-          Main Portfolio and Yuki Book are now the same source book.
+          Main Portfolio is the source book for subportfolio construction.
           <div style="margin-top:.7rem">
             <a class="platform-button" href="/master-portfolio.html">Open Main Portfolio</a>
           </div>

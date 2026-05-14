@@ -4,7 +4,7 @@
 
 import { brainAuth, brainQuery } from "./brain-client.js";
 
-/** Active ideas (Yuki Book) — used by /portfolio. */
+/** Active ideas (Main Portfolio) - used by /portfolio. */
 export function getActiveIdeas() {
   return brainQuery("fn_get_active_ideas");
 }
