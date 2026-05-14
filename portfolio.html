@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio — Penrose Track</title>
+<title>Yuki Book - Penrose Track</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -34,7 +34,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 <body>
 <div class="container">
 <div class="topbar">
-<div><h1>Penrose <span>Japan</span></h1><div class="sub">Yuki Book — Active Ideas</div></div>
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Yuki Book</div></div>
 <div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
 </div>
 
@@ -46,22 +46,6 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
   <div class="section-header">
     <h2>Yuki Book</h2>
     <span class="count" id="brain-portfolio-count">—</span>
-  </div>
-
-  <div class="brain-filter-bar">
-    <input type="search" id="brain-search" placeholder="Search symbol or name…" style="flex:1;min-width:200px">
-    <select id="brain-direction-filter">
-      <option value="all">Long & Short</option>
-      <option value="long">Long only</option>
-      <option value="short">Short only</option>
-    </select>
-    <label>Min conviction:
-      <input type="range" id="brain-conviction-min" min="1" max="5" value="1" style="width:100px">
-      <span id="brain-conviction-value">1</span>
-    </label>
-    <select id="brain-theme-filter">
-      <option value="all">All themes</option>
-    </select>
   </div>
 
   <div id="brain-portfolio-grid" class="brain-idea-grid"></div>

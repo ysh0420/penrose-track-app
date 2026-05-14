@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Master Portfolio - Penrose Track</title>
+<title>Main Portfolio - Penrose Track</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,18 +13,51 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
 h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
-.container{max-width:1180px;margin:0 auto}
+.container{max-width:1480px;margin:0 auto}
 .topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .topbar h1{color:white;font-size:22pt;letter-spacing:.5px}.topbar h1 span{color:var(--gold)}
 .topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
 .topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
 .topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+.portfolio-layout{display:grid;grid-template-columns:minmax(340px,.48fr) minmax(0,1fr);gap:16px;align-items:start}
+.construction-form{display:grid;gap:.75rem}
+.construction-form label{display:grid;gap:.3rem;font-size:8.5pt;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.construction-form input,.construction-form select,.construction-form textarea{width:100%;border:1px solid var(--line);background:white;color:var(--sumi);font-family:inherit;font-size:10pt;padding:.58rem .65rem;border-radius:3px}
+.construction-form textarea{min-height:86px;resize:vertical;line-height:1.45;text-transform:none;letter-spacing:0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.venue-checks{display:flex;gap:.45rem;flex-wrap:wrap}
+.venue-checks label{display:flex;align-items:center;gap:.3rem;border:1px solid var(--line);background:white;padding:.45rem .55rem;border-radius:3px;text-transform:none;letter-spacing:0;color:var(--navy);font-size:9pt}
+.venue-checks input{width:auto}
+.account-tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:1rem}
+.account-tabs button{border:1px solid var(--line);background:white;color:var(--navy);font-family:inherit;font-size:9.5pt;padding:.48rem .68rem;border-radius:3px;cursor:pointer}
+.account-tabs button.active{border-color:var(--navy);background:var(--navy);color:white}
+.draft-table-wrap{max-height:560px;overflow:auto;border:1px solid var(--line);background:white;scrollbar-gutter:stable}
+.draft-table{min-width:1080px;width:100%;border-collapse:separate;border-spacing:0}
+.draft-table th,.draft-table td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 8px;font-size:9.4pt;vertical-align:top;white-space:nowrap}
+.draft-table th{position:sticky;top:0;background:#f0eadc;color:var(--navy);z-index:2;text-align:left;font-size:8.2pt;text-transform:uppercase;letter-spacing:.06em}
+.draft-table tr:nth-child(even) td{background:#fbfaf6}
+.draft-table td.notes{white-space:normal;min-width:280px;max-width:420px;line-height:1.35;color:var(--muted)}
+.draft-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.draft-pill{display:inline-flex;border:1px solid var(--line);background:#fbfaf6;color:var(--navy);border-radius:12px;padding:1px 7px;margin:0 3px 3px 0;font-size:8.4pt}
+.draft-pill.long{border-color:rgba(46,125,50,.35);color:var(--green)}
+.draft-pill.short{border-color:rgba(183,28,28,.35);color:var(--red)}
+.draft-actions{display:flex;gap:.35rem;flex-wrap:wrap}
+.draft-actions button{border:1px solid var(--line);background:white;color:var(--navy);font:inherit;font-size:8.4pt;padding:.28rem .42rem;border-radius:3px;cursor:pointer}
+.draft-actions button:hover{border-color:var(--gold)}
+.account-empty{border:1px solid var(--line);background:#fbfaf6;color:var(--muted);padding:1rem;font-size:10pt;line-height:1.45}
+.implementation-grid{display:grid;grid-template-columns:repeat(3,minmax(200px,1fr));gap:12px;margin-bottom:1rem}
+.implementation-card{border:1px solid var(--line);background:white;padding:1rem;display:grid;gap:.45rem}
+.implementation-card h3{font-size:14pt;margin:0}
+.implementation-card .status{font-size:8.5pt;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.implementation-card .links{display:flex;gap:.5rem;flex-wrap:wrap;font-size:9pt}
+.implementation-card a{color:var(--navy);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(26,39,68,.25)}
+@media(max-width:980px){.portfolio-layout{grid-template-columns:1fr}.implementation-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="container">
 <div class="topbar">
-<div><h1>Penrose <span>Japan</span></h1><div class="sub">Yuki master book</div></div>
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Main portfolio construction</div></div>
 <div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
 </div>
 
@@ -33,29 +66,91 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 
 <div id="brain-app" style="display:none">
   <section class="platform-section">
-    <h2>Master Portfolio</h2>
-    <div class="platform-subtitle">This is the conceptual book Yuki creates. MW and future firms are implementation venues, not the master book itself.</div>
-    <div class="platform-shell-grid">
-      <div class="platform-card">
-        <h3>Current Proxy</h3>
-        <p>Until the master-position schema lands, the curated Yuki Book is the closest proxy for master ideas.</p>
-        <a href="/portfolio.html">Open Yuki Book</a>
+    <h2>Main Portfolio</h2>
+    <div class="platform-subtitle">Current book status: not started.</div>
+    <div class="implementation-grid">
+      <div class="implementation-card">
+        <div class="status">live implementation</div>
+        <h3>MW</h3>
+        <div class="links">
+          <a href="/track-record.html">Track Record</a>
+          <a href="/index.html">Trading Ops</a>
+          <a href="/mw-tops-attribution.html">Attribution</a>
+        </div>
       </div>
-      <div class="platform-card">
-        <h3>Implementation Context</h3>
-        <p>Account-level holdings and transactions stay in Track Record, including MW and future firms.</p>
-        <a href="/track-record.html">Open Track Record</a>
+      <div class="implementation-card">
+        <div class="status">pending</div>
+        <h3>Citadel</h3>
+        <div class="platform-meta">No portfolio rows yet.</div>
       </div>
-      <div class="platform-card">
-        <h3>Validation</h3>
-        <p>The USD100M Model Book validates research process and sizing discipline in the background.</p>
-        <a href="/model-portfolio.html">Open Validation Book</a>
+      <div class="implementation-card">
+        <div class="status">pending</div>
+        <h3>CFM</h3>
+        <div class="platform-meta">No portfolio rows yet.</div>
       </div>
     </div>
   </section>
+
+  <div class="portfolio-layout">
+    <section class="platform-section">
+      <h3>Construction Ticket</h3>
+      <form id="main-portfolio-form" class="construction-form">
+        <div class="form-grid">
+          <label>Symbol<input id="mp-symbol" autocomplete="off" placeholder="6361"></label>
+          <label>Company<input id="mp-company" autocomplete="off" placeholder="Ebara"></label>
+        </div>
+        <div class="form-grid">
+          <label>Side
+            <select id="mp-side">
+              <option value="Long">Long</option>
+              <option value="Short">Short</option>
+            </select>
+          </label>
+          <label>Target weight %
+            <input id="mp-weight" type="number" min="0" step="0.1" placeholder="1.5">
+          </label>
+        </div>
+        <div class="form-grid">
+          <label>Status
+            <select id="mp-status">
+              <option value="Candidate">Candidate</option>
+              <option value="Approved">Approved</option>
+              <option value="Implemented">Implemented</option>
+              <option value="Watch">Watch</option>
+            </select>
+          </label>
+          <label>Source
+            <select id="mp-source">
+              <option value="Manual">Manual</option>
+              <option value="Brain">Brain</option>
+              <option value="Koyfin">Koyfin</option>
+              <option value="Model Book">Model Book</option>
+            </select>
+          </label>
+        </div>
+        <label>Implementation venues</label>
+        <div class="venue-checks">
+          <label><input type="checkbox" name="mp-venue" value="MW"> MW</label>
+          <label><input type="checkbox" name="mp-venue" value="Citadel"> Citadel</label>
+          <label><input type="checkbox" name="mp-venue" value="CFM"> CFM</label>
+        </div>
+        <label>Notes / construction rationale
+          <textarea id="mp-notes" placeholder="Thesis, catalyst, sizing note, overlap risk"></textarea>
+        </label>
+        <button class="platform-button" type="submit">Add Draft Row</button>
+      </form>
+    </section>
+
+    <section class="platform-section">
+      <h3>Draft Construction Book</h3>
+      <div class="platform-subtitle">Rows are local drafts until the portfolio schema is wired to the database.</div>
+      <div class="account-tabs" id="mp-account-tabs"></div>
+      <div id="mp-draft-root"></div>
+    </section>
+  </div>
 </div>
 </div>
 <script type="module" src="/js/platform-nav.js"></script>
-<script type="module" src="/js/page-platform-shell.js"></script>
+<script type="module" src="/js/page-master-portfolio.js"></script>
 </body>
 </html>
