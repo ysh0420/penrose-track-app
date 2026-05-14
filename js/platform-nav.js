@@ -1,13 +1,21 @@
 // @ts-check
 
 const NAV_ITEMS = [
+  { id: "main", label: "Main", href: "/index.html", group: "Daily" },
   { id: "today", label: "Today", href: "/today.html", group: "Daily" },
+  { id: "news", label: "News", href: "/news.html", group: "Daily" },
   { id: "brain-review", label: "Brain Review", href: "/brain-review.html", group: "Daily" },
   { id: "ideas", label: "Ideas", href: "/ideas.html", group: "Pipeline" },
+  { id: "pipeline", label: "Pipeline", href: "/pipeline.html", group: "Pipeline" },
   { id: "master", label: "Master Portfolio", href: "/master-portfolio.html", group: "Portfolio" },
-  { id: "reports", label: "Reports", href: "/reports.html", group: "Research" },
-  { id: "companies", label: "Companies", href: "/stock.html", group: "Research" },
+  { id: "portfolio", label: "Yuki Book", href: "/portfolio.html", group: "Portfolio" },
+  { id: "model", label: "Model Book", href: "/model-portfolio.html", group: "Portfolio" },
   { id: "track", label: "Track Record", href: "/track-record.html", group: "Portfolio" },
+  { id: "attribution", label: "MW Attribution", href: "/mw-tops-attribution.html", group: "Portfolio" },
+  { id: "transactions", label: "MW Transactions", href: "/mw-tops-transactions.html", group: "Portfolio" },
+  { id: "reports", label: "Reports", href: "/reports.html", group: "Research" },
+  { id: "research-log", label: "Research Log", href: "/research-log.html", group: "Research" },
+  { id: "companies", label: "Companies", href: "/stock.html", group: "Research" },
   { id: "client", label: "Client View", href: "/client.html", group: "External" },
 ];
 
@@ -34,7 +42,7 @@ export function renderPlatformNav(container, activeId) {
     .filter((entry) => entry.items.length);
   container.innerHTML = `
     <nav class="platform-breadcrumb" aria-label="Breadcrumb">
-      <a href="/today.html">Main</a>
+      <a href="/index.html">Main</a>
       ${activeItem ? `
         <span aria-hidden="true">&gt;</span>
         <span>${escapeHTML(activeItem.group)}</span>

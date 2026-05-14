@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/platform-pages.css">
 <style>
 :root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -55,17 +56,7 @@ td.date{white-space:nowrap;font-size:9pt;color:var(--muted)}
 <div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">Period: Feb 2 — Apr 24, 2026<br/>18 transactions</div>
 </div>
 
-<div class="nav-links">
-<a href="/index.html">Dashboard</a>
-<a href="/track-record.html">Track Record</a>
-<a href="/mw-tops-attribution.html">Attribution</a>
-<a href="/mw-tops-transactions.html" class="active">Transactions</a>
-<a href="/portfolio.html">Portfolio</a>
-<a href="/model-portfolio.html">Model Book</a>
-<a href="/stock.html">Stock</a>
-<a href="/pipeline.html">Pipeline</a>
-<a href="/research-log.html">Research</a>
-</div>
+<div data-platform-nav data-active-nav="transactions"></div>
 
 <div class="section">
 <h2>Transaction Summary</h2>
@@ -104,6 +95,7 @@ Rationale from Yuki Soga's analytical notes
 </div>
 </div>
 
+<script type="module" src="/js/platform-nav.js"></script>
 <script>
 var txns = [
   {date:'2026-04-24', ticker:'9983', bs:'AMEND', qty:1000000, target:null, exec:null, cost:1500, type:'Touch', rationale:'doubled Fast Retailing short from $1M to $2M'},

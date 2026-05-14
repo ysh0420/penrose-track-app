@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/platform-pages.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
@@ -59,12 +60,7 @@ tr.subtotal td{border-top:1px solid var(--gold);color:var(--navy);padding-top:.5
 <div style="text-align:right;font-size:10pt;color:rgba(255,255,255,.85)">As of: May 1, 2026 (Day 1 of new month)</div>
 </div>
 
-<div class="nav-links">
-<a href="/track-record.html">← Track Record</a>
-<a href="/mw-tops-attribution.html" class="active">Attribution & Holdings</a>
-<a href="/mw-tops-transactions.html">Transaction Log</a>
-<a href="/model-portfolio.html">Model Book</a>
-</div>
+<div data-platform-nav data-active-nav="attribution"></div>
 
 <div class="month-context">
 <b>New month, fresh MTD basis.</b> April closed at +4.35% AC (LTD +39.96%, locked in). May 1 figures below show single-day moves only — MTD -1.68%, AC -1.32% reflects Day 1 of May, not loss against April's accumulated gains. New LTD AC = +38.12%.
@@ -141,6 +137,7 @@ Data as of May 1, 2026 · Penrose Japan Ltd
 </div>
 </div>
 
+<script type="module" src="/js/platform-nav.js"></script>
 <script>
 // May 1 portal red cells = negative values. CRITICAL: New month = fresh MTD basis.
 // Cell-by-cell verified from May 1 portal screenshot:

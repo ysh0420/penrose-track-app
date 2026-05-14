@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/brain-pages.css">
+<link rel="stylesheet" href="/css/platform-pages.css">
 <style>
 :root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -37,17 +38,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 <div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
 </div>
 
-<div class="nav-links">
-<a href="/index.html">Dashboard</a>
-<a href="/track-record.html">Track Record</a>
-<a href="/mw-tops-attribution.html">Attribution</a>
-<a href="/mw-tops-transactions.html">Transactions</a>
-<a href="/portfolio.html" class="active">Portfolio</a>
-<a href="/model-portfolio.html">Model Book</a>
-<a href="/stock.html">Stock</a>
-<a href="/pipeline.html">Pipeline</a>
-<a href="/research-log.html">Research</a>
-</div>
+<div data-platform-nav data-active-nav="portfolio"></div>
 
 <div id="brain-login"></div>
 
@@ -77,6 +68,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 </div>
 
 </div>
+<script type="module" src="/js/platform-nav.js"></script>
 <script type="module" src="/js/page-portfolio.js"></script>
 </body>
 </html>
