@@ -9,13 +9,18 @@
   --red:#b71c1c;
 }
 
-.platform-nav{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:.45rem;font-size:10pt;align-items:center}
-.platform-nav a{color:var(--navy);text-decoration:none;padding:.5rem .7rem;border:1px solid var(--line);background:white;border-radius:3px;line-height:1.15}
-.platform-nav a:hover{background:var(--cream);border-color:var(--gold)}
-.platform-nav a.active{background:var(--navy);color:white;border-color:var(--navy)}
-.platform-nav a[data-group="Portfolio"]{border-color:#d4c17d}
-.platform-nav a[data-group="Research"]{border-color:#b9c4da}
-.platform-nav-guide{font-size:9pt;color:var(--muted);line-height:1.45;margin-bottom:1.5rem}
+.platform-breadcrumb{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.6rem;font-size:9pt;color:var(--muted)}
+.platform-breadcrumb a{color:var(--navy);font-weight:700;text-decoration:none;border-bottom:1px solid rgba(26,39,68,.25)}
+.platform-breadcrumb a:hover{color:var(--gold);border-bottom-color:var(--gold)}
+.platform-breadcrumb strong{color:var(--navy);font-weight:700}
+.platform-nav{display:flex;gap:.7rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:10pt;align-items:stretch}
+.platform-nav-section{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;padding:.35rem;border:1px solid var(--line);background:rgba(255,255,255,.6)}
+.platform-nav-section-label{font-size:7.5pt;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 .35rem;white-space:nowrap}
+.platform-nav-section a{color:var(--navy);text-decoration:none;padding:.42rem .58rem;border:1px solid transparent;background:white;border-radius:3px;line-height:1.15}
+.platform-nav-section a:hover{background:var(--cream);border-color:var(--gold)}
+.platform-nav-section a.active{background:var(--navy);color:white;border-color:var(--navy)}
+.platform-nav-section[data-group="Portfolio"]{border-color:#d4c17d}
+.platform-nav-section[data-group="Research"]{border-color:#b9c4da}
 
 .platform-shell-grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px;margin-bottom:1rem}
 .platform-card{background:white;border:1px solid var(--line);padding:1.15rem}
@@ -70,4 +75,5 @@
 }
 @media(max-width:640px){
   .platform-shell-grid,.platform-metrics{grid-template-columns:1fr}
+  .platform-nav-section{width:100%}
 }

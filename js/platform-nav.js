@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { id: "client", label: "Client View", href: "/client.html", group: "External" },
 ];
 
-const NAV_GUIDE = "Today: daily monitor | Brain Review: daily dump triage | Master Portfolio: Yuki intended book | Reports: decision-grade research | Track Record: accounts and validation";
+const GROUP_ORDER = ["Daily", "Pipeline", "Portfolio", "Research", "External"];
 
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({
@@ -25,15 +25,35 @@ function escapeHTML(value) {
 
 export function renderPlatformNav(container, activeId) {
   const active = activeId || container?.dataset?.activeNav || "";
+  const activeItem = NAV_ITEMS.find((item) => item.id === active);
+  const groupedItems = GROUP_ORDER
+    .map((group) => ({
+      group,
+      items: NAV_ITEMS.filter((item) => item.group === group),
+    }))
+    .filter((entry) => entry.items.length);
   container.innerHTML = `
+    <nav class="platform-breadcrumb" aria-label="Breadcrumb">
+      <a href="/today.html">Main</a>
+      ${activeItem ? `
+        <span aria-hidden="true">&gt;</span>
+        <span>${escapeHTML(activeItem.group)}</span>
+        <span aria-hidden="true">&gt;</span>
+        <strong>${escapeHTML(activeItem.label)}</strong>
+      ` : ""}
+    </nav>
     <nav class="platform-nav" aria-label="Platform navigation">
-      ${NAV_ITEMS.map((item) => `
-        <a href="${escapeHTML(item.href)}" class="${item.id === active ? "active" : ""}" data-group="${escapeHTML(item.group)}" ${item.id === active ? 'aria-current="page"' : ""}>
-          ${escapeHTML(item.label)}
-        </a>
+      ${groupedItems.map((entry) => `
+        <div class="platform-nav-section" data-group="${escapeHTML(entry.group)}">
+          <span class="platform-nav-section-label">${escapeHTML(entry.group)}</span>
+          ${entry.items.map((item) => `
+            <a href="${escapeHTML(item.href)}" class="${item.id === active ? "active" : ""}" ${item.id === active ? 'aria-current="page"' : ""}>
+              ${escapeHTML(item.label)}
+            </a>
+          `).join("")}
+        </div>
       `).join("")}
     </nav>
-    <div class="platform-nav-guide">${escapeHTML(NAV_GUIDE)}</div>
   `;
 }
 
