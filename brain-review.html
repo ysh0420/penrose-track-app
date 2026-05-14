@@ -13,7 +13,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
 h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
-.container{max-width:1380px;margin:0 auto}
+.container{max-width:1600px;margin:0 auto}
 .topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .topbar h1{color:white;font-size:22pt;letter-spacing:.5px}.topbar h1 span{color:var(--gold)}
 .topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
@@ -23,7 +23,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .review-toolbar h2{font-size:20pt;border-bottom:2px solid var(--gold);padding-bottom:.3em;display:inline-block}
 .review-controls{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
 .review-controls input{border:1px solid var(--line);background:white;color:var(--navy);padding:.52rem .65rem;border-radius:4px;font-family:inherit;font-size:10pt}
-.review-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:16px}
+.review-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.8fr);gap:16px}
 .review-card-list{display:grid;gap:10px}
 .review-card{border:1px solid var(--line);background:#fbfaf6;padding:1rem;display:grid;gap:.55rem}
 .review-card h3{font-family:'DM Sans',sans-serif;font-size:11pt;line-height:1.35;margin:0;color:var(--navy)}
@@ -40,10 +40,13 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .review-save-status.err{color:var(--red)}
 .review-save-status.ok{color:var(--green)}
 .review-summary{font-size:10.5pt;line-height:1.6;white-space:pre-wrap}
-#review-signals{max-height:760px;overflow-y:auto;padding-right:.35rem;scrollbar-gutter:stable}
+#review-signals{padding-right:0}
 .review-sheet-wrap{max-height:760px;overflow:auto;scrollbar-gutter:stable;border:1px solid var(--line);background:white}
 .watchlist-sheet-wrap{max-height:520px;overflow:auto;scrollbar-gutter:stable;border:1px solid var(--line);background:white;margin-top:.75rem}
+.review-disclosure-wrap{max-height:560px;overflow:auto;scrollbar-gutter:stable;border:1px solid var(--line);background:white}
+.review-disclosure-wrap .review-table th{position:sticky;top:0;z-index:2}
 .review-sheet{min-width:1180px;border-collapse:separate;border-spacing:0}
+.watchlist-sheet-wrap .review-sheet{min-width:1360px}
 .review-sheet th,.review-sheet td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px 8px;font-size:9.2pt;line-height:1.3;vertical-align:top;white-space:nowrap}
 .review-sheet th{position:sticky;top:0;z-index:2;background:#f0eadc;color:var(--navy);font-size:8.2pt;text-transform:uppercase;letter-spacing:.6px;box-shadow:0 1px 0 var(--line)}
 .review-sheet tr:nth-child(even) td{background:#fbfaf6}
@@ -61,9 +64,11 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .review-inline-actions button.active{border-color:var(--navy);background:var(--navy);color:white}
 .review-inline-actions button:disabled{opacity:.55;cursor:wait}
 .review-table{min-width:720px}
+.review-disclosure-table{min-width:1180px}
 .review-table td.title-cell{white-space:normal;min-width:300px;line-height:1.4}
+.review-disclosure-table td.title-cell{min-width:520px;max-width:780px}
 .review-table td.symbol-cell{font-family:monospace}
-@media(max-width:980px){.review-grid{grid-template-columns:1fr}.review-controls{width:100%}.review-controls input{flex:1;min-width:160px}#review-signals{max-height:70vh}}
+@media(max-width:980px){.review-grid{grid-template-columns:1fr}.review-controls{width:100%}.review-controls input{flex:1;min-width:160px}}
 </style>
 </head>
 <body>
@@ -91,29 +96,23 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 
   <div id="review-metrics" class="platform-metrics"></div>
 
+  <section class="platform-section">
+    <h3>Signal Candidates</h3>
+    <div id="review-signals"></div>
+  </section>
+
+  <section class="platform-section">
+    <h3>Watchlist Priority</h3>
+    <div id="review-watchlist"></div>
+  </section>
+
+  <section class="platform-section">
+    <h3>Portfolio / Watchlist Disclosures</h3>
+    <div id="review-disclosures"></div>
+  </section>
+
   <div class="review-grid">
     <div>
-      <section class="platform-section">
-        <h3>Signal Candidates</h3>
-        <div id="review-signals"></div>
-      </section>
-
-      <section class="platform-section">
-        <h3>Portfolio / Watchlist Disclosures</h3>
-        <div id="review-disclosures"></div>
-      </section>
-    </div>
-    <div>
-      <section class="platform-section">
-        <h3>Run Summary</h3>
-        <div id="review-summary"></div>
-      </section>
-
-      <section class="platform-section">
-        <h3>Watchlist Priority</h3>
-        <div id="review-watchlist"></div>
-      </section>
-
       <section class="platform-section">
         <h3>Global Lead-Lag</h3>
         <div id="review-leadlag"></div>
@@ -122,6 +121,12 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
       <section class="platform-section">
         <h3>1D Market Movers</h3>
         <div id="review-markets"></div>
+      </section>
+    </div>
+    <div>
+      <section class="platform-section">
+        <h3>Run Summary</h3>
+        <div id="review-summary"></div>
       </section>
 
       <section class="platform-section">

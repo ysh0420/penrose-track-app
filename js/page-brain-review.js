@@ -363,8 +363,8 @@ function renderDisclosures(payload) {
   }
   return `
     ${header}
-    <div class="platform-table-wrap">
-      <table class="platform-table review-table">
+    <div class="review-disclosure-wrap">
+      <table class="platform-table review-table review-disclosure-table">
         <thead><tr><th>Time (JST)</th><th>List</th><th>Code</th><th>Issuer</th><th>Title</th><th>Source</th></tr></thead>
         <tbody>
           ${rows.map((row) => `
