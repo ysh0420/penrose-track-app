@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   { id: "long-only", label: "Long Only", href: "/long-only.html", section: "portfolio" },
   { id: "reports", label: "Reports", href: "/reports.html", section: "research" },
   { id: "research-log", label: "Research Log", href: "/research-log.html", section: "research" },
+  { id: "agent-intake", label: "Agent Intake", href: "/agent-intake.html", section: "research" },
   { id: "ideas", label: "Ideas", href: "/ideas.html", section: "research" },
   { id: "companies", label: "Companies", href: "/stock.html", section: "research" },
   { id: "client", label: "Client View", href: "/client.html", section: "external" },

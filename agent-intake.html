@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Intake - Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<link rel="stylesheet" href="/css/platform-pages.css">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1280px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
+.topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+.agent-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.agent-toolbar h2{font-size:20pt;border-bottom:2px solid var(--gold);padding-bottom:.3em;display:inline-block}
+.agent-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}
+.agent-metric{background:white;border:1px solid var(--line);padding:1rem;min-height:96px}
+.agent-metric .label{font-size:8pt;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600}
+.agent-metric .value{font-size:22pt;font-weight:600;color:var(--navy);margin-top:.35rem}
+.agent-metric .note{font-size:9pt;color:var(--muted);margin-top:.2rem}
+.agent-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.9fr);gap:1rem;align-items:start}
+.agent-card{background:white;border:1px solid var(--line);padding:1rem;margin-bottom:1rem}
+.agent-card h3{font-size:15pt;margin-bottom:.6rem}
+.agent-table{width:100%;border-collapse:collapse;font-size:9.5pt}
+.agent-table th,.agent-table td{border-bottom:1px solid var(--line);padding:.55rem;text-align:left;vertical-align:top}
+.agent-table th{font-size:8pt;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600}
+.agent-table .num{text-align:right;white-space:nowrap}
+.agent-pill{display:inline-flex;align-items:center;gap:.25rem;padding:.15rem .45rem;border:1px solid var(--line);font-size:8.5pt;background:#faf9f6;color:var(--navy);margin:.1rem .15rem .1rem 0}
+.agent-status{font-weight:600;color:var(--navy)}
+.agent-status.queued{color:#9a6a00}.agent-status.promoted{color:var(--green)}.agent-status.error{color:var(--red)}
+.agent-candidate{border-top:1px solid var(--line);padding-top:.8rem;margin-top:.8rem}
+.agent-candidate:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.agent-candidate-title{font-weight:600;color:var(--navy);margin-bottom:.25rem}
+.agent-candidate-meta{font-size:8.5pt;color:var(--muted);margin-bottom:.5rem}
+.agent-findings{padding-left:1.1rem;font-size:9.5pt;line-height:1.45}
+.agent-findings li{margin-bottom:.25rem}
+@media(max-width:900px){.agent-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.agent-layout{grid-template-columns:1fr}}
+@media(max-width:560px){body{padding:1rem .7rem}.topbar{padding:1rem}.agent-grid{grid-template-columns:1fr}.agent-table{font-size:8.7pt}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Multi-agent intake and compiler queue</div></div>
+<div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
+</div>
+
+<div data-platform-nav data-active-nav="agent-intake"></div>
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="agent-toolbar">
+    <div>
+      <h2>Agent Intake</h2>
+      <div class="platform-subtitle">Raw AI, Koyfin, news, and market-data outputs land here before Codex promotes report candidates.</div>
+    </div>
+    <div class="platform-actions">
+      <button id="agent-refresh" class="platform-button" type="button">Refresh</button>
+      <a class="platform-button" href="/reports.html">Reports</a>
+      <a class="platform-button" href="/research-log.html">Research Log</a>
+    </div>
+  </div>
+
+  <div id="agent-root"></div>
+</div>
+
+<div class="brain-modal-backdrop" id="brain-modal">
+  <div class="brain-modal">
+    <div class="brain-modal-header">
+      <h2 id="brain-modal-title">Candidate</h2>
+      <button class="brain-modal-close" type="button" id="brain-modal-close">&times;</button>
+    </div>
+    <div class="brain-modal-body" id="brain-modal-body"></div>
+  </div>
+</div>
+
+</div>
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module" src="/js/page-agent-intake.js"></script>
+</body>
+</html>
