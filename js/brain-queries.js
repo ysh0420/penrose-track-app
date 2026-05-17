@@ -129,6 +129,15 @@ export function getResearchLog(limit = 100, offset = 0) {
   });
 }
 
+/** Multi-agent intake dashboard for Source Runs, compiler queue, and cost. */
+export function getAgentResearchDashboard(days = 30, limit = 100) {
+  const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
+  return brainQuery("fn_agent_research_dashboard", {
+    p_since: since,
+    p_limit: limit,
+  });
+}
+
 /**
  * Recent intraday alerts. The function returns a single bucketed jsonb
  * object, NOT an array — caller drills into hot_signals,

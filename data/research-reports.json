@@ -1,5 +1,19 @@
 [
   {
+    "id": "zeon-4205-internal-model-book-report-2026-05-17",
+    "symbol": "4205",
+    "company_name_jp": "日本ゼオン",
+    "company_name": "Zeon Corporation",
+    "title": "Zeon 4205 - Internal Model-Book Report v2",
+    "completed_at": "2026-05-17T13:27:09.901Z",
+    "verdict": "maintain",
+    "conviction_recommendation": "Maintain core long / no add at current price",
+    "source": "Penrose agent intake + Koyfin Chrome CSV",
+    "report_id": "3034f54d-a41e-41b5-8097-ab80a60724e2",
+    "markdown_url": "/data/reports/zeon-4205-internal-model-book-report-2026-05-17.md",
+    "static_report": true
+  },
+  {
     "id": "zeon-4205-2026-05-14",
     "symbol": "4205",
     "company_name_jp": "日本ゼオン",
