@@ -1,6 +1,10 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
-import { getResearchLog, getSynthesisForSymbol } from "./brain-queries.js";
+import {
+  getPublishedReports,
+  getPublishedReportBySlug,
+  getReportLineage,
+} from "./brain-queries.js";
 import {
   escapeHTML,
   formatRelativeTime,
@@ -36,7 +40,14 @@ function parseVerdict(md) {
   return match?.[1] ?? "completed";
 }
 
+function parseConvictionRecommendation(md) {
+  const match = String(md ?? "").match(/## Conviction recommendation\s+\*\*([^*]+)\*\*/i);
+  return match?.[1] ?? null;
+}
+
 async function loadStaticReports() {
+  // Legacy fallback only. Internal reports should live in Supabase, not in
+  // public static markdown files. This returns [] when the manifest is empty.
   try {
     const manifestRes = await fetch(STATIC_REPORTS_URL, { cache: "no-store" });
     if (!manifestRes.ok) return [];
@@ -50,6 +61,7 @@ async function loadStaticReports() {
         ...row,
         synthesis_md: await mdRes.text(),
         completed_at: row.completed_at ?? row.updated_at ?? row.created_at,
+        legacy_static_report: true,
       };
     }));
     return reports
@@ -58,11 +70,6 @@ async function loadStaticReports() {
   } catch {
     return [];
   }
-}
-
-function parseConvictionRecommendation(md) {
-  const match = String(md ?? "").match(/## Conviction recommendation\s+\*\*([^*]+)\*\*/i);
-  return match?.[1] ?? null;
 }
 
 function reportQuality(md) {
@@ -87,19 +94,40 @@ function reportQuality(md) {
   return { missing, score, status, statusClass };
 }
 
+function dbReportQuality(row) {
+  const hasSourceCoverage = Number(row.source_count ?? 0) >= 3;
+  const hasInternalApproval = row.publication_gate_status === "approved_internal" || row.publication_gate_status === "approved_public_redacted";
+  const hasSignal = Array.isArray(row.primary_signal_ids) && row.primary_signal_ids.length > 0;
+  const score = [hasSourceCoverage, hasInternalApproval, hasSignal].filter(Boolean).length / 3;
+  let status = "DB-backed report";
+  let statusClass = "candidate";
+  if (hasSourceCoverage && hasInternalApproval) {
+    status = hasSignal ? "Signal-linked report" : "Published report";
+    statusClass = "decision";
+  }
+  return { missing: [], score, status, statusClass };
+}
+
+function qualityFor(row, md) {
+  return md ? reportQuality(md) : dbReportQuality(row);
+}
+
 function reportCardHTML(row, md) {
-  const quality = reportQuality(md);
+  const quality = qualityFor(row, md);
   const missing = quality.missing.slice(0, 4).map((section) => section.label).join(", ");
-  const symbol = row.symbol ?? "";
-  const name = firstValue(row.company_name_jp, row.name_jp, row.company_name, row.name_en);
-  const conviction = row.conviction_recommendation ?? parseConvictionRecommendation(md);
-  const verdict = row.verdict ?? parseVerdict(md);
+  const symbol = firstValue(row.symbol, Array.isArray(row.symbols) ? row.symbols[0] : "");
+  const name = firstValue(row.company_name_jp, row.name_jp, row.company_name, row.name_en, row.title);
+  const conviction = row.conviction_recommendation ?? parseConvictionRecommendation(md) ?? row.portfolio_action;
+  const verdict = row.verdict ?? row.signal_state ?? parseVerdict(md);
+  const sourceLabel = row.db_report ? "Supabase report" : row.legacy_static_report ? "legacy static" : row.static_report ? "saved report" : "report";
+  const access = row.access_level ? ` / ${row.access_level}` : "";
+  const sourceCount = Number(row.source_count ?? 0) > 0 ? ` / sources ${Number(row.source_count)}` : "";
   return `
     <article class="report-card" data-symbol="${escapeHTML(symbol)}">
       <div class="report-title-row">
         <div>
           <h3>${escapeHTML(row.title ?? `${symbol} ${name}`)}</h3>
-          <div class="platform-meta">${escapeHTML(formatRelativeTime(row.completed_at ?? row.updated_at ?? row.created_at))} / ${row.static_report ? "saved report" : "research log"} / conviction ${escapeHTML(conviction ?? "-")}</div>
+          <div class="platform-meta">${escapeHTML(formatRelativeTime(row.published_at ?? row.completed_at ?? row.updated_at ?? row.created_at))} / ${escapeHTML(sourceLabel)}${escapeHTML(access)}${escapeHTML(sourceCount)} / conviction ${escapeHTML(conviction ?? "-")}</div>
         </div>
         <span class="report-score">${Math.round(quality.score * 100)}%</span>
       </div>
@@ -107,10 +135,19 @@ function reportCardHTML(row, md) {
         ${verdictBadgeHTML(verdict)}
         <span class="report-status ${quality.statusClass}">${escapeHTML(quality.status)}</span>
       </div>
-      <div class="report-missing">${quality.missing.length ? `Missing: ${escapeHTML(missing)}${quality.missing.length > 4 ? "..." : ""}` : "All required sections detected."}</div>
+      <div class="report-missing">${quality.missing.length ? `Missing: ${escapeHTML(missing)}${quality.missing.length > 4 ? "..." : ""}` : dbLineageSummary(row)}</div>
       <button class="platform-button" type="button" data-open-report>Open report</button>
     </article>
   `;
+}
+
+function dbLineageSummary(row) {
+  if (row.db_report) {
+    const signals = Array.isArray(row.primary_signal_ids) ? row.primary_signal_ids.length : 0;
+    const signalText = signals ? `${signals} linked signal${signals === 1 ? "" : "s"}` : "No linked signal yet";
+    return `DB-backed. ${escapeHTML(signalText)}. Raw Source Runs stay separated from the report shelf.`;
+  }
+  return "All required sections detected.";
 }
 
 function openModal(title, bodyHTML) {
@@ -123,76 +160,105 @@ function closeModal() {
   $("brain-modal").classList.remove("open");
 }
 
+function lineageHTML(payload) {
+  const lineage = payload?.lineage ?? payload ?? {};
+  const runs = Array.isArray(lineage.source_runs) ? lineage.source_runs : [];
+  const signals = Array.isArray(lineage.signals) ? lineage.signals : [];
+  if (!runs.length && !signals.length) return "";
+  return `
+    <section class="platform-section" style="margin-top:1rem">
+      <h3>Source Lineage</h3>
+      <div class="platform-list">
+        <div class="platform-item">Source runs: ${escapeHTML(String(runs.length))} / linked signals: ${escapeHTML(String(signals.length))}</div>
+        ${signals.slice(0, 5).map((signal) => `
+          <div class="platform-item">
+            <strong>${escapeHTML(signal.signal_state ?? "Signal")}</strong>
+            ${escapeHTML(signal.signal_id ?? "")} / score ${escapeHTML(String(signal.final_score ?? "-"))}
+          </div>
+        `).join("")}
+        ${runs.slice(0, 8).map((run) => `
+          <div class="platform-item">
+            <strong>${escapeHTML(run.source_agent ?? "source")}</strong>
+            ${escapeHTML(run.run_type ?? "")} / ${escapeHTML(run.title ?? run.run_id ?? "")}
+            <div class="platform-meta">${escapeHTML(run.subscription_or_credit ?? "unknown")} / artifacts ${escapeHTML(String(run.artifact_counts?.artifact_count ?? 0))} / review ${escapeHTML(run.needs_human_review ? "needed" : "not flagged")}</div>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
 async function openReport(row) {
-  const title = `${row.symbol ?? ""} ${row.company_name_jp ?? row.company_name ?? ""}`.trim();
+  const title = `${firstValue(row.symbol, Array.isArray(row.symbols) ? row.symbols[0] : "")} ${firstValue(row.company_name_jp, row.company_name, row.title)}`.trim();
   let md = row.synthesis_md ?? "";
+  let lineage = null;
   openModal(title || "Report", `<div class="brain-empty">Loading report...</div>`);
   try {
-    if (!md && row.symbol) {
-      const payload = await getSynthesisForSymbol(row.symbol);
-      const synth = Array.isArray(payload) ? payload[0] : payload;
-      md = synth?.synthesis_md ?? "";
-      row = { ...row, ...synth };
+    if (row.db_report) {
+      const payload = await getPublishedReportBySlug(row.report_slug ?? "", row.report_id ?? null, "internal_only");
+      const report = payload?.report ?? payload;
+      if (!report || payload?.error) throw new Error(payload?.error ?? "Report not found");
+      md = report.content_md ?? "";
+      row = { ...row, ...report, synthesis_md: md };
+      if (report.report_id) {
+        lineage = await getReportLineage(report.report_id).catch(() => null);
+      }
     }
-    const quality = reportQuality(md);
-    openModal(title || "Report", `
+
+    const quality = qualityFor(row, md);
+    openModal(title || row.title || "Report", `
       <div class="brain-synthesis-meta">
-        ${verdictBadgeHTML(row.verdict ?? parseVerdict(md))}
+        ${verdictBadgeHTML(row.verdict ?? row.signal_state ?? parseVerdict(md))}
         &nbsp; Quality: ${escapeHTML(quality.status)} (${Math.round(quality.score * 100)}%)
+        ${row.access_level ? `&nbsp; / Access: ${escapeHTML(row.access_level)}` : ""}
+        ${row.source_count ? `&nbsp; / Sources: ${escapeHTML(String(row.source_count))}` : ""}
       </div>
       ${quality.missing.length ? `<div class="platform-empty">Missing sections: ${escapeHTML(quality.missing.map((section) => section.label).join(", "))}</div>` : ""}
-      <div class="brain-synthesis-md expanded" style="max-height:none">${renderMarkdown(md || "_No synthesis text returned._")}</div>
+      <div class="brain-synthesis-md expanded" style="max-height:none">${renderMarkdown(md || "_No report text returned._")}</div>
+      ${lineageHTML(lineage)}
     `);
   } catch (e) {
     openModal(title || "Report", `<div class="brain-error-state"><p>Failed to load report: ${escapeHTML(e.message)}</p></div>`);
   }
 }
 
+async function loadDbReports() {
+  const payload = await getPublishedReports({ limit: 100, offset: 0, accessLevel: "internal_only" });
+  const rows = Array.isArray(payload?.reports) ? payload.reports : [];
+  return rows.map((row) => ({
+    ...row,
+    db_report: true,
+    completed_at: row.published_at ?? row.updated_at ?? row.created_at,
+  }));
+}
+
 async function loadReports() {
   const root = $("reports-root");
   root.innerHTML = `<div class="platform-empty">${skeletonRowHTML("75%")}</div>`;
-  const staticRows = await loadStaticReports();
-  let rows;
+
+  let dbError = null;
   try {
-    rows = await getResearchLog(80, 0) ?? [];
-  } catch (e) {
-    if (staticRows.length) {
-      renderReportRows(staticRows);
-    } else {
-      showError({ container: root, message: `Reports load failed: ${e.message}`, onRetry: loadReports, error: e });
+    const dbRows = await loadDbReports();
+    if (dbRows.length) {
+      renderReportRows(dbRows);
+      return;
     }
+  } catch (e) {
+    dbError = e;
+  }
+
+  const staticRows = await loadStaticReports();
+  if (staticRows.length) {
+    renderReportRows(staticRows);
     return;
   }
 
-  const symbols = [...new Set(rows.map((row) => row.symbol).filter(Boolean))].slice(0, 40);
-  if (!symbols.length && !staticRows.length) {
-    root.innerHTML = `<div class="platform-empty">No reports found yet. Run source research first, then finalized reports will appear here.</div>`;
+  if (dbError) {
+    showError({ container: root, message: `Reports load failed: ${dbError.message}`, onRetry: loadReports, error: dbError });
     return;
   }
 
-  root.innerHTML = `<div class="platform-empty">Loading latest report text for ${symbols.length} symbols...</div>`;
-
-  const fetched = await Promise.allSettled(symbols.map(async (symbol) => {
-    const payload = await getSynthesisForSymbol(symbol);
-    const synth = Array.isArray(payload) ? payload[0] : payload;
-    const baseRow = rows.find((row) => row.symbol === symbol) ?? { symbol };
-    return synth?.synthesis_md ? { ...baseRow, ...synth, symbol } : null;
-  }));
-
-  const reportRows = [
-    ...staticRows,
-    ...fetched
-    .filter((result) => result.status === "fulfilled" && result.value?.synthesis_md)
-    .map((result) => /** @type {PromiseFulfilledResult<any>} */(result).value),
-  ]
-    .sort((a, b) => new Date(b.completed_at ?? b.updated_at ?? b.created_at ?? 0).getTime() -
-      new Date(a.completed_at ?? a.updated_at ?? a.created_at ?? 0).getTime());
-
-  if (!reportRows.length) {
-    root.innerHTML = `<div class="platform-empty">No reports found yet. Run source research first, then finalized reports will appear here.</div>`;
-    return;
-  }
-  renderReportRows(reportRows);
+  root.innerHTML = `<div class="platform-empty">No published reports found yet. Publish reviewed reports to Supabase through fn_publish_research_report; raw Source Runs remain on the Source Runs page.</div>`;
 }
 
 function renderReportRows(reportRows) {
