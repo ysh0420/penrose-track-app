@@ -165,6 +165,16 @@ export function getResearchRefreshDashboard({ days = 30, limit = 50, status = ""
   });
 }
 
+/** Structured claim coverage. Values/raw excerpts are not exposed in this dashboard. */
+export function getClaimCoverageDashboard({ days = 30, limit = 80, symbol = "" } = {}) {
+  const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
+  return brainQuery("fn_get_claim_coverage_dashboard", {
+    p_since: since,
+    p_limit: limit,
+    p_symbol: symbol || null,
+  });
+}
+
 /** Published reports that should be refreshed because they are stale, incomplete, or already queued. */
 export function getResearchRefreshCandidates(staleDays = 14, limit = 50, symbol = "") {
   return brainQuery("fn_get_research_refresh_candidates", {
@@ -178,6 +188,17 @@ export function getResearchRefreshCandidates(staleDays = 14, limit = 50, symbol 
 export function getResearchContradictionDashboard({ days = 30, limit = 50, symbol = "", status = "" } = {}) {
   const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
   return brainQuery("fn_get_research_contradiction_dashboard", {
+    p_since: since,
+    p_limit: limit,
+    p_symbol: symbol || null,
+    p_status: status || null,
+  });
+}
+
+/** Suggested signal updates derived from claim extraction and contradiction scans. */
+export function getSignalUpdateCandidatesDashboard({ days = 30, limit = 50, symbol = "", status = "" } = {}) {
+  const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
+  return brainQuery("fn_get_signal_update_candidates_dashboard", {
     p_since: since,
     p_limit: limit,
     p_symbol: symbol || null,

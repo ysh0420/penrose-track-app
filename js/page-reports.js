@@ -1,12 +1,14 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
 import {
+  getClaimCoverageDashboard,
   getPublishedReports,
   getPublishedReportBySlug,
   getReportLineage,
   getResearchContradictionDashboard,
   getResearchRefreshCandidates,
   getResearchRefreshDashboard,
+  getSignalUpdateCandidatesDashboard,
 } from "./brain-queries.js";
 import {
   escapeHTML,
@@ -172,6 +174,15 @@ function countBySeverity(rows, severity) {
   return Number(match?.count ?? 0);
 }
 
+function countByAction(rows, action) {
+  const match = (rows ?? []).find((row) => row.suggested_action === action);
+  return Number(match?.count ?? 0);
+}
+
+function sumField(rows, field) {
+  return (rows ?? []).reduce((sum, row) => sum + Number(row?.[field] ?? 0), 0);
+}
+
 function refreshStatusHTML(status) {
   const normalized = String(status ?? "-").toLowerCase();
   return `<span class="refresh-status ${escapeHTML(normalized)}">${escapeHTML(status ?? "-")}</span>`;
@@ -242,6 +253,35 @@ function renderRefreshCandidates(rows) {
   `;
 }
 
+function renderClaimCoverage(payload) {
+  const rows = Array.isArray(payload?.symbols) ? payload.symbols : [];
+  if (!rows.length) return `<div class="platform-empty">No structured claims extracted in this window.</div>`;
+  return `
+    <div class="platform-table-wrap">
+      <table class="platform-table compact">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th class="num">Claims</th>
+            <th>Coverage</th>
+            <th>Latest</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.slice(0, 8).map((row) => `
+            <tr>
+              <td><strong>${escapeHTML(row.symbol ?? "-")}</strong><br><span class="platform-meta">${escapeHTML(row.company_name ?? "-")}</span></td>
+              <td class="num">${number(row.claim_count)}</td>
+              <td>${escapeHTML(listText(row.source_priorities))}<br><span class="platform-meta">${escapeHTML(listText(row.claim_types))}</span></td>
+              <td>${escapeHTML(formatRelativeTime(row.latest_extracted_at ?? row.latest_as_of_date))}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
 function renderContradictions(rows) {
   const contradictions = Array.isArray(rows) ? rows : [];
   if (!contradictions.length) return `<div class="platform-empty">No open contradictions in this window.</div>`;
@@ -261,7 +301,7 @@ function renderContradictions(rows) {
             <tr>
               <td><strong>${escapeHTML(row.symbol ?? "-")}</strong> ${escapeHTML(row.claim_label ?? row.claim_key ?? "-")}<br><span class="platform-meta">${escapeHTML(row.comparison_scope ?? "-")} / ${escapeHTML(row.contradiction_type ?? "-")}</span></td>
               <td>${refreshStatusHTML(row.severity)}</td>
-              <td>${escapeHTML(row.old_source_type ?? "-")} -> ${escapeHTML(row.new_source_type ?? "-")}<br><span class="platform-meta">${escapeHTML(row.primary_source_precedence ? `primary: ${row.primary_source ?? "-"}` : "no primary override")}</span></td>
+              <td>${escapeHTML(row.old_source_type ?? "-")} -> ${escapeHTML(row.new_source_type ?? "-")}<br><span class="platform-meta">${escapeHTML(row.primary_source_precedence ? `primary: ${row.primary_source ?? "-"}` : "no primary override")} / claims ${escapeHTML(String(row.source_claim_count ?? 0))}</span></td>
               <td><div class="refresh-reason">${escapeHTML(row.portfolio_implication ?? row.recommendation ?? "-")}</div></td>
             </tr>
           `).join("")}
@@ -271,14 +311,52 @@ function renderContradictions(rows) {
   `;
 }
 
-function renderRefreshQueue(dashboard, candidatePayload, contradictionPayload) {
+function renderSignalUpdates(payload) {
+  const candidates = Array.isArray(payload?.candidates) ? payload.candidates : [];
+  if (!candidates.length) return `<div class="platform-empty">No signal update candidates in this window.</div>`;
+  return `
+    <div class="platform-table-wrap">
+      <table class="platform-table compact">
+        <thead>
+          <tr>
+            <th>Signal</th>
+            <th>Suggested</th>
+            <th class="num">Conf.</th>
+            <th>Portfolio</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${candidates.slice(0, 8).map((row) => `
+            <tr>
+              <td><strong>${escapeHTML(row.symbol ?? "-")}</strong><br><span class="platform-meta">${escapeHTML(row.change_type ?? "-")} / contradictions ${escapeHTML(String(row.contradiction_count ?? 0))}</span></td>
+              <td>${refreshStatusHTML(row.suggested_action)}</td>
+              <td class="num">${number(row.confidence_delta, 2)}</td>
+              <td><div class="refresh-reason">${escapeHTML(row.portfolio_review_required ? "Review required before portfolio change" : "Portfolio decision can remain unchanged")}<br>${escapeHTML(row.reason ?? "")}</div></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderRefreshQueue(dashboard, candidatePayload, contradictionPayload, claimPayload, signalUpdatePayload) {
   const byStatus = dashboard?.by_status ?? [];
   const jobs = dashboard?.jobs ?? [];
   const candidates = candidatePayload?.candidates ?? [];
   const bySeverity = contradictionPayload?.by_severity ?? [];
   const contradictions = contradictionPayload?.contradictions ?? [];
+  const claimSymbols = claimPayload?.symbols ?? [];
+  const updateActions = signalUpdatePayload?.by_action ?? [];
+  const signalUpdates = signalUpdatePayload?.candidates ?? [];
   const openJobs = jobs.filter((job) => ["queued", "running", "retry"].includes(String(job.status ?? "")));
   const highRiskContradictions = countBySeverity(bySeverity, "critical") + countBySeverity(bySeverity, "high");
+  const reviewActions =
+    countByAction(updateActions, "reunderwrite") +
+    countByAction(updateActions, "watch") +
+    countByAction(updateActions, "trim") +
+    countByAction(updateActions, "exit") +
+    countByAction(updateActions, "no_new_long");
   $("refresh-root").innerHTML = `
     <div class="refresh-grid">
       <div class="refresh-metric"><div class="label">Queued</div><div class="value">${number(countByStatus(byStatus, "queued"))}</div></div>
@@ -286,7 +364,9 @@ function renderRefreshQueue(dashboard, candidatePayload, contradictionPayload) {
       <div class="refresh-metric"><div class="label">Skipped</div><div class="value">${number(countByStatus(byStatus, "skipped"))}</div></div>
       <div class="refresh-metric"><div class="label">Failed</div><div class="value">${number(countByStatus(byStatus, "failed"))}</div></div>
       <div class="refresh-metric"><div class="label">Completed</div><div class="value">${number(countByStatus(byStatus, "completed"))}</div></div>
+      <div class="refresh-metric"><div class="label">Structured Claims</div><div class="value">${number(sumField(claimSymbols, "claim_count"))}</div></div>
       <div class="refresh-metric"><div class="label">High Contradictions</div><div class="value">${number(highRiskContradictions)}</div></div>
+      <div class="refresh-metric"><div class="label">Review Actions</div><div class="value">${number(reviewActions || signalUpdates.filter((row) => row.portfolio_review_required).length)}</div></div>
     </div>
     <div class="refresh-layout">
       <div class="refresh-card">
@@ -301,6 +381,14 @@ function renderRefreshQueue(dashboard, candidatePayload, contradictionPayload) {
         <h4>Contradictions</h4>
         ${renderContradictions(contradictions)}
       </div>
+      <div class="refresh-card">
+        <h4>Claim Coverage</h4>
+        ${renderClaimCoverage(claimPayload)}
+      </div>
+      <div class="refresh-card">
+        <h4>Signal Update Candidates</h4>
+        ${renderSignalUpdates(signalUpdatePayload)}
+      </div>
     </div>
   `;
 }
@@ -314,12 +402,14 @@ async function loadRefreshQueue() {
     </div>
   `;
   try {
-    const [dashboard, candidates, contradictions] = await Promise.all([
+    const [dashboard, candidates, contradictions, claims, signalUpdates] = await Promise.all([
       getResearchRefreshDashboard({ days: 30, limit: 50 }),
       getResearchRefreshCandidates(14, 50),
       getResearchContradictionDashboard({ days: 30, limit: 50 }),
+      getClaimCoverageDashboard({ days: 30, limit: 80 }),
+      getSignalUpdateCandidatesDashboard({ days: 30, limit: 50 }),
     ]);
-    renderRefreshQueue(dashboard, candidates, contradictions);
+    renderRefreshQueue(dashboard, candidates, contradictions, claims, signalUpdates);
   } catch (e) {
     showError({ container: root, message: `Refresh queue load failed: ${e.message}`, onRetry: loadRefreshQueue, error: e });
   }
