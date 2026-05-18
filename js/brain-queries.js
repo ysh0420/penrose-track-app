@@ -234,18 +234,6 @@ export function getIntradayAlerts(sinceTimestamp = null) {
   return brainQuery("get_intraday_alerts", { p_since: sinceTimestamp });
 }
 
-/**
- * Trigger a new Phase R research session. Edge Function chains
- * start_research_session + trigger-research automatically.
- */
-export function startResearchSession(symbol, tier = 2, force = false) {
-  return brainQuery("start_research_session", {
-    p_symbol: symbol,
-    p_tier: tier,
-    p_force: force,
-  });
-}
-
 /** Brain health check. */
 export function getBrainHealth() {
   return brainQuery("fn_brain_health");

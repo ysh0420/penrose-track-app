@@ -1,7 +1,7 @@
 // @ts-check
 import { mountBrainAuthGate } from "./brain-client.js";
 import {
-  getResearchLog, getResearchSession, startResearchSession, getSynthesisForSymbol,
+  getResearchLog, getResearchSession, getSynthesisForSymbol,
 } from "./brain-queries.js";
 import {
   verdictBadgeHTML, formatRelativeTime, renderMarkdown, escapeHTML,
@@ -182,19 +182,7 @@ function wireNewResearch() {
     const tier = parseInt(tierSelect.value, 10);
     if (!symbol) return;
 
-    openModal(`${symbol} — running…`, `<div class="brain-empty">Starting session…</div>`);
-
-    let sessionId;
-    try {
-      const res = await startResearchSession(symbol, tier, false);
-      sessionId = res?.session_id ?? (Array.isArray(res) ? res[0]?.session_id : null);
-      if (!sessionId) throw new Error("No session_id returned");
-    } catch (err) {
-      openModal(`${symbol} — failed`, `<div class="brain-error-state"><p>Failed to start session: ${escapeHTML(err.message)}</p></div>`);
-      return;
-    }
-
-    pollAndShow(symbol, sessionId, tier);
+    openModal(`${symbol} - backend only`, `<div class="brain-empty">Use the controlled backend refresh path for new source research.</div>`);
   });
 }
 
@@ -237,7 +225,6 @@ function pollAndShow(symbol, sessionId, tier) {
 mountBrainAuthGate({
   onAuthed: () => {
     wireModalClose();
-    wireNewResearch();
     loadLog();
     openSessionFromUrl();
   },
