@@ -174,6 +174,17 @@ export function getResearchRefreshCandidates(staleDays = 14, limit = 50, symbol 
   });
 }
 
+/** Structured contradiction results from deterministic refresh validation. */
+export function getResearchContradictionDashboard({ days = 30, limit = 50, symbol = "", status = "" } = {}) {
+  const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
+  return brainQuery("fn_get_research_contradiction_dashboard", {
+    p_since: since,
+    p_limit: limit,
+    p_symbol: symbol || null,
+    p_status: status || null,
+  });
+}
+
 /** Reviewed research signals and signal-driven portfolio decision candidates. */
 export function getSignalDashboard(days = 30, limit = 100, symbol = "") {
   const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();

@@ -4,6 +4,7 @@ import {
   getPublishedReports,
   getPublishedReportBySlug,
   getReportLineage,
+  getResearchContradictionDashboard,
   getResearchRefreshCandidates,
   getResearchRefreshDashboard,
 } from "./brain-queries.js";
@@ -166,6 +167,11 @@ function countByStatus(rows, status) {
   return Number(match?.count ?? 0);
 }
 
+function countBySeverity(rows, severity) {
+  const match = (rows ?? []).find((row) => row.severity === severity);
+  return Number(match?.count ?? 0);
+}
+
 function refreshStatusHTML(status) {
   const normalized = String(status ?? "-").toLowerCase();
   return `<span class="refresh-status ${escapeHTML(normalized)}">${escapeHTML(status ?? "-")}</span>`;
@@ -236,18 +242,51 @@ function renderRefreshCandidates(rows) {
   `;
 }
 
-function renderRefreshQueue(dashboard, candidatePayload) {
+function renderContradictions(rows) {
+  const contradictions = Array.isArray(rows) ? rows : [];
+  if (!contradictions.length) return `<div class="platform-empty">No open contradictions in this window.</div>`;
+  return `
+    <div class="platform-table-wrap">
+      <table class="platform-table compact">
+        <thead>
+          <tr>
+            <th>Contradiction</th>
+            <th>Severity</th>
+            <th>Sources</th>
+            <th>Portfolio</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${contradictions.slice(0, 8).map((row) => `
+            <tr>
+              <td><strong>${escapeHTML(row.symbol ?? "-")}</strong> ${escapeHTML(row.claim_label ?? row.claim_key ?? "-")}<br><span class="platform-meta">${escapeHTML(row.comparison_scope ?? "-")} / ${escapeHTML(row.contradiction_type ?? "-")}</span></td>
+              <td>${refreshStatusHTML(row.severity)}</td>
+              <td>${escapeHTML(row.old_source_type ?? "-")} -> ${escapeHTML(row.new_source_type ?? "-")}<br><span class="platform-meta">${escapeHTML(row.primary_source_precedence ? `primary: ${row.primary_source ?? "-"}` : "no primary override")}</span></td>
+              <td><div class="refresh-reason">${escapeHTML(row.portfolio_implication ?? row.recommendation ?? "-")}</div></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderRefreshQueue(dashboard, candidatePayload, contradictionPayload) {
   const byStatus = dashboard?.by_status ?? [];
   const jobs = dashboard?.jobs ?? [];
   const candidates = candidatePayload?.candidates ?? [];
+  const bySeverity = contradictionPayload?.by_severity ?? [];
+  const contradictions = contradictionPayload?.contradictions ?? [];
   const openJobs = jobs.filter((job) => ["queued", "running", "retry"].includes(String(job.status ?? "")));
+  const highRiskContradictions = countBySeverity(bySeverity, "critical") + countBySeverity(bySeverity, "high");
   $("refresh-root").innerHTML = `
     <div class="refresh-grid">
       <div class="refresh-metric"><div class="label">Queued</div><div class="value">${number(countByStatus(byStatus, "queued"))}</div></div>
       <div class="refresh-metric"><div class="label">Running</div><div class="value">${number(countByStatus(byStatus, "running"))}</div></div>
-      <div class="refresh-metric"><div class="label">Retry</div><div class="value">${number(countByStatus(byStatus, "retry"))}</div></div>
+      <div class="refresh-metric"><div class="label">Skipped</div><div class="value">${number(countByStatus(byStatus, "skipped"))}</div></div>
+      <div class="refresh-metric"><div class="label">Failed</div><div class="value">${number(countByStatus(byStatus, "failed"))}</div></div>
       <div class="refresh-metric"><div class="label">Completed</div><div class="value">${number(countByStatus(byStatus, "completed"))}</div></div>
-      <div class="refresh-metric"><div class="label">Candidates</div><div class="value">${number(candidates.length)}</div></div>
+      <div class="refresh-metric"><div class="label">High Contradictions</div><div class="value">${number(highRiskContradictions)}</div></div>
     </div>
     <div class="refresh-layout">
       <div class="refresh-card">
@@ -258,6 +297,10 @@ function renderRefreshQueue(dashboard, candidatePayload) {
         <h4>Refresh Candidates</h4>
         ${renderRefreshCandidates(candidates)}
       </div>
+      <div class="refresh-card">
+        <h4>Contradictions</h4>
+        ${renderContradictions(contradictions)}
+      </div>
     </div>
   `;
 }
@@ -267,15 +310,16 @@ async function loadRefreshQueue() {
   if (!root) return;
   root.innerHTML = `
     <div class="refresh-grid">
-      ${Array.from({ length: 5 }).map(() => `<div class="refresh-metric">${skeletonRowHTML("75%")}</div>`).join("")}
+      ${Array.from({ length: 6 }).map(() => `<div class="refresh-metric">${skeletonRowHTML("75%")}</div>`).join("")}
     </div>
   `;
   try {
-    const [dashboard, candidates] = await Promise.all([
+    const [dashboard, candidates, contradictions] = await Promise.all([
       getResearchRefreshDashboard({ days: 30, limit: 50 }),
       getResearchRefreshCandidates(14, 50),
+      getResearchContradictionDashboard({ days: 30, limit: 50 }),
     ]);
-    renderRefreshQueue(dashboard, candidates);
+    renderRefreshQueue(dashboard, candidates, contradictions);
   } catch (e) {
     showError({ container: root, message: `Refresh queue load failed: ${e.message}`, onRetry: loadRefreshQueue, error: e });
   }
