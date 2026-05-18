@@ -1,4 +1,4 @@
-// @ts-check
+﻿// @ts-check
 // Single source of truth for all Brain RPC calls.
 // To change a query, edit only this file.
 
@@ -126,6 +126,41 @@ export function getResearchLog(limit = 100, offset = 0) {
   return brainQuery("fn_get_research_log", {
     p_limit: limit,
     p_offset: offset,
+  });
+}
+
+/** DB-backed published reports shelf. Report bodies are not returned here. */
+export function getPublishedReports({ limit = 80, offset = 0, symbol = "", reportType = "", accessLevel = "internal_only" } = {}) {
+  return brainQuery("fn_list_published_reports", {
+    p_limit: limit,
+    p_offset: offset,
+    p_symbol: symbol || null,
+    p_report_type: reportType || null,
+    p_access_level: accessLevel,
+  });
+}
+
+/** Fetch one DB-backed report body through brain-query. */
+export function getPublishedReportBySlug(reportSlug, reportId = null, accessLevel = "internal_only") {
+  return brainQuery("fn_get_published_report", {
+    p_report_slug: reportSlug || null,
+    p_report_id: reportId || null,
+    p_access_level: accessLevel,
+  });
+}
+
+/** Sanitized report lineage: synthesis, Source Run summaries, artifact counts, and linked signals. */
+export function getReportLineage(reportId) {
+  return brainQuery("fn_get_report_lineage", { p_report_id: reportId });
+}
+
+/** Reviewed research signals and signal-driven portfolio decision candidates. */
+export function getSignalDashboard(days = 30, limit = 100, symbol = "") {
+  const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
+  return brainQuery("fn_get_signal_dashboard", {
+    p_since: since,
+    p_limit: limit,
+    p_symbol: symbol || null,
   });
 }
 
