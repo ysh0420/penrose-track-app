@@ -154,6 +154,26 @@ export function getReportLineage(reportId) {
   return brainQuery("fn_get_report_lineage", { p_report_id: reportId });
 }
 
+/** Cost-controlled refresh queue for source/signal/report/portfolio updates. */
+export function getResearchRefreshDashboard({ days = 30, limit = 50, status = "", symbol = "" } = {}) {
+  const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
+  return brainQuery("fn_get_research_refresh_dashboard", {
+    p_since: since,
+    p_limit: limit,
+    p_status: status || null,
+    p_symbol: symbol || null,
+  });
+}
+
+/** Published reports that should be refreshed because they are stale, incomplete, or already queued. */
+export function getResearchRefreshCandidates(staleDays = 14, limit = 50, symbol = "") {
+  return brainQuery("fn_get_research_refresh_candidates", {
+    p_stale_days: staleDays,
+    p_limit: limit,
+    p_symbol: symbol || null,
+  });
+}
+
 /** Reviewed research signals and signal-driven portfolio decision candidates. */
 export function getSignalDashboard(days = 30, limit = 100, symbol = "") {
   const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();

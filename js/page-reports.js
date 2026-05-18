@@ -4,6 +4,8 @@ import {
   getPublishedReports,
   getPublishedReportBySlug,
   getReportLineage,
+  getResearchRefreshCandidates,
+  getResearchRefreshDashboard,
 } from "./brain-queries.js";
 import {
   escapeHTML,
@@ -30,6 +32,15 @@ const REQUIRED_SECTIONS = [
 
 const $ = (id) => document.getElementById(id);
 const STATIC_REPORTS_URL = "/data/research-reports.json";
+
+function number(value, digits = 0) {
+  const n = Number(value ?? 0);
+  if (!Number.isFinite(n)) return "0";
+  return n.toLocaleString(undefined, {
+    maximumFractionDigits: digits,
+    minimumFractionDigits: digits,
+  });
+}
 
 function firstValue(...values) {
   return values.find((value) => typeof value === "string" && value.trim() && value.trim() !== "?") ?? "";
@@ -148,6 +159,126 @@ function dbLineageSummary(row) {
     return `DB-backed. ${escapeHTML(signalText)}. Raw Source Runs stay separated from the report shelf.`;
   }
   return "All required sections detected.";
+}
+
+function countByStatus(rows, status) {
+  const match = (rows ?? []).find((row) => row.status === status);
+  return Number(match?.count ?? 0);
+}
+
+function refreshStatusHTML(status) {
+  const normalized = String(status ?? "-").toLowerCase();
+  return `<span class="refresh-status ${escapeHTML(normalized)}">${escapeHTML(status ?? "-")}</span>`;
+}
+
+function listText(values, fallback = "-") {
+  const list = Array.isArray(values) ? values.filter(Boolean) : [];
+  return list.length ? list.slice(0, 4).join(", ") : fallback;
+}
+
+function renderRefreshJobs(rows) {
+  const jobs = Array.isArray(rows) ? rows : [];
+  if (!jobs.length) return `<div class="platform-empty">No refresh jobs in this window.</div>`;
+  return `
+    <div class="platform-table-wrap">
+      <table class="platform-table compact">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Status</th>
+            <th class="num">Priority</th>
+            <th>Sources</th>
+            <th>Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${jobs.slice(0, 8).map((job) => `
+            <tr>
+              <td><strong>${escapeHTML(job.symbol ?? "-")}</strong><br><span class="platform-meta">${escapeHTML(job.company_name ?? job.job_key ?? "-")}</span></td>
+              <td>${refreshStatusHTML(job.status)}</td>
+              <td class="num">${number(job.priority)}</td>
+              <td>${escapeHTML(listText(job.required_sources))}</td>
+              <td>${escapeHTML(formatRelativeTime(job.due_at ?? job.next_attempt_at ?? job.created_at))}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderRefreshCandidates(rows) {
+  const candidates = Array.isArray(rows) ? rows : [];
+  if (!candidates.length) return `<div class="platform-empty">No stale or incomplete report candidates.</div>`;
+  return `
+    <div class="platform-table-wrap">
+      <table class="platform-table compact">
+        <thead>
+          <tr>
+            <th>Report</th>
+            <th>Reason</th>
+            <th class="num">Open</th>
+            <th>Signal</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${candidates.slice(0, 8).map((row) => `
+            <tr>
+              <td><strong>${escapeHTML(row.symbol ?? "-")}</strong><br><span class="platform-meta">${escapeHTML(row.title ?? row.report_slug ?? "-")}</span></td>
+              <td><div class="refresh-reason">${escapeHTML(row.refresh_reason ?? "-")}${row.data_gaps?.length ? ` / gaps: ${escapeHTML(listText(row.data_gaps))}` : ""}</div></td>
+              <td class="num">${number(row.open_job_count)}</td>
+              <td>${escapeHTML(row.signal_state ?? row.report_signal_state ?? "-")}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderRefreshQueue(dashboard, candidatePayload) {
+  const byStatus = dashboard?.by_status ?? [];
+  const jobs = dashboard?.jobs ?? [];
+  const candidates = candidatePayload?.candidates ?? [];
+  const openJobs = jobs.filter((job) => ["queued", "running", "retry"].includes(String(job.status ?? "")));
+  $("refresh-root").innerHTML = `
+    <div class="refresh-grid">
+      <div class="refresh-metric"><div class="label">Queued</div><div class="value">${number(countByStatus(byStatus, "queued"))}</div></div>
+      <div class="refresh-metric"><div class="label">Running</div><div class="value">${number(countByStatus(byStatus, "running"))}</div></div>
+      <div class="refresh-metric"><div class="label">Retry</div><div class="value">${number(countByStatus(byStatus, "retry"))}</div></div>
+      <div class="refresh-metric"><div class="label">Completed</div><div class="value">${number(countByStatus(byStatus, "completed"))}</div></div>
+      <div class="refresh-metric"><div class="label">Candidates</div><div class="value">${number(candidates.length)}</div></div>
+    </div>
+    <div class="refresh-layout">
+      <div class="refresh-card">
+        <h4>Open Refresh Jobs</h4>
+        ${renderRefreshJobs(openJobs.length ? openJobs : jobs)}
+      </div>
+      <div class="refresh-card">
+        <h4>Refresh Candidates</h4>
+        ${renderRefreshCandidates(candidates)}
+      </div>
+    </div>
+  `;
+}
+
+async function loadRefreshQueue() {
+  const root = $("refresh-root");
+  if (!root) return;
+  root.innerHTML = `
+    <div class="refresh-grid">
+      ${Array.from({ length: 5 }).map(() => `<div class="refresh-metric">${skeletonRowHTML("75%")}</div>`).join("")}
+    </div>
+  `;
+  try {
+    const [dashboard, candidates] = await Promise.all([
+      getResearchRefreshDashboard({ days: 30, limit: 50 }),
+      getResearchRefreshCandidates(14, 50),
+    ]);
+    renderRefreshQueue(dashboard, candidates);
+  } catch (e) {
+    showError({ container: root, message: `Refresh queue load failed: ${e.message}`, onRetry: loadRefreshQueue, error: e });
+  }
 }
 
 function openModal(title, bodyHTML) {
@@ -282,7 +413,11 @@ function wireModalClose() {
 mountBrainAuthGate({
   onAuthed: () => {
     wireModalClose();
-    $("reports-refresh").addEventListener("click", loadReports);
+    $("reports-refresh").addEventListener("click", () => {
+      loadReports();
+      loadRefreshQueue();
+    });
+    loadRefreshQueue();
     loadReports();
   },
 });
