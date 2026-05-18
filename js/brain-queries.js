@@ -198,11 +198,10 @@ export function getResearchContradictionDashboard({ days = 30, limit = 50, symbo
 /** Suggested signal updates derived from claim extraction and contradiction scans. */
 export function getSignalUpdateCandidatesDashboard({ days = 30, limit = 50, symbol = "", status = "" } = {}) {
   const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
-  return brainQuery("fn_get_signal_update_candidates_dashboard", {
+  return brainQuery("fn_get_signal_update_candidates", {
+    p_symbol: symbol || null,
     p_since: since,
     p_limit: limit,
-    p_symbol: symbol || null,
-    p_status: status || null,
   });
 }
 
