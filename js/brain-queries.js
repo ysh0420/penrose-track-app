@@ -58,6 +58,15 @@ export async function getResearchReviewerQueue({ status = "open", symbol = "", l
   });
 }
 
+/** Read-only grouped human reviewer queue for Brain Review. */
+export async function getResearchReviewerQueueGrouped({ status = "open", symbol = "", limit = 50 } = {}) {
+  return brainQuery("fn_get_research_reviewer_queue_grouped", {
+    p_status: status || null,
+    p_symbol: symbol || null,
+    p_limit: limit,
+  });
+}
+
 /** TDnet/EDINET links and portfolio/watchlist-matched disclosures. */
 export async function getBrainPortfolioDisclosures(date = "", limit = 100) {
   const params = {

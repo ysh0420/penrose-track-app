@@ -49,6 +49,9 @@ const brainQueries = await read('js/brain-queries.js');
 if (!brainQueries.includes('fn_get_research_reviewer_queue')) {
   fail('brain-queries.js must expose the read-only reviewer queue RPC.');
 }
+if (!brainQueries.includes('fn_get_research_reviewer_queue_grouped')) {
+  fail('brain-queries.js must expose the grouped read-only reviewer queue RPC.');
+}
 if (brainQueries.includes('generate_research_reviewer_queue') || brainQueries.includes('record_reviewer_queue_decision')) {
   fail('browser queries must not expose reviewer queue generate/write RPCs.');
 }
@@ -67,6 +70,9 @@ if (/brainQuery\(\s*["']fn_publish_research_report/.test(brainQueries)) {
 const brainReview = await read('brain-review.html');
 if (!brainReview.includes('id="reviewer-queue"')) {
   fail('brain-review.html must include the Reviewer Queue panel.');
+}
+if (!brainReview.includes('reviewer-group-list')) {
+  fail('brain-review.html must include grouped reviewer queue styles.');
 }
 
 const ideas = await read('ideas.html');
