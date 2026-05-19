@@ -5,7 +5,7 @@ import {
   getBrainPortfolioDisclosures,
   getBrainReviewDashboard,
   getBrainSourceHealth,
-  getResearchReviewerQueue,
+  getResearchReviewerQueueGrouped,
   getWatchlistTiers,
   recordBrainReviewDecision,
 } from "./brain-queries.js";
@@ -327,61 +327,77 @@ function renderSourceHealth(payload) {
 
 function renderReviewerQueue(payload) {
   if (!payload) return `<div class="brain-empty">No Reviewer Queue payload returned.</div>`;
-  const items = list(payload.items);
-  const typeCounts = list(payload.by_type)
-    .map((row) => `${queueTypeLabel(row.queue_type)} ${row.count ?? 0}`)
-    .join(" / ");
-  const statusCounts = list(payload.by_status)
-    .map((row) => `${row.status ?? "unknown"} ${row.count ?? 0}`)
+  const groups = list(payload.groups);
+  const totalItems = groups.reduce((sum, group) => sum + Number(group.open_item_count ?? 0), 0);
+  const typeCountsMap = new Map();
+  groups.forEach((group) => {
+    Object.entries(group.queue_types || {}).forEach(([type, count]) => {
+      typeCountsMap.set(type, (typeCountsMap.get(type) || 0) + Number(count || 0));
+    });
+  });
+  const typeCounts = [...typeCountsMap.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([type, count]) => `${queueTypeLabel(type)} ${count}`)
     .join(" / ");
   const header = `
     <div class="platform-subtitle">
-      Open filter total ${escapeHTML(String(payload.total_count ?? items.length))}.
+      ${escapeHTML(String(payload.total_group_count ?? groups.length))} company/source groups / ${escapeHTML(String(totalItems))} child items.
       ${typeCounts ? `By type: ${escapeHTML(typeCounts)}.` : ""}
-      ${statusCounts ? ` Status: ${escapeHTML(statusCounts)}.` : ""}
     </div>
   `;
-  if (!items.length) return `${header}<div class="brain-empty">No open reviewer queue items.</div>`;
+  if (!groups.length) return `${header}<div class="brain-empty">No open reviewer queue items.</div>`;
 
   return `
     ${header}
-    <div class="review-sheet-wrap">
-      <table class="review-sheet">
-        <thead>
-          <tr>
-            <th class="num">Priority</th>
-            <th>Severity</th>
-            <th>Type</th>
-            <th>Symbol / Company</th>
-            <th>Reason</th>
-            <th>Suggested</th>
-            <th class="num">Related</th>
-            <th>Created</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${items.slice(0, 30).map((row) => {
-            const symbol = row.symbol || "-";
-            const company = row.company_name || row.metadata?.report_slug || row.metadata?.job_key || "-";
-            return `
-              <tr>
-                <td class="num">${escapeHTML(String(row.priority ?? "-"))}</td>
-                <td>${badge(row.severity || "unknown", severityClass(row.severity, row.priority))}</td>
-                <td>${badge(queueTypeLabel(row.queue_type))}</td>
-                <td class="title-cell">
-                  <div class="review-sheet-title">${escapeHTML(symbol)}</div>
-                  <div class="review-sheet-sub">${escapeHTML(company)}</div>
-                </td>
-                <td class="reason-cell">${escapeHTML(row.reason || "-")}</td>
-                <td>${escapeHTML(queueTypeLabel(row.suggested_action || "-"))}</td>
-                <td class="num">${escapeHTML(String(row.related_objects_count ?? row.source_claim_count ?? 0))}</td>
-                <td>${escapeHTML(fmtDateTime(row.created_at))}</td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
-      </table>
+    <div class="reviewer-group-list">
+      ${groups.slice(0, 30).map((group, index) => renderReviewerQueueGroup(group, index === 0)).join("")}
     </div>
+  `;
+}
+
+function renderQueueTypeCounts(queueTypes = {}) {
+  return Object.entries(queueTypes)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([type, count]) => badge(`${queueTypeLabel(type)} ${count}`))
+    .join("");
+}
+
+function renderReviewerQueueGroup(group, open = false) {
+  const symbol = group.symbol || "-";
+  const company = group.company_name || "Source-level queue";
+  const children = list(group.children);
+  return `
+    <details class="platform-item reviewer-group" ${open ? "open" : ""}>
+      <summary>
+        <div class="reviewer-group-main">
+          <div>
+            <div class="review-meta">
+              ${badge(`Priority ${group.parent_priority ?? "-"}`, severityClass(group.max_severity, group.parent_priority))}
+              ${badge(group.max_severity || "unknown", severityClass(group.max_severity, group.parent_priority))}
+              ${badge(`${group.open_item_count ?? children.length} items`)}
+            </div>
+            <strong>${escapeHTML(symbol)} ${escapeHTML(company)}</strong>
+            <div class="platform-meta">${escapeHTML(group.main_reason || "-")}</div>
+          </div>
+          <div class="reviewer-group-action">${escapeHTML(queueTypeLabel(group.suggested_action || "review"))}</div>
+        </div>
+        <div class="review-meta reviewer-type-counts">${renderQueueTypeCounts(group.queue_types || {})}</div>
+      </summary>
+      <div class="reviewer-child-list">
+        ${children.map((child) => `
+          <div class="reviewer-child">
+            <div class="review-meta">
+              ${badge(queueTypeLabel(child.queue_type))}
+              ${badge(`P${child.priority ?? "-"}`, severityClass(child.severity, child.priority))}
+              ${badge(child.severity || "unknown", severityClass(child.severity, child.priority))}
+              ${badge(queueTypeLabel(child.suggested_action || "-"))}
+            </div>
+            <div class="reviewer-child-reason">${escapeHTML(child.reason || "-")}</div>
+            <div class="platform-meta">Created ${escapeHTML(fmtDateTime(child.created_at))}</div>
+          </div>
+        `).join("")}
+      </div>
+    </details>
   `;
 }
 
@@ -725,7 +741,7 @@ async function loadReview() {
       getBrainPortfolioDisclosures(date, 100),
       getWatchlistTiers(date, 80),
       getBrainSourceHealth().then((data) => ({ data }), (error) => ({ error })),
-      getResearchReviewerQueue({ status: "open", limit: 50 }).then((data) => ({ data }), (error) => ({ error })),
+      getResearchReviewerQueueGrouped({ status: "open", limit: 50 }).then((data) => ({ data }), (error) => ({ error })),
     ]);
     const companyNames = {
       ...payloadCompanyNames(payload, disclosurePayload),
@@ -738,7 +754,7 @@ async function loadReview() {
       metric("Disclosure Sample", String(counts.disclosure_items ?? 0)),
       metric("Signals", String(counts.signal_candidates ?? 0)),
       metric("AI Notes", String(counts.ai_enrichments ?? 0)),
-      metric("Review Queue", String(reviewerQueueResult.data?.total_count ?? 0)),
+      metric("Review Queue", String(reviewerQueueResult.data?.total_group_count ?? 0)),
       metric("Saved Decisions", String(counts.review_decisions ?? 0)),
     ].join("");
     $("review-source-health").innerHTML = sourceHealthResult.error

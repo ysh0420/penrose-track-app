@@ -39,6 +39,16 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .review-save-status{min-height:16px;font-size:8.5pt;color:var(--muted)}
 .review-save-status.err{color:var(--red)}
 .review-save-status.ok{color:var(--green)}
+.reviewer-group-list{display:grid;gap:10px}
+.reviewer-group{padding:0;overflow:hidden}
+.reviewer-group summary{list-style:none;cursor:pointer;padding:1rem}
+.reviewer-group summary::-webkit-details-marker{display:none}
+.reviewer-group-main{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}
+.reviewer-group-action{font-size:9pt;color:var(--navy);font-weight:700;text-align:right;white-space:nowrap}
+.reviewer-type-counts{margin-top:.55rem}
+.reviewer-child-list{border-top:1px solid var(--line);background:#fbfaf6;padding:.65rem 1rem 1rem;display:grid;gap:8px}
+.reviewer-child{border:1px solid var(--line);background:white;padding:.75rem}
+.reviewer-child-reason{font-size:9.5pt;line-height:1.45;color:var(--sumi);margin:.35rem 0}
 .review-summary{font-size:10.5pt;line-height:1.6;white-space:pre-wrap}
 #review-signals{padding-right:0}
 .review-sheet-wrap{max-height:760px;overflow:auto;scrollbar-gutter:stable;border:1px solid var(--line);background:white}
