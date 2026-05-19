@@ -44,6 +44,11 @@ export async function getBrainReviewDashboard(date = "", limit = 25) {
   return brainQuery("fn_brain_v0_review_dashboard", params);
 }
 
+/** Source Health payload for Brain Review. */
+export async function getBrainSourceHealth() {
+  return brainQuery("fn_brain_v0_source_health");
+}
+
 /** TDnet/EDINET links and portfolio/watchlist-matched disclosures. */
 export async function getBrainPortfolioDisclosures(date = "", limit = 100) {
   const params = {
@@ -109,16 +114,6 @@ export function getSynthesisForSymbol(symbol) {
 /** Exact Phase R session payload for /research-log deep links. */
 export function getResearchSession(sessionId) {
   return brainQuery("get_research_session", { p_session_id: sessionId });
-}
-
-/** Major guidance revisions for /pipeline. */
-export function getPipelineRevisions(days = 30) {
-  return brainQuery("fn_get_pipeline_revisions", { p_days: days });
-}
-
-/** Promotion candidates for /pipeline. */
-export function getPromotionCandidates() {
-  return brainQuery("fn_get_promotion_candidates");
 }
 
 /** Phase R session history for /research-log. */
@@ -202,6 +197,7 @@ export function getSignalUpdateCandidatesDashboard({ days = 30, limit = 50, symb
     p_symbol: symbol || null,
     p_since: since,
     p_limit: limit,
+    p_status: status || null,
   });
 }
 

@@ -164,9 +164,31 @@ function dbLineageSummary(row) {
   return "All required sections detected.";
 }
 
+const REFRESH_STATUS_LABELS = {
+  queued: "Queued",
+  running: "Running",
+  skipped: "Skipped",
+  retry: "Retry",
+  failed: "Failed",
+  completed: "Completed",
+  other: "Other",
+};
+
+function refreshStatusBucket(status) {
+  const normalized = String(status ?? "").trim().toLowerCase().replace(/-/g, "_");
+  if (normalized === "queued") return "queued";
+  if (["started", "running", "in_progress", "claimed"].includes(normalized)) return "running";
+  if (["skipped", "cancelled", "canceled"].includes(normalized)) return "skipped";
+  if (["requeued", "requeue", "retry", "retry_scheduled"].includes(normalized)) return "retry";
+  if (["failed", "failure", "error"].includes(normalized)) return "failed";
+  if (["completed", "complete", "success", "done"].includes(normalized)) return "completed";
+  return "other";
+}
+
 function countByStatus(rows, status) {
-  const match = (rows ?? []).find((row) => row.status === status);
-  return Number(match?.count ?? 0);
+  return (rows ?? []).reduce((sum, row) => (
+    refreshStatusBucket(row.status) === status ? sum + Number(row.count ?? 0) : sum
+  ), 0);
 }
 
 function countBySeverity(rows, severity) {
@@ -184,8 +206,11 @@ function sumField(rows, field) {
 }
 
 function refreshStatusHTML(status) {
-  const normalized = String(status ?? "-").toLowerCase();
-  return `<span class="refresh-status ${escapeHTML(normalized)}">${escapeHTML(status ?? "-")}</span>`;
+  const raw = String(status ?? "").trim();
+  const bucket = refreshStatusBucket(raw);
+  const label = REFRESH_STATUS_LABELS[bucket] || "Other";
+  const title = raw && raw.toLowerCase() !== label.toLowerCase() ? ` title="Raw status: ${escapeHTML(raw)}"` : "";
+  return `<span class="refresh-status ${escapeHTML(bucket)}"${title}>${escapeHTML(label)}</span>`;
 }
 
 function listText(values, fallback = "-") {
@@ -349,7 +374,7 @@ function renderRefreshQueue(dashboard, candidatePayload, contradictionPayload, c
   const claimSymbols = claimPayload?.symbols ?? [];
   const updateActions = signalUpdatePayload?.by_action ?? [];
   const signalUpdates = signalUpdatePayload?.candidates ?? [];
-  const openJobs = jobs.filter((job) => ["queued", "running", "retry"].includes(String(job.status ?? "")));
+  const openJobs = jobs.filter((job) => ["queued", "running", "retry", "other"].includes(refreshStatusBucket(job.status)));
   const highRiskContradictions = countBySeverity(bySeverity, "critical") + countBySeverity(bySeverity, "high");
   const reviewActions =
     countByAction(updateActions, "reunderwrite") +
@@ -362,8 +387,10 @@ function renderRefreshQueue(dashboard, candidatePayload, contradictionPayload, c
       <div class="refresh-metric"><div class="label">Queued</div><div class="value">${number(countByStatus(byStatus, "queued"))}</div></div>
       <div class="refresh-metric"><div class="label">Running</div><div class="value">${number(countByStatus(byStatus, "running"))}</div></div>
       <div class="refresh-metric"><div class="label">Skipped</div><div class="value">${number(countByStatus(byStatus, "skipped"))}</div></div>
+      <div class="refresh-metric"><div class="label">Retry</div><div class="value">${number(countByStatus(byStatus, "retry"))}</div></div>
       <div class="refresh-metric"><div class="label">Failed</div><div class="value">${number(countByStatus(byStatus, "failed"))}</div></div>
       <div class="refresh-metric"><div class="label">Completed</div><div class="value">${number(countByStatus(byStatus, "completed"))}</div></div>
+      <div class="refresh-metric"><div class="label">Other</div><div class="value">${number(countByStatus(byStatus, "other"))}</div></div>
       <div class="refresh-metric"><div class="label">Structured Claims</div><div class="value">${number(sumField(claimSymbols, "claim_count"))}</div></div>
       <div class="refresh-metric"><div class="label">High Contradictions</div><div class="value">${number(highRiskContradictions)}</div></div>
       <div class="refresh-metric"><div class="label">Review Actions</div><div class="value">${number(reviewActions || signalUpdates.filter((row) => row.portfolio_review_required).length)}</div></div>

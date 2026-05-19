@@ -85,7 +85,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
   <div class="review-toolbar">
     <div>
       <h2>Brain Review</h2>
-      <div class="platform-subtitle">Daily Brain run, signal candidates, filings, market movers, and AI collector notes. Times are shown in JST.</div>
+      <div class="platform-subtitle">Raw daily Brain signals and disclosure review inbox. Nothing here is a portfolio decision until it is triaged into Ideas or Portfolio. Times are shown in JST.</div>
     </div>
     <div class="review-controls">
       <input id="review-date" type="date" aria-label="Review date">
@@ -95,6 +95,12 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
   </div>
 
   <div id="review-metrics" class="platform-metrics"></div>
+
+  <section class="platform-section">
+    <h3>Source Health</h3>
+    <div class="platform-subtitle">Latest ingestion state for EDINET, J-Quants guidance, and the Brain daily dump.</div>
+    <div id="review-source-health"></div>
+  </section>
 
   <section class="platform-section">
     <h3>Signal Candidates</h3>
