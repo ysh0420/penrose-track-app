@@ -21,6 +21,20 @@ async function htmlFiles(dir = root) {
   return files;
 }
 
+async function jsFiles(dir = join(root, 'js')) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const abs = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...await jsFiles(abs));
+    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      files.push(abs);
+    }
+  }
+  return files;
+}
+
 function fail(message) {
   console.error(message);
   process.exitCode = 1;
@@ -37,6 +51,17 @@ if (!brainQueries.includes('fn_get_research_reviewer_queue')) {
 }
 if (brainQueries.includes('generate_research_reviewer_queue') || brainQueries.includes('record_reviewer_queue_decision')) {
   fail('browser queries must not expose reviewer queue generate/write RPCs.');
+}
+if (
+  brainQueries.includes('startResearchSession') ||
+  brainQueries.includes('start_research_session') ||
+  brainQueries.includes('trigger-research') ||
+  brainQueries.includes('brain_shared_secret_for_edge_fn')
+) {
+  fail('brain-queries.js must not expose browser-triggered research execution.');
+}
+if (/brainQuery\(\s*["']fn_publish_research_report/.test(brainQueries)) {
+  fail('brain-queries.js must not expose report publication RPCs.');
 }
 
 const brainReview = await read('brain-review.html');
@@ -67,6 +92,23 @@ for (const file of await htmlFiles()) {
 }
 if (htmlRefs.length) {
   fail(`HTML still references page-pipeline.js: ${htmlRefs.join(', ')}`);
+}
+
+const browserExecutionRefs = [];
+for (const file of [...await htmlFiles(), ...await jsFiles()]) {
+  const body = await readFile(file, 'utf8');
+  if (
+    body.includes('startResearchSession') ||
+    body.includes('start_research_session') ||
+    body.includes('trigger-research') ||
+    body.includes('brain_shared_secret_for_edge_fn') ||
+    body.includes('run_research')
+  ) {
+    browserExecutionRefs.push(file);
+  }
+}
+if (browserExecutionRefs.length) {
+  fail(`Browser surface still references AI/research execution paths: ${browserExecutionRefs.join(', ')}`);
 }
 
 if (!process.exitCode) console.log('Track App regression checks passed.');
