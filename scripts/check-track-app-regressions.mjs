@@ -31,6 +31,19 @@ if (nav.includes('label: "Signals"') || nav.includes('id: "pipeline"') || nav.in
   fail('platform-nav.js must not include Signals or pipeline navigation.');
 }
 
+const brainQueries = await read('js/brain-queries.js');
+if (!brainQueries.includes('fn_get_research_reviewer_queue')) {
+  fail('brain-queries.js must expose the read-only reviewer queue RPC.');
+}
+if (brainQueries.includes('generate_research_reviewer_queue') || brainQueries.includes('record_reviewer_queue_decision')) {
+  fail('browser queries must not expose reviewer queue generate/write RPCs.');
+}
+
+const brainReview = await read('brain-review.html');
+if (!brainReview.includes('id="reviewer-queue"')) {
+  fail('brain-review.html must include the Reviewer Queue panel.');
+}
+
 const ideas = await read('ideas.html');
 if (!ideas.includes('href="/brain-review.html"')) {
   fail('ideas.html inbox must link to /brain-review.html.');

@@ -49,6 +49,15 @@ export async function getBrainSourceHealth() {
   return brainQuery("fn_brain_v0_source_health");
 }
 
+/** Read-only human reviewer queue for Brain Review. */
+export async function getResearchReviewerQueue({ status = "open", symbol = "", limit = 50 } = {}) {
+  return brainQuery("fn_get_research_reviewer_queue", {
+    p_status: status || null,
+    p_symbol: symbol || null,
+    p_limit: limit,
+  });
+}
+
 /** TDnet/EDINET links and portfolio/watchlist-matched disclosures. */
 export async function getBrainPortfolioDisclosures(date = "", limit = 100) {
   const params = {
