@@ -2,7 +2,7 @@
 import { mountBrainAuthGate } from "./brain-client.js";
 import {
   getStockHeader, getStockFundamentals, getSynthesisForSymbol,
-  getIntradayAlerts, startResearchSession,
+  getIntradayAlerts,
   extractFactCheckCompletionsForSymbol,
 } from "./brain-queries.js";
 import {
@@ -13,10 +13,6 @@ import {
 import { showError } from "./brain-error.js";
 
 const symbol = new URLSearchParams(location.search).get("symbol");
-
-const POLL_INTERVAL_MS = 5_000;
-const POLL_MAX_MS = 180_000;
-let pollTimer = null;
 
 async function loadAll() {
   if (!symbol) {
@@ -83,10 +79,8 @@ function renderMainPortfolioCard(res) {
       <div>
         <h2>Main Portfolio</h2>
         <p style="margin:.6em 0;color:var(--muted,#8b8680)">Not in Main Portfolio.</p>
-        <button class="brain-rerun-btn" id="brain-add-research" type="button">Run research</button>
       </div>
     `;
-    document.getElementById("brain-add-research").addEventListener("click", triggerResearch);
     return;
   }
   el.innerHTML = `
@@ -140,12 +134,9 @@ function renderSynthesis(res) {
     el.innerHTML = `
       <div class="brain-synthesis-header">
         <h2>Phase R Research</h2>
-        <button class="brain-rerun-btn" id="brain-rerun" type="button">Run research</button>
       </div>
       <div class="brain-empty">No synthesis yet</div>
-      <span class="brain-rerun-status" id="brain-rerun-status"></span>
     `;
-    document.getElementById("brain-rerun").addEventListener("click", triggerResearch);
     return;
   }
   const md = s.synthesis_md ?? "";
@@ -155,8 +146,6 @@ function renderSynthesis(res) {
       <h2>Phase R Research</h2>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         ${verdictBadgeHTML(s.verdict)}
-        <button class="brain-rerun-btn" id="brain-rerun" type="button">Re-research</button>
-        <span class="brain-rerun-status" id="brain-rerun-status"></span>
       </div>
     </div>
     <div class="brain-synthesis-meta">
@@ -167,7 +156,6 @@ function renderSynthesis(res) {
     <div class="brain-synthesis-md" id="brain-synthesis-content">${renderMarkdown(md)}</div>
     <a class="brain-synthesis-toggle" id="brain-synthesis-toggle">Expand ↓</a>
   `;
-  document.getElementById("brain-rerun").addEventListener("click", triggerResearch);
   document.getElementById("brain-synthesis-toggle").addEventListener("click", () => {
     const c = document.getElementById("brain-synthesis-content");
     const t = document.getElementById("brain-synthesis-toggle");
@@ -212,11 +200,7 @@ async function triggerResearch() {
   if (status) status.textContent = "Starting session…";
 
   try {
-    const res = await startResearchSession(symbol, 2, true);
-    const sessionId = res?.session_id ?? (Array.isArray(res) ? res[0]?.session_id : null);
-    if (!sessionId) throw new Error("No session_id returned from start_research_session");
-    if (status) status.textContent = "Running cross-validation (~90s)…";
-    pollForSynthesis(sessionId);
+    throw new Error("Research execution is disabled in the browser UI");
   } catch (e) {
     if (status) status.textContent = `Error: ${e.message}`;
     if (rerun) /** @type {HTMLButtonElement} */(rerun).disabled = false;

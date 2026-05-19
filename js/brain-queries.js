@@ -44,6 +44,11 @@ export async function getBrainReviewDashboard(date = "", limit = 25) {
   return brainQuery("fn_brain_v0_review_dashboard", params);
 }
 
+/** Source Health payload for Brain Review. */
+export async function getBrainSourceHealth() {
+  return brainQuery("fn_brain_v0_source_health");
+}
+
 /** TDnet/EDINET links and portfolio/watchlist-matched disclosures. */
 export async function getBrainPortfolioDisclosures(date = "", limit = 100) {
   const params = {
@@ -111,16 +116,6 @@ export function getResearchSession(sessionId) {
   return brainQuery("get_research_session", { p_session_id: sessionId });
 }
 
-/** Major guidance revisions for /pipeline. */
-export function getPipelineRevisions(days = 30) {
-  return brainQuery("fn_get_pipeline_revisions", { p_days: days });
-}
-
-/** Promotion candidates for /pipeline. */
-export function getPromotionCandidates() {
-  return brainQuery("fn_get_promotion_candidates");
-}
-
 /** Phase R session history for /research-log. */
 export function getResearchLog(limit = 100, offset = 0) {
   return brainQuery("fn_get_research_log", {
@@ -165,6 +160,16 @@ export function getResearchRefreshDashboard({ days = 30, limit = 50, status = ""
   });
 }
 
+/** Structured claim coverage. Values/raw excerpts are not exposed in this dashboard. */
+export function getClaimCoverageDashboard({ days = 30, limit = 80, symbol = "" } = {}) {
+  const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
+  return brainQuery("fn_get_claim_coverage_dashboard", {
+    p_since: since,
+    p_limit: limit,
+    p_symbol: symbol || null,
+  });
+}
+
 /** Published reports that should be refreshed because they are stale, incomplete, or already queued. */
 export function getResearchRefreshCandidates(staleDays = 14, limit = 50, symbol = "") {
   return brainQuery("fn_get_research_refresh_candidates", {
@@ -181,6 +186,17 @@ export function getResearchContradictionDashboard({ days = 30, limit = 50, symbo
     p_since: since,
     p_limit: limit,
     p_symbol: symbol || null,
+    p_status: status || null,
+  });
+}
+
+/** Suggested signal updates derived from claim extraction and contradiction scans. */
+export function getSignalUpdateCandidatesDashboard({ days = 30, limit = 50, symbol = "", status = "" } = {}) {
+  const since = new Date(Date.now() - Number(days || 30) * 24 * 60 * 60 * 1000).toISOString();
+  return brainQuery("fn_get_signal_update_candidates", {
+    p_symbol: symbol || null,
+    p_since: since,
+    p_limit: limit,
     p_status: status || null,
   });
 }
@@ -212,18 +228,6 @@ export function getAgentResearchDashboard(days = 30, limit = 100) {
  */
 export function getIntradayAlerts(sinceTimestamp = null) {
   return brainQuery("get_intraday_alerts", { p_since: sinceTimestamp });
-}
-
-/**
- * Trigger a new Phase R research session. Edge Function chains
- * start_research_session + trigger-research automatically.
- */
-export function startResearchSession(symbol, tier = 2, force = false) {
-  return brainQuery("start_research_session", {
-    p_symbol: symbol,
-    p_tier: tier,
-    p_force: force,
-  });
 }
 
 /** Brain health check. */

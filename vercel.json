@@ -3,6 +3,10 @@
   "buildCommand": null,
   "outputDirectory": null,
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/pipeline", "destination": "/brain-review", "permanent": false },
+    { "source": "/pipeline.html", "destination": "/brain-review.html", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/(.*)",

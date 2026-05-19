@@ -4,6 +4,7 @@ import {
   getBrainCompanyNames,
   getBrainPortfolioDisclosures,
   getBrainReviewDashboard,
+  getBrainSourceHealth,
   getWatchlistTiers,
   recordBrainReviewDecision,
 } from "./brain-queries.js";
@@ -64,6 +65,16 @@ function metric(label, value) {
 
 function badge(text, cls = "") {
   return `<span class="review-badge ${escapeHTML(cls)}">${escapeHTML(text)}</span>`;
+}
+
+function healthBadge(status, failures = 0) {
+  const raw = String(status || "unknown").toLowerCase();
+  const cls = failures > 0 || ["failed", "failure", "partial_failure"].includes(raw)
+    ? "high"
+    : ["running", "started"].includes(raw)
+      ? "medium"
+      : "";
+  return badge(status || "unknown", cls);
 }
 
 function symbolLabel(symbol, companyNames = {}) {
@@ -255,9 +266,51 @@ function loading() {
   $("review-metrics").innerHTML = Array.from({ length: 6 })
     .map(() => `<div class="platform-metric">${skeletonRowHTML("65%")}<br><br>${skeletonRowHTML("40%")}</div>`)
     .join("");
-  ["review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai", "review-summary"].forEach((id) => {
+  ["review-source-health", "review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai", "review-summary"].forEach((id) => {
     $(id).innerHTML = `<div class="brain-empty">Loading...</div>`;
   });
+}
+
+function healthItemHTML(title, row, lines) {
+  const failures = Number(row?.consecutive_failures ?? 0);
+  return `
+    <div class="platform-item">
+      <div class="review-meta">${healthBadge(row?.latest_status || row?.source_status, failures)} ${failures ? badge(`${failures} failures`, "high") : badge("0 failures")}</div>
+      <strong>${escapeHTML(title)}</strong>
+      <div class="platform-meta">Latest success: ${escapeHTML(fmtDateTime(row?.latest_success_at))}</div>
+      <div class="platform-meta">${lines.filter(Boolean).map(escapeHTML).join(" / ")}</div>
+    </div>
+  `;
+}
+
+function renderSourceHealth(payload) {
+  if (!payload) return `<div class="brain-empty">No Source Health payload returned.</div>`;
+  const edinet = payload.edinet || {};
+  const guidance = payload.jquants_guidance || {};
+  const brain = payload.brain_daily_dump || {};
+  const breakdown = brain.signal_breakdown || {};
+  return `
+    <div class="platform-list">
+      ${healthItemHTML("EDINET filings", edinet, [
+        `filtered ${fmtNum(edinet.filtered)}`,
+        `parsed ${fmtNum(edinet.parsed)}`,
+        `created ${fmtNum(edinet.created)}`,
+        `updated ${fmtNum(edinet.updated)}`,
+      ])}
+      ${healthItemHTML("J-Quants guidance", guidance, [
+        `checkpoint ${guidance.checkpoint_date || "-"}`,
+        `guidance inserted ${fmtNum(guidance.guidance_inserted)}`,
+        `guidance updated ${fmtNum(guidance.guidance_updated)}`,
+      ])}
+      ${healthItemHTML("Brain Daily Dump", brain, [
+        `run date ${brain.run_date || "-"}`,
+        `disclosures ${fmtNum(brain.disclosures_count)}`,
+        `signals ${fmtNum(brain.signal_candidates_count)}`,
+        `ownership ${fmtNum(breakdown.ownership_filing)}`,
+        `disclosure ${fmtNum(breakdown.disclosure)}`,
+      ])}
+    </div>
+  `;
 }
 
 function renderSummary(payload) {
@@ -595,10 +648,11 @@ async function loadReview() {
   loading();
   const date = /** @type {HTMLInputElement} */($("review-date")).value;
   try {
-    const [payload, disclosurePayload, watchlistPayload] = await Promise.all([
+    const [payload, disclosurePayload, watchlistPayload, sourceHealthResult] = await Promise.all([
       getBrainReviewDashboard(date, 100),
       getBrainPortfolioDisclosures(date, 100),
       getWatchlistTiers(date, 80),
+      getBrainSourceHealth().then((data) => ({ data }), (error) => ({ error })),
     ]);
     const companyNames = {
       ...payloadCompanyNames(payload, disclosurePayload),
@@ -613,6 +667,9 @@ async function loadReview() {
       metric("AI Notes", String(counts.ai_enrichments ?? 0)),
       metric("Saved Decisions", String(counts.review_decisions ?? 0)),
     ].join("");
+    $("review-source-health").innerHTML = sourceHealthResult.error
+      ? `<div class="brain-error-state"><p>Source Health load failed: ${escapeHTML(sourceHealthResult.error?.message ?? sourceHealthResult.error)}</p></div>`
+      : renderSourceHealth(sourceHealthResult.data);
     $("review-summary").innerHTML = renderSummary(payload);
     $("review-signals").innerHTML = renderSignals(payload, companyNames, watchlistBiasBySymbol(watchlistPayload));
     $("review-disclosures").innerHTML = renderDisclosures(disclosurePayload);
@@ -628,7 +685,7 @@ async function loadReview() {
       onRetry: loadReview,
       error,
     });
-    ["review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai"].forEach((id) => {
+    ["review-source-health", "review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai"].forEach((id) => {
       $(id).innerHTML = `<div class="brain-empty">Waiting for a successful Brain review load.</div>`;
     });
   }
