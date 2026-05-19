@@ -5,6 +5,7 @@ import {
   getBrainPortfolioDisclosures,
   getBrainReviewDashboard,
   getBrainSourceHealth,
+  getResearchReviewerQueue,
   getWatchlistTiers,
   recordBrainReviewDecision,
 } from "./brain-queries.js";
@@ -75,6 +76,17 @@ function healthBadge(status, failures = 0) {
       ? "medium"
       : "";
   return badge(status || "unknown", cls);
+}
+
+function severityClass(severity, priority = 0) {
+  const raw = String(severity || "").toLowerCase();
+  if (raw === "critical" || raw === "high" || Number(priority) >= 85) return "high";
+  if (raw === "medium" || Number(priority) >= 65) return "medium";
+  return "";
+}
+
+function queueTypeLabel(value) {
+  return String(value || "review").replace(/_/g, " ");
 }
 
 function symbolLabel(symbol, companyNames = {}) {
@@ -266,7 +278,7 @@ function loading() {
   $("review-metrics").innerHTML = Array.from({ length: 6 })
     .map(() => `<div class="platform-metric">${skeletonRowHTML("65%")}<br><br>${skeletonRowHTML("40%")}</div>`)
     .join("");
-  ["review-source-health", "review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai", "review-summary"].forEach((id) => {
+  ["review-source-health", "reviewer-queue", "review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai", "review-summary"].forEach((id) => {
     $(id).innerHTML = `<div class="brain-empty">Loading...</div>`;
   });
 }
@@ -309,6 +321,66 @@ function renderSourceHealth(payload) {
         `ownership ${fmtNum(breakdown.ownership_filing)}`,
         `disclosure ${fmtNum(breakdown.disclosure)}`,
       ])}
+    </div>
+  `;
+}
+
+function renderReviewerQueue(payload) {
+  if (!payload) return `<div class="brain-empty">No Reviewer Queue payload returned.</div>`;
+  const items = list(payload.items);
+  const typeCounts = list(payload.by_type)
+    .map((row) => `${queueTypeLabel(row.queue_type)} ${row.count ?? 0}`)
+    .join(" / ");
+  const statusCounts = list(payload.by_status)
+    .map((row) => `${row.status ?? "unknown"} ${row.count ?? 0}`)
+    .join(" / ");
+  const header = `
+    <div class="platform-subtitle">
+      Open filter total ${escapeHTML(String(payload.total_count ?? items.length))}.
+      ${typeCounts ? `By type: ${escapeHTML(typeCounts)}.` : ""}
+      ${statusCounts ? ` Status: ${escapeHTML(statusCounts)}.` : ""}
+    </div>
+  `;
+  if (!items.length) return `${header}<div class="brain-empty">No open reviewer queue items.</div>`;
+
+  return `
+    ${header}
+    <div class="review-sheet-wrap">
+      <table class="review-sheet">
+        <thead>
+          <tr>
+            <th class="num">Priority</th>
+            <th>Severity</th>
+            <th>Type</th>
+            <th>Symbol / Company</th>
+            <th>Reason</th>
+            <th>Suggested</th>
+            <th class="num">Related</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items.slice(0, 30).map((row) => {
+            const symbol = row.symbol || "-";
+            const company = row.company_name || row.metadata?.report_slug || row.metadata?.job_key || "-";
+            return `
+              <tr>
+                <td class="num">${escapeHTML(String(row.priority ?? "-"))}</td>
+                <td>${badge(row.severity || "unknown", severityClass(row.severity, row.priority))}</td>
+                <td>${badge(queueTypeLabel(row.queue_type))}</td>
+                <td class="title-cell">
+                  <div class="review-sheet-title">${escapeHTML(symbol)}</div>
+                  <div class="review-sheet-sub">${escapeHTML(company)}</div>
+                </td>
+                <td class="reason-cell">${escapeHTML(row.reason || "-")}</td>
+                <td>${escapeHTML(queueTypeLabel(row.suggested_action || "-"))}</td>
+                <td class="num">${escapeHTML(String(row.related_objects_count ?? row.source_claim_count ?? 0))}</td>
+                <td>${escapeHTML(fmtDateTime(row.created_at))}</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
     </div>
   `;
 }
@@ -648,11 +720,12 @@ async function loadReview() {
   loading();
   const date = /** @type {HTMLInputElement} */($("review-date")).value;
   try {
-    const [payload, disclosurePayload, watchlistPayload, sourceHealthResult] = await Promise.all([
+    const [payload, disclosurePayload, watchlistPayload, sourceHealthResult, reviewerQueueResult] = await Promise.all([
       getBrainReviewDashboard(date, 100),
       getBrainPortfolioDisclosures(date, 100),
       getWatchlistTiers(date, 80),
       getBrainSourceHealth().then((data) => ({ data }), (error) => ({ error })),
+      getResearchReviewerQueue({ status: "open", limit: 50 }).then((data) => ({ data }), (error) => ({ error })),
     ]);
     const companyNames = {
       ...payloadCompanyNames(payload, disclosurePayload),
@@ -665,11 +738,15 @@ async function loadReview() {
       metric("Disclosure Sample", String(counts.disclosure_items ?? 0)),
       metric("Signals", String(counts.signal_candidates ?? 0)),
       metric("AI Notes", String(counts.ai_enrichments ?? 0)),
+      metric("Review Queue", String(reviewerQueueResult.data?.total_count ?? 0)),
       metric("Saved Decisions", String(counts.review_decisions ?? 0)),
     ].join("");
     $("review-source-health").innerHTML = sourceHealthResult.error
       ? `<div class="brain-error-state"><p>Source Health load failed: ${escapeHTML(sourceHealthResult.error?.message ?? sourceHealthResult.error)}</p></div>`
       : renderSourceHealth(sourceHealthResult.data);
+    $("reviewer-queue").innerHTML = reviewerQueueResult.error
+      ? `<div class="brain-error-state"><p>Reviewer Queue load failed: ${escapeHTML(reviewerQueueResult.error?.message ?? reviewerQueueResult.error)}</p></div>`
+      : renderReviewerQueue(reviewerQueueResult.data);
     $("review-summary").innerHTML = renderSummary(payload);
     $("review-signals").innerHTML = renderSignals(payload, companyNames, watchlistBiasBySymbol(watchlistPayload));
     $("review-disclosures").innerHTML = renderDisclosures(disclosurePayload);
@@ -685,7 +762,7 @@ async function loadReview() {
       onRetry: loadReview,
       error,
     });
-    ["review-source-health", "review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai"].forEach((id) => {
+    ["review-source-health", "reviewer-queue", "review-signals", "review-disclosures", "review-watchlist", "review-leadlag", "review-markets", "review-ai"].forEach((id) => {
       $(id).innerHTML = `<div class="brain-empty">Waiting for a successful Brain review load.</div>`;
     });
   }
