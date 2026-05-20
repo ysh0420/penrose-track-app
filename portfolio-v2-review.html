@@ -86,12 +86,12 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
   <div class="pv2-toolbar">
     <div>
       <h2>Portfolio V2 Review</h2>
-      <div class="pv2-subtitle">PM review states for the current model book. The browser view is read-only.</div>
+      <div class="pv2-subtitle">Clean V2 PM review states and daily log. V1 is legacy archive only. The browser view is read-only.</div>
       <div id="pv2-subtitle" class="pv2-subtitle">Loading portfolio review...</div>
     </div>
     <div class="pv2-actions">
-      <a class="pv2-button" href="/portfolio-v2-evaluation.html">V2 Evaluation</a>
-      <a class="pv2-button" href="/model-portfolio.html">Legacy/debug</a>
+      <a class="pv2-button" href="/portfolio-v2-log.html">V2 Daily Log</a>
+      <a class="pv2-button" href="/model-portfolio.html">Legacy Archive</a>
       <button id="pv2-reload" class="pv2-button" type="button">Reload</button>
     </div>
   </div>
@@ -106,7 +106,7 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
       </section>
 
       <section class="pv2-section">
-        <h3>Holdings Review</h3>
+        <h3>V2 Log Items</h3>
         <div id="pv2-holdings"></div>
       </section>
     </div>
@@ -122,11 +122,14 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
         <div id="pv2-source-health"></div>
       </section>
 
-      <section class="pv2-section pv2-debug">
-        <details>
-          <summary>Legacy/debug comparison</summary>
-          <div id="pv2-legacy" class="pv2-debug-body"></div>
-        </details>
+      <section class="pv2-section">
+        <h3>Reviewer Queue</h3>
+        <div id="pv2-reviewer-queue"></div>
+      </section>
+
+      <section class="pv2-section">
+        <h3>Technical / Lead-Lag Coverage</h3>
+        <div id="pv2-coverage"></div>
       </section>
     </div>
   </div>

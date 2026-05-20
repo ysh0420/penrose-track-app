@@ -18,10 +18,12 @@ export async function getModelPortfolioDashboard(portfolioSlug = "penrose-brain-
   });
 }
 
-/** Read-only v2 evaluation dashboard for PM decision-quality tracking. */
-export async function getModelPortfolioV2EvaluationDashboard({ runDate = "", limit = 200 } = {}) {
-  return brainQuery("fn_get_model_portfolio_v2_evaluation_dashboard", {
-    p_run_date: runDate || null,
+/** Read-only clean V2 daily log dashboard. */
+export async function getModelPortfolioV2LogDashboard({ logDate = "", portfolioSlug = "penrose-v2-shadow", pmStatus = "", limit = 250 } = {}) {
+  return brainQuery("fn_get_model_portfolio_v2_log_dashboard", {
+    p_log_date: logDate || null,
+    p_portfolio_slug: portfolioSlug,
+    p_pm_status: pmStatus || null,
     p_limit: limit,
   });
 }
