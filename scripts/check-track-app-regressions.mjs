@@ -35,6 +35,9 @@ const brainQueries = await read('js/brain-queries.js');
 if (!brainQueries.includes('fn_get_research_reviewer_queue')) {
   fail('brain-queries.js must expose the read-only reviewer queue RPC.');
 }
+if (!brainQueries.includes('fn_get_model_portfolio_v2_evaluation_dashboard')) {
+  fail('brain-queries.js must expose the read-only Portfolio V2 evaluation RPC.');
+}
 if (brainQueries.includes('generate_research_reviewer_queue') || brainQueries.includes('record_reviewer_queue_decision')) {
   fail('browser queries must not expose reviewer queue generate/write RPCs.');
 }
@@ -49,12 +52,35 @@ if (!portfolioV2.includes('page-portfolio-v2-review.js')) {
 if (!nav.includes('id: "model-v2"') || !nav.includes('/portfolio-v2-review.html')) {
   fail('platform-nav.js must expose Portfolio V2 Review as the primary model portfolio review entrypoint.');
 }
+if (!nav.includes('id: "model-v2-evaluation"') || !nav.includes('/portfolio-v2-evaluation.html')) {
+  fail('platform-nav.js must expose Portfolio V2 Evaluation in the portfolio navigation.');
+}
 const portfolioV2Js = await read('js/page-portfolio-v2-review.js');
 if (portfolioV2Js.includes('getAiModelPortfolioPreview') || portfolioV2Js.includes('recordBrainReviewDecision')) {
   fail('Portfolio V2 Review must remain read-only and must not use AI preview or write helpers.');
 }
 if (portfolioV2Js.includes('start_research_session') || portfolioV2Js.includes('trigger-research') || portfolioV2Js.includes('confirm-rebalance')) {
   fail('Portfolio V2 Review must not expose research execution or rebalance execution.');
+}
+
+const portfolioV2Evaluation = await read('portfolio-v2-evaluation.html');
+if (!portfolioV2Evaluation.includes('page-portfolio-v2-evaluation.js')) {
+  fail('portfolio-v2-evaluation.html must mount the Portfolio V2 Evaluation page script.');
+}
+const portfolioV2EvaluationJs = await read('js/page-portfolio-v2-evaluation.js');
+if (!portfolioV2EvaluationJs.includes('getModelPortfolioV2EvaluationDashboard')) {
+  fail('Portfolio V2 Evaluation must use the read-only evaluation dashboard query.');
+}
+if (portfolioV2EvaluationJs.includes('getAiModelPortfolioPreview') || portfolioV2EvaluationJs.includes('recordBrainReviewDecision')) {
+  fail('Portfolio V2 Evaluation must remain read-only and must not use AI preview or write helpers.');
+}
+if (
+  portfolioV2EvaluationJs.includes('start_research_session') ||
+  portfolioV2EvaluationJs.includes('trigger-research') ||
+  portfolioV2EvaluationJs.includes('confirm-rebalance') ||
+  portfolioV2EvaluationJs.includes('publish_research_report')
+) {
+  fail('Portfolio V2 Evaluation must not expose research execution, rebalance execution, or report publication.');
 }
 
 const brainReview = await read('brain-review.html');

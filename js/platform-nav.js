@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { id: "news", label: "News", href: "/news.html", section: "brain" },
   { id: "master", label: "Main Portfolio", href: "/master-portfolio.html", section: "portfolio" },
   { id: "model-v2", label: "V2 Review", href: "/portfolio-v2-review.html", section: "portfolio" },
+  { id: "model-v2-evaluation", label: "V2 Evaluation", href: "/portfolio-v2-evaluation.html", section: "portfolio" },
   { id: "model", label: "Legacy Book", href: "/model-portfolio.html", section: "portfolio" },
   { id: "track", label: "MW", href: "/track-record.html", section: "portfolio" },
   { id: "citadel", label: "Citadel", href: "/citadel.html", section: "portfolio" },

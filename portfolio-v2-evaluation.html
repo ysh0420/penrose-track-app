@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio V2 Evaluation - Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<link rel="stylesheet" href="/css/platform-pages.css">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c;--amber:#b7791f;--blue:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1360px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
+.topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}.topbar-right a:hover{border-bottom-color:var(--gold)}
+.eval-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.eval-toolbar h2{font-size:22pt;border-bottom:2px solid var(--gold);padding-bottom:.25em;display:inline-block}
+.eval-subtitle{color:var(--muted);font-size:10pt;margin-top:.45rem;max-width:760px;line-height:1.45}
+.eval-actions{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}
+.eval-button{border:1px solid var(--navy);background:white;color:var(--navy);padding:.55rem .9rem;border-radius:4px;font-family:inherit;text-decoration:none;cursor:pointer}
+.eval-button:hover{border-color:var(--gold);color:var(--gold)}
+.eval-summary{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:10px;margin-bottom:1rem}
+.eval-metric{background:white;border:1px solid var(--line);padding:.9rem;min-height:92px}
+.eval-metric .label{font-size:8pt;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:.4rem}
+.eval-metric .value{font-family:'Cormorant Garamond',serif;font-size:19pt;color:var(--navy);line-height:1.05;white-space:nowrap}
+.eval-metric .sub{font-size:9pt;color:var(--muted);margin-top:.4rem}
+.eval-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(390px,.72fr);gap:16px;margin-bottom:1rem}
+.eval-section{background:white;border:1px solid var(--line);padding:1.15rem;margin-bottom:1rem}
+.eval-section h3{font-size:16pt;margin-bottom:.75rem}
+.eval-table-wrap{overflow:auto;scrollbar-gutter:stable;border:1px solid var(--line)}
+.eval-table{width:100%;border-collapse:collapse;min-width:920px}
+.eval-table th,.eval-table td{padding:7px 9px;border-bottom:1px solid var(--line);font-size:9.5pt;text-align:left;vertical-align:top}
+.eval-table th{position:sticky;top:0;background:#f0eadc;color:var(--navy);font-size:8pt;text-transform:uppercase;letter-spacing:.75px;z-index:1}
+.eval-table td.num,.eval-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+.eval-table tr.clickable{cursor:pointer}.eval-table tr.clickable:hover td{background:#fbfaf6}
+.eval-pill{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:.18rem .55rem;background:white;color:var(--navy);font-size:8.5pt;white-space:nowrap}
+.eval-pill.high{color:var(--red);border-color:rgba(183,28,28,.35);background:#fff7f7}
+.eval-pill.medium{color:var(--amber);border-color:rgba(183,121,31,.35);background:#fffaf0}
+.eval-pill.good{color:var(--green);border-color:rgba(46,125,50,.35);background:#f4fbf4}
+.eval-bucket-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.eval-bucket{border:1px solid var(--line);background:#fbfaf6;padding:.9rem;min-height:110px}
+.eval-bucket-head{display:flex;justify-content:space-between;gap:.75rem;margin-bottom:.5rem}
+.eval-bucket h4{font-size:10pt;text-transform:uppercase;letter-spacing:.8px;color:var(--navy)}
+.eval-count{font-variant-numeric:tabular-nums;border:1px solid var(--line);background:white;padding:.15rem .5rem;border-radius:999px;font-size:9pt}
+.eval-empty{color:var(--muted);font-size:10pt;padding:.8rem 0}
+.eval-meta{font-size:9pt;color:var(--muted);line-height:1.45}
+@media(max-width:1180px){.eval-summary{grid-template-columns:repeat(3,1fr)}.eval-grid{grid-template-columns:1fr}.eval-bucket-grid{grid-template-columns:1fr}}
+@media(max-width:640px){body{padding:1rem .75rem}.topbar{padding:1rem}.eval-summary{grid-template-columns:1fr 1fr}.eval-metric .value{font-size:17pt}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Portfolio evaluation layer</div></div>
+<div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
+</div>
+
+<div data-platform-nav data-active-nav="model-v2-evaluation"></div>
+
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="eval-toolbar">
+    <div>
+      <h2>Portfolio V2 Evaluation</h2>
+      <div class="eval-subtitle">Decision-quality tracking for the v2 PM review layer. The browser view is read-only.</div>
+      <div id="eval-subtitle" class="eval-subtitle">Loading evaluation...</div>
+    </div>
+    <div class="eval-actions">
+      <a class="eval-button" href="/portfolio-v2-review.html">V2 Review</a>
+      <a class="eval-button" href="/model-portfolio.html">Legacy/debug</a>
+      <button id="eval-reload" class="eval-button" type="button">Reload</button>
+    </div>
+  </div>
+
+  <div id="eval-summary" class="eval-summary"></div>
+
+  <div class="eval-grid">
+    <div>
+      <section class="eval-section">
+        <h3>Evaluation Buckets</h3>
+        <div id="eval-buckets"></div>
+      </section>
+
+      <section class="eval-section">
+        <h3>Evaluation Items</h3>
+        <div id="eval-items"></div>
+      </section>
+    </div>
+
+    <div>
+      <section class="eval-section">
+        <h3>Performance by V2 State</h3>
+        <div id="eval-by-state"></div>
+      </section>
+
+      <section class="eval-section">
+        <h3>Performance by Technical Gate</h3>
+        <div id="eval-by-technical"></div>
+      </section>
+
+      <section class="eval-section">
+        <h3>Performance by US Lead-Lag</h3>
+        <div id="eval-by-leadlag"></div>
+      </section>
+
+      <section class="eval-section">
+        <h3>v1 vs v2 Disagreements</h3>
+        <div id="eval-disagreements"></div>
+      </section>
+
+      <section class="eval-section">
+        <h3>Human Review</h3>
+        <div id="eval-human-review"></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+</div>
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module" src="/js/page-portfolio-v2-evaluation.js"></script>
+</body>
+</html>

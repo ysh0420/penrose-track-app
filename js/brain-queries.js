@@ -18,6 +18,14 @@ export async function getModelPortfolioDashboard(portfolioSlug = "penrose-brain-
   });
 }
 
+/** Read-only v2 evaluation dashboard for PM decision-quality tracking. */
+export async function getModelPortfolioV2EvaluationDashboard({ runDate = "", limit = 200 } = {}) {
+  return brainQuery("fn_get_model_portfolio_v2_evaluation_dashboard", {
+    p_run_date: runDate || null,
+    p_limit: limit,
+  });
+}
+
 /** Read-only AI screened model portfolio preview over the Koyfin Japan monitor universe. */
 export async function getAiModelPortfolioPreview(date = "", limit = 80) {
   const params = {
