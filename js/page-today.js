@@ -90,9 +90,9 @@ async function loadToday() {
   }
   if (trades.length) {
     actions.push(...trades.slice(0, 4).map((t) => item(
-      `Model Book · ${t.execution_status ?? "trade"}`,
+      `Portfolio Review · ${t.execution_status ?? "trade"}`,
       `${escapeHTML(t.symbol ?? "")} ${escapeHTML(String(t.action ?? "").replace(/_/g, " "))}`,
-      "/model-portfolio.html"
+      "/portfolio-v2-review.html"
     )));
   }
   $("today-actions").innerHTML = actions.length
@@ -121,9 +121,9 @@ async function loadToday() {
 
   $("today-validation").innerHTML = model
     ? `<div class="platform-list">
-        ${item(`NAV date · ${nav.nav_date ?? "-"}`, `Validation book NAV ${escapeHTML(fmtUsd(nav.nav_usd))}, daily ${escapeHTML(fmtPct(nav.daily_return))}`, "/model-portfolio.html")}
-        ${item("Exposure", `Gross ${escapeHTML(fmtPct(nav.gross_exposure))}, net ${escapeHTML(fmtPct(nav.net_exposure))}, cash ${escapeHTML(fmtPct(nav.cash_weight))}`, "/model-portfolio.html")}
-        ${item("Top position", positions[0] ? `${escapeHTML(positions[0].symbol)} ${escapeHTML(fmtPct(positions[0].weight))}` : "No positions", "/model-portfolio.html")}
+        ${item(`NAV date · ${nav.nav_date ?? "-"}`, `Portfolio V2 NAV ${escapeHTML(fmtUsd(nav.nav_usd))}, daily ${escapeHTML(fmtPct(nav.daily_return))}`, "/portfolio-v2-review.html")}
+        ${item("Exposure", `Gross ${escapeHTML(fmtPct(nav.gross_exposure))}, net ${escapeHTML(fmtPct(nav.net_exposure))}, cash ${escapeHTML(fmtPct(nav.cash_weight))}`, "/portfolio-v2-review.html")}
+        ${item("Top position", positions[0] ? `${escapeHTML(positions[0].symbol)} ${escapeHTML(fmtPct(positions[0].weight))}` : "No positions", "/portfolio-v2-review.html")}
       </div>`
     : modelResult.status === "rejected"
       ? ""
