@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio V2 Review - Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<link rel="stylesheet" href="/css/platform-pages.css">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c;--amber:#b7791f;--blue:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1360px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
+.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
+.topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+.topbar-right a:hover{border-bottom-color:var(--gold)}
+.pv2-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.pv2-toolbar h2{font-size:22pt;border-bottom:2px solid var(--gold);padding-bottom:.25em;display:inline-block}
+.pv2-subtitle{color:var(--muted);font-size:10pt;margin-top:.45rem;max-width:760px;line-height:1.45}
+.pv2-actions{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}
+.pv2-button{border:1px solid var(--navy);background:white;color:var(--navy);padding:.55rem .9rem;border-radius:4px;font-family:inherit;text-decoration:none;cursor:pointer}
+.pv2-button:hover{border-color:var(--gold);color:var(--gold)}
+.pv2-summary{display:grid;grid-template-columns:repeat(9,minmax(120px,1fr));gap:10px;margin-bottom:1rem}
+.pv2-metric{background:white;border:1px solid var(--line);padding:.9rem;min-height:92px}
+.pv2-metric .label{font-size:8pt;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:.4rem}
+.pv2-metric .value{font-family:'Cormorant Garamond',serif;font-size:19pt;color:var(--navy);line-height:1.05;white-space:nowrap}
+.pv2-metric .sub{font-size:9pt;color:var(--muted);margin-top:.4rem}
+.pv2-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr);gap:16px;margin-bottom:1rem}
+.pv2-section{background:white;border:1px solid var(--line);padding:1.15rem;margin-bottom:1rem}
+.pv2-section h3{font-size:16pt;margin-bottom:.75rem}
+.pv2-state-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pv2-state{border:1px solid var(--line);background:#fbfaf6;padding:.9rem;min-height:130px}
+.pv2-state-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.65rem}
+.pv2-state h4{font-size:10pt;text-transform:uppercase;letter-spacing:.8px;color:var(--navy)}
+.pv2-count{font-variant-numeric:tabular-nums;border:1px solid var(--line);background:white;padding:.15rem .5rem;border-radius:999px;font-size:9pt}
+.pv2-holding-list{display:grid;gap:.45rem}
+.pv2-holding{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:.5rem;align-items:center;border-top:1px solid var(--line);padding-top:.45rem;font-size:9.5pt}
+.pv2-holding a{color:var(--navy);text-decoration:none;font-weight:700}
+.pv2-holding a:hover{color:var(--blue)}
+.pv2-weight{font-variant-numeric:tabular-nums;color:var(--muted)}
+.pv2-pill{display:inline-flex;align-items:center;gap:.25rem;border:1px solid var(--line);border-radius:999px;padding:.18rem .55rem;background:white;color:var(--navy);font-size:8.5pt;white-space:nowrap}
+.pv2-pill.high{color:var(--red);border-color:rgba(183,28,28,.35);background:#fff7f7}
+.pv2-pill.medium{color:var(--amber);border-color:rgba(183,121,31,.35);background:#fffaf0}
+.pv2-pill.good{color:var(--green);border-color:rgba(46,125,50,.35);background:#f4fbf4}
+.pv2-table-wrap{overflow:auto;scrollbar-gutter:stable;border:1px solid var(--line)}
+.pv2-table{width:100%;border-collapse:collapse;min-width:1180px}
+.pv2-table th,.pv2-table td{padding:7px 9px;border-bottom:1px solid var(--line);font-size:9.5pt;text-align:left;vertical-align:top}
+.pv2-table th{position:sticky;top:0;background:#f0eadc;color:var(--navy);font-size:8pt;text-transform:uppercase;letter-spacing:.75px;z-index:1}
+.pv2-table td.num,.pv2-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+.pv2-table tr.clickable{cursor:pointer}
+.pv2-table tr.clickable:hover td{background:#fbfaf6}
+.pv2-state-reunderwrite{color:var(--red);font-weight:700}
+.pv2-state-exit_review,.pv2-state-trim_watch{color:var(--amber);font-weight:700}
+.pv2-state-no_new_long{color:var(--navy);font-weight:700}
+.pv2-state-eligible_add{color:var(--green);font-weight:700}
+.pv2-gap-list{display:grid;gap:.55rem}
+.pv2-gap-row{display:grid;grid-template-columns:140px minmax(0,1fr);gap:.75rem;border-top:1px solid var(--line);padding-top:.55rem;font-size:9.5pt}
+.pv2-meta{font-size:9pt;color:var(--muted);line-height:1.45}
+.pv2-empty{color:var(--muted);font-size:10pt;padding:.8rem 0}
+.pv2-debug summary{cursor:pointer;color:var(--navy);font-weight:600}
+.pv2-debug-body{margin-top:.85rem;color:var(--muted);font-size:9.5pt;line-height:1.5}
+@media(max-width:1180px){.pv2-summary{grid-template-columns:repeat(3,1fr)}.pv2-grid{grid-template-columns:1fr}.pv2-state-grid{grid-template-columns:1fr}}
+@media(max-width:640px){body{padding:1rem .75rem}.topbar{padding:1rem}.pv2-summary{grid-template-columns:1fr 1fr}.pv2-metric .value{font-size:17pt}.pv2-gap-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Japan</span></h1><div class="sub">Portfolio review layer</div></div>
+<div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
+</div>
+
+<div data-platform-nav data-active-nav="model-v2"></div>
+
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="pv2-toolbar">
+    <div>
+      <h2>Portfolio V2 Review</h2>
+      <div class="pv2-subtitle">PM review states for the current model book. The browser view is read-only.</div>
+      <div id="pv2-subtitle" class="pv2-subtitle">Loading portfolio review...</div>
+    </div>
+    <div class="pv2-actions">
+      <a class="pv2-button" href="/model-portfolio.html">Legacy/debug</a>
+      <button id="pv2-reload" class="pv2-button" type="button">Reload</button>
+    </div>
+  </div>
+
+  <div id="pv2-summary" class="pv2-summary"></div>
+
+  <div class="pv2-grid">
+    <div>
+      <section class="pv2-section">
+        <h3>PM State Groups</h3>
+        <div id="pv2-state-groups"></div>
+      </section>
+
+      <section class="pv2-section">
+        <h3>Holdings Review</h3>
+        <div id="pv2-holdings"></div>
+      </section>
+    </div>
+
+    <div>
+      <section class="pv2-section">
+        <h3>Data Gaps</h3>
+        <div id="pv2-data-gaps"></div>
+      </section>
+
+      <section class="pv2-section">
+        <h3>Source Health</h3>
+        <div id="pv2-source-health"></div>
+      </section>
+
+      <section class="pv2-section pv2-debug">
+        <details>
+          <summary>Legacy/debug comparison</summary>
+          <div id="pv2-legacy" class="pv2-debug-body"></div>
+        </details>
+      </section>
+    </div>
+  </div>
+</div>
+
+</div>
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module" src="/js/page-portfolio-v2-review.js"></script>
+</body>
+</html>
