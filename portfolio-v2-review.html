@@ -28,11 +28,29 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .pv2-actions{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}
 .pv2-button{border:1px solid var(--navy);background:white;color:var(--navy);padding:.55rem .9rem;border-radius:4px;font-family:inherit;text-decoration:none;cursor:pointer}
 .pv2-button:hover{border-color:var(--gold);color:var(--gold)}
-.pv2-summary{display:grid;grid-template-columns:repeat(9,minmax(120px,1fr));gap:10px;margin-bottom:1rem}
+.pv2-summary{display:grid;grid-template-columns:repeat(8,minmax(130px,1fr));gap:10px;margin-bottom:1rem}
 .pv2-metric{background:white;border:1px solid var(--line);padding:.9rem;min-height:92px}
 .pv2-metric .label{font-size:8pt;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:.4rem}
 .pv2-metric .value{font-family:'Cormorant Garamond',serif;font-size:19pt;color:var(--navy);line-height:1.05;white-space:nowrap}
 .pv2-metric .sub{font-size:9pt;color:var(--muted);margin-top:.4rem}
+.pv2-action-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:.85rem}
+.pv2-action-column{border:1px solid var(--line);background:#fbfaf6;min-height:190px;display:flex;flex-direction:column}
+.pv2-action-head{padding:.8rem .9rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.pv2-action-head h4{font-size:9pt;text-transform:uppercase;letter-spacing:.75px;color:var(--navy);line-height:1.25}
+.pv2-action-list{display:grid;gap:.5rem;padding:.75rem}
+.pv2-action-card{background:white;border:1px solid var(--line);padding:.7rem;display:grid;gap:.4rem}
+.pv2-action-card.high{border-left:4px solid var(--red)}
+.pv2-action-card.medium{border-left:4px solid var(--amber)}
+.pv2-action-card.low{border-left:4px solid var(--green)}
+.pv2-action-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem}
+.pv2-action-symbol{font-weight:800;color:var(--navy);text-decoration:none}
+.pv2-action-company{font-size:9pt;color:var(--sumi);line-height:1.25}
+.pv2-action-reason{font-size:9pt;line-height:1.35;color:var(--sumi)}
+.pv2-action-meta{font-size:8.5pt;color:var(--muted);line-height:1.4}
+.pv2-readonly-note{border:1px dashed var(--line);background:#fffdf8;color:var(--muted);font-size:9pt;line-height:1.4;padding:.7rem;margin-top:.75rem}
+.pv2-queue-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1rem}
+.pv2-queue-panel{background:white;border:1px solid var(--line);padding:1rem;min-height:220px}
+.pv2-queue-panel h3{font-size:15pt;margin-bottom:.75rem}
 .pv2-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr);gap:16px;margin-bottom:1rem}
 .pv2-section{background:white;border:1px solid var(--line);padding:1.15rem;margin-bottom:1rem}
 .pv2-section h3{font-size:16pt;margin-bottom:.75rem}
@@ -50,8 +68,13 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .pv2-pill.high{color:var(--red);border-color:rgba(183,28,28,.35);background:#fff7f7}
 .pv2-pill.medium{color:var(--amber);border-color:rgba(183,121,31,.35);background:#fffaf0}
 .pv2-pill.good{color:var(--green);border-color:rgba(46,125,50,.35);background:#f4fbf4}
+.pv2-state-badge{display:inline-flex;align-items:center;border-radius:999px;padding:.25rem .6rem;font-size:8.5pt;font-weight:800;letter-spacing:.2px;border:1px solid var(--line);background:white;color:var(--navy);white-space:nowrap}
+.pv2-state-badge.reunderwrite,.pv2-state-badge.exit_review,.pv2-state-badge.trim_watch{color:var(--red);border-color:rgba(183,28,28,.35);background:#fff5f5}
+.pv2-state-badge.short_candidate,.pv2-state-badge.no_new_long{color:var(--amber);border-color:rgba(183,121,31,.35);background:#fffaf0}
+.pv2-state-badge.watch_only{color:var(--navy);border-color:rgba(26,39,68,.25);background:#f7f8fb}
+.pv2-state-badge.eligible_add,.pv2-state-badge.maintain{color:var(--green);border-color:rgba(46,125,50,.35);background:#f4fbf4}
 .pv2-table-wrap{overflow:auto;scrollbar-gutter:stable;border:1px solid var(--line)}
-.pv2-table{width:100%;border-collapse:collapse;min-width:1180px}
+.pv2-table{width:100%;border-collapse:collapse;min-width:1500px}
 .pv2-table th,.pv2-table td{padding:7px 9px;border-bottom:1px solid var(--line);font-size:9.5pt;text-align:left;vertical-align:top}
 .pv2-table th{position:sticky;top:0;background:#f0eadc;color:var(--navy);font-size:8pt;text-transform:uppercase;letter-spacing:.75px;z-index:1}
 .pv2-table td.num,.pv2-table th.num{text-align:right;font-variant-numeric:tabular-nums}
@@ -64,10 +87,14 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .pv2-gap-list{display:grid;gap:.55rem}
 .pv2-gap-row{display:grid;grid-template-columns:140px minmax(0,1fr);gap:.75rem;border-top:1px solid var(--line);padding-top:.55rem;font-size:9.5pt}
 .pv2-meta{font-size:9pt;color:var(--muted);line-height:1.45}
+.pv2-gap-details summary{cursor:pointer;color:var(--navy);font-weight:600;font-size:9pt;list-style:none}
+.pv2-gap-details summary::-webkit-details-marker{display:none}
+.pv2-gap-details ul{margin:.35rem 0 0 1rem;color:var(--muted);font-size:8.5pt;line-height:1.35}
+.pv2-compact-gaps{font-size:8.8pt;color:var(--muted);line-height:1.35}
 .pv2-empty{color:var(--muted);font-size:10pt;padding:.8rem 0}
 .pv2-debug summary{cursor:pointer;color:var(--navy);font-weight:600}
 .pv2-debug-body{margin-top:.85rem;color:var(--muted);font-size:9.5pt;line-height:1.5}
-@media(max-width:1180px){.pv2-summary{grid-template-columns:repeat(3,1fr)}.pv2-grid{grid-template-columns:1fr}.pv2-state-grid{grid-template-columns:1fr}}
+@media(max-width:1180px){.pv2-summary{grid-template-columns:repeat(3,1fr)}.pv2-action-board,.pv2-queue-grid{grid-template-columns:1fr}.pv2-grid{grid-template-columns:1fr}.pv2-state-grid{grid-template-columns:1fr}}
 @media(max-width:640px){body{padding:1rem .75rem}.topbar{padding:1rem}.pv2-summary{grid-template-columns:1fr 1fr}.pv2-metric .value{font-size:17pt}.pv2-gap-row{grid-template-columns:1fr}}
 </style>
 </head>
@@ -97,6 +124,27 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
   </div>
 
   <div id="pv2-summary" class="pv2-summary"></div>
+
+  <section class="pv2-section">
+    <h3>Today’s PM Actions</h3>
+    <div id="pv2-today-actions"></div>
+    <div class="pv2-readonly-note">Review actions will be recorded in a later backend-safe workflow. This cockpit is read-only.</div>
+  </section>
+
+  <div class="pv2-queue-grid">
+    <section class="pv2-queue-panel">
+      <h3>PM Decision Queue</h3>
+      <div id="pv2-pm-decision-queue"></div>
+    </section>
+    <section class="pv2-queue-panel">
+      <h3>Coverage Backlog</h3>
+      <div id="pv2-coverage-backlog"></div>
+    </section>
+    <section class="pv2-queue-panel">
+      <h3>Source Health / System Issues</h3>
+      <div id="pv2-system-issues"></div>
+    </section>
+  </div>
 
   <div class="pv2-grid">
     <div>
