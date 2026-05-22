@@ -52,6 +52,9 @@ const portfolioV2 = await read('portfolio-v2-review.html');
 if (!portfolioV2.includes('page-portfolio-v2-review.js')) {
   fail('portfolio-v2-review.html must mount the Portfolio V2 Review page script.');
 }
+if (!portfolioV2.includes('Today’s PM Actions') || !portfolioV2.includes('pv2-pm-decision-queue') || !portfolioV2.includes('pv2-coverage-backlog')) {
+  fail('portfolio-v2-review.html must expose the V2 PM cockpit sections.');
+}
 if (!nav.includes('id: "model-v2"') || !nav.includes('/portfolio-v2-review.html')) {
   fail('platform-nav.js must expose Portfolio V2 Review as the primary model portfolio review entrypoint.');
 }
@@ -70,6 +73,9 @@ if (portfolioV2Js.includes('start_research_session') || portfolioV2Js.includes('
 }
 if (portfolioV2Js.includes('v1_score') || portfolioV2Js.includes('v1_target') || portfolioV2Js.includes('Legacy/debug comparison')) {
   fail('Portfolio V2 Review must not surface v1 comparison as an operating layer.');
+}
+if (!portfolioV2Js.includes('primaryReason') || !portfolioV2Js.includes('nextRequiredInput') || !portfolioV2Js.includes('renderTodayActions')) {
+  fail('Portfolio V2 Review must derive primary_reason, next_required_input, and Today PM Actions deterministically.');
 }
 
 const portfolioV2Log = await read('portfolio-v2-log.html');
@@ -93,6 +99,33 @@ if (
 }
 if (portfolioV2LogJs.includes('v1_score') || portfolioV2LogJs.includes('v1_target')) {
   fail('Portfolio V2 Daily Log must not surface v1 score or target weight fields.');
+}
+
+const readOnlyBrowserFiles = {
+  'js/brain-queries.js': brainQueries,
+  'js/page-portfolio-v2-review.js': portfolioV2Js,
+  'js/page-portfolio-v2-log.js': portfolioV2LogJs,
+};
+const forbiddenBrowserSnippets = [
+  'startResearchSession',
+  'start_research_session',
+  'trigger-research',
+  'run_research',
+  'confirm-rebalance',
+  '--write',
+  '.insert(',
+  '.update(',
+  '.delete(',
+  'service-role',
+  'service_role',
+  'SUPABASE_SERVICE',
+];
+for (const [file, body] of Object.entries(readOnlyBrowserFiles)) {
+  for (const snippet of forbiddenBrowserSnippets) {
+    if (body.includes(snippet)) {
+      fail(`${file} must remain read-only; forbidden browser snippet found: ${snippet}`);
+    }
+  }
 }
 
 const brainReview = await read('brain-review.html');
