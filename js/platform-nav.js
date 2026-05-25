@@ -11,6 +11,7 @@ const SECTIONS = [
 const NAV_ITEMS = [
   { id: "today", label: "Today", href: "/today.html", section: "main" },
   { id: "brain-review", label: "Review", href: "/brain-review.html", section: "brain" },
+  { id: "data-coverage", label: "Data Coverage", href: "/data-coverage.html", section: "brain" },
   { id: "news", label: "News", href: "/news.html", section: "brain" },
   { id: "master", label: "Main Portfolio", href: "/master-portfolio.html", section: "portfolio" },
   { id: "model-v2", label: "V2 Review", href: "/portfolio-v2-review.html", section: "portfolio" },
