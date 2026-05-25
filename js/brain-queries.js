@@ -68,6 +68,15 @@ export async function getResearchReviewerQueue({ status = "open", symbol = "", l
   });
 }
 
+/** Summary-only Koyfin watchlist snapshot and Data Coverage dashboard. */
+export async function getKoyfinWatchlistSnapshotDashboard({ asOfDate = "", watchlistName = "", limit = 1 } = {}) {
+  return brainQuery("fn_get_koyfin_watchlist_snapshot_dashboard", {
+    p_as_of_date: asOfDate || null,
+    p_watchlist_name: watchlistName || null,
+    p_limit: limit,
+  });
+}
+
 /** TDnet/EDINET links and portfolio/watchlist-matched disclosures. */
 export async function getBrainPortfolioDisclosures(date = "", limit = 100) {
   const params = {

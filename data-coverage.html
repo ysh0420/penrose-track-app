@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Coverage - Penrose Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<link rel="stylesheet" href="/css/platform-pages.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--sumi);min-height:100vh;padding:2rem 1rem}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
+.container{max-width:1320px;margin:0 auto}
+.topbar{background:var(--navy);color:white;padding:1.5rem 2rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.topbar h1{color:white;font-size:22pt;letter-spacing:.5px}
+.topbar h1 span{color:var(--gold)}
+.topbar .sub{font-size:10pt;color:rgba(255,255,255,.8);font-style:italic}
+.topbar-right{font-size:10pt;color:rgba(255,255,255,.85);text-align:right;display:flex;gap:1rem;align-items:center}
+.topbar-right a{color:white;text-decoration:none;border-bottom:1px solid transparent;cursor:pointer}
+.topbar-right a:hover{border-bottom-color:var(--gold)}
+.dc-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.dc-toolbar h2{font-size:22pt;border-bottom:2px solid var(--gold);padding-bottom:.25em;display:inline-block}
+.dc-subtitle{color:var(--muted);font-size:10pt;margin-top:.45rem;max-width:780px;line-height:1.45}
+.dc-actions{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}
+.dc-actions input{border:1px solid var(--line);background:white;color:var(--navy);padding:.52rem .65rem;border-radius:4px;font-family:inherit;font-size:10pt}
+.dc-summary{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:10px;margin-bottom:1rem}
+.dc-metric{background:white;border:1px solid var(--line);padding:.9rem;min-height:92px}
+.dc-metric .label{font-size:8pt;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:.4rem}
+.dc-metric .value{font-family:'Cormorant Garamond',serif;font-size:19pt;color:var(--navy);line-height:1.05;white-space:nowrap}
+.dc-metric .sub{font-size:9pt;color:var(--muted);margin-top:.4rem;line-height:1.35}
+.dc-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.75fr);gap:14px}
+.dc-section{background:white;border:1px solid var(--line);padding:1.15rem;margin-bottom:1rem}
+.dc-section h3{font-size:16pt;margin-bottom:.75rem;border-bottom:2px solid var(--gold);padding-bottom:.3em;display:inline-block}
+.dc-section-note{font-size:9.5pt;color:var(--muted);line-height:1.45;margin-bottom:.75rem}
+.dc-table-wrap{overflow:auto;scrollbar-gutter:stable;border:1px solid var(--line)}
+.dc-table{width:100%;border-collapse:collapse;min-width:680px}
+.dc-table.compact{min-width:440px}
+.dc-table th,.dc-table td{padding:7px 9px;border-bottom:1px solid var(--line);font-size:9.5pt;text-align:left;vertical-align:top}
+.dc-table th{background:#f0eadc;color:var(--navy);font-size:8pt;text-transform:uppercase;letter-spacing:.75px}
+.dc-table tr:last-child td{border-bottom:0}
+.dc-table td.num,.dc-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+.dc-pill{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;padding:2px 8px;background:#fbfaf6;color:var(--navy);font-size:8.5pt;line-height:1.3;white-space:nowrap}
+.dc-pill.good{color:var(--green);border-color:rgba(46,125,50,.35);background:#f4fbf4}
+.dc-pill.warn{color:#b7791f;border-color:rgba(183,121,31,.35);background:#fffaf0}
+.dc-pill.gap{color:var(--red);border-color:rgba(183,28,28,.35);background:#fff7f7}
+.dc-gap-list{display:grid;gap:.55rem}
+.dc-gap-row{display:flex;justify-content:space-between;gap:.75rem;align-items:center;border-top:1px solid var(--line);padding-top:.55rem;font-size:9.5pt}
+.dc-safety{border:1px dashed var(--line);background:#fffdf8;color:var(--muted);font-size:9.5pt;line-height:1.45;padding:.8rem;margin-top:.75rem}
+.dc-empty{color:var(--muted);font-size:10pt;padding:.8rem 0}
+@media(max-width:1120px){.dc-summary{grid-template-columns:repeat(3,1fr)}.dc-grid{grid-template-columns:1fr}}
+@media(max-width:640px){body{padding:1rem .75rem}.topbar{padding:1rem}.dc-summary{grid-template-columns:1fr 1fr}.dc-metric .value{font-size:17pt}.dc-gap-row{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<div><h1>Penrose <span>Brain</span></h1><div class="sub">Data coverage diagnostics</div></div>
+<div class="topbar-right"><span id="brain-user-email"></span><a id="brain-signout" href="#">Sign out</a></div>
+</div>
+
+<div data-platform-nav data-active-nav="data-coverage"></div>
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="dc-toolbar">
+    <div>
+      <h2>Data Coverage</h2>
+      <div class="dc-subtitle">Koyfin snapshot and coverage diagnostics for the internal screening pipeline. This page exposes summaries only.</div>
+      <div id="dc-subtitle" class="dc-subtitle">Loading coverage dashboard...</div>
+    </div>
+    <div class="dc-actions">
+      <input id="dc-date" type="date" aria-label="Snapshot date">
+      <button id="dc-load" class="platform-button" type="button">Load</button>
+      <button id="dc-latest" class="platform-button" type="button">Latest</button>
+    </div>
+  </div>
+
+  <div id="dc-summary" class="dc-summary"></div>
+
+  <div class="dc-grid">
+    <div>
+      <section class="dc-section">
+        <h3>Coverage Summary</h3>
+        <div class="dc-section-note">Field coverage is aggregated by watchlist and reported as diagnostic counts, not raw source rows.</div>
+        <div id="dc-coverage"></div>
+      </section>
+
+      <section class="dc-section">
+        <h3>Country Scope</h3>
+        <div id="dc-country-scope"></div>
+      </section>
+    </div>
+
+    <div>
+      <section class="dc-section">
+        <h3>Screening Readiness</h3>
+        <div id="dc-readiness"></div>
+      </section>
+
+      <section class="dc-section">
+        <h3>Snapshot Hashes</h3>
+        <div id="dc-hashes"></div>
+      </section>
+
+      <section class="dc-section">
+        <h3>Safety</h3>
+        <div class="dc-safety">Koyfin raw paid-source rows are internal and not displayed here.</div>
+      </section>
+    </div>
+  </div>
+</div>
+</div>
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module" src="/js/page-data-coverage.js"></script>
+</body>
+</html>

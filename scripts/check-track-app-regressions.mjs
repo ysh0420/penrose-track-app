@@ -38,6 +38,9 @@ if (!brainQueries.includes('fn_get_research_reviewer_queue')) {
 if (!brainQueries.includes('fn_get_model_portfolio_v2_log_dashboard')) {
   fail('brain-queries.js must expose the read-only Portfolio V2 log RPC.');
 }
+if (!brainQueries.includes('fn_get_koyfin_watchlist_snapshot_dashboard')) {
+  fail('brain-queries.js must expose the read-only Koyfin snapshot dashboard RPC.');
+}
 if (brainQueries.includes('fn_get_model_portfolio_v2_evaluation_dashboard')) {
   fail('brain-queries.js must not expose the retired V2 evaluation/v1-comparison RPC.');
 }
@@ -60,6 +63,9 @@ if (!nav.includes('id: "model-v2"') || !nav.includes('/portfolio-v2-review.html'
 }
 if (!nav.includes('id: "model-v2-log"') || !nav.includes('/portfolio-v2-log.html')) {
   fail('platform-nav.js must expose Portfolio V2 Daily Log in the portfolio navigation.');
+}
+if (!nav.includes('id: "data-coverage"') || !nav.includes('/data-coverage.html')) {
+  fail('platform-nav.js must expose Data Coverage in the Brain navigation.');
 }
 if (nav.includes('model-v2-evaluation') || nav.includes('/portfolio-v2-evaluation.html')) {
   fail('platform-nav.js must not expose retired V2 Evaluation navigation.');
@@ -101,10 +107,28 @@ if (portfolioV2LogJs.includes('v1_score') || portfolioV2LogJs.includes('v1_targe
   fail('Portfolio V2 Daily Log must not surface v1 score or target weight fields.');
 }
 
+const dataCoverageHtml = await read('data-coverage.html');
+if (!dataCoverageHtml.includes('page-data-coverage.js')) {
+  fail('data-coverage.html must mount the Data Coverage page script.');
+}
+if (!dataCoverageHtml.includes('Koyfin raw paid-source rows are internal and not displayed here.')) {
+  fail('data-coverage.html must include the Koyfin raw-row safety copy.');
+}
+const dataCoverageJs = await read('js/page-data-coverage.js');
+if (!dataCoverageJs.includes('getKoyfinWatchlistSnapshotDashboard')) {
+  fail('Data Coverage must use the read-only Koyfin snapshot dashboard query.');
+}
+for (const rawSnippet of ['sample_rows', 'canonical_symbol', 'company_name', 'last_price', 'computed_features']) {
+  if (dataCoverageJs.includes(rawSnippet)) {
+    fail(`Data Coverage must not expose raw Koyfin row fields; found ${rawSnippet}.`);
+  }
+}
+
 const readOnlyBrowserFiles = {
   'js/brain-queries.js': brainQueries,
   'js/page-portfolio-v2-review.js': portfolioV2Js,
   'js/page-portfolio-v2-log.js': portfolioV2LogJs,
+  'js/page-data-coverage.js': dataCoverageJs,
 };
 const forbiddenBrowserSnippets = [
   'startResearchSession',
@@ -118,6 +142,7 @@ const forbiddenBrowserSnippets = [
   '.delete(',
   'service-role',
   'service_role',
+  'SERVICE_ROLE',
   'SUPABASE_SERVICE',
 ];
 for (const [file, body] of Object.entries(readOnlyBrowserFiles)) {
