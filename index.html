@@ -250,7 +250,7 @@ details[open] summary{margin-bottom:.5em;color:var(--penrose-navy)}
 <div class="info-box" style="margin-top:.4rem"><strong>Limit fill rule:</strong> When daily range touches limit price (buy/cover: day low ≤ limit; sell/short: day high ≥ limit), order fills at limit price. Checked daily via market data cron.</div>
 </div>
 <div class="modal-grid" style="margin-top:.8rem">
-<div><label>Ticker</label><input type="text" id="t-ticker" placeholder="6332" autocapitalize="characters"/></div>
+<div><label>Ticker</label><input type="text" id="t-ticker" placeholder="6332" autocapitalize="characters"/><div id="t-ticker-name" class="form-help" style="min-height:1.2em"></div></div>
 <div><label>Exchange</label><select id="t-exchange">
 <option value="TSE">TSE (Tokyo)</option>
 <option value="NYSE">NYSE</option>
@@ -456,6 +456,7 @@ $("open-trade-btn").addEventListener("click",()=>{
   $("t-valid-until").value=sevenDaysLater.toISOString().slice(0,10);
   $("t-msg").className="modal-msg";$("t-msg").textContent="";
   ["t-ticker","t-quantity","t-value","t-ref-price-v","t-weight","t-ref-price-w","t-fx-rate","t-price","t-commission","t-rationale","t-limit-price"].forEach(id=>$(id).value="");
+  { const nm=$("t-ticker-name"); if(nm)nm.textContent=""; }
   document.querySelectorAll("#trade-modal .action-row .opt").forEach(o=>o.classList.remove("selected"));
   document.querySelector('#trade-modal .opt[data-action="buy"]').classList.add("selected");
   setOrderType("market");
@@ -490,8 +491,8 @@ function updateCurrencyLabels(){
   const exch=$("t-exchange").value;
   $("t-value-ccy").textContent=currencyFor(exch);
 }
-$("t-exchange").addEventListener("change",()=>{updateCurrencyLabels();updateComputedQty();renderTVChart();});
-$("t-ticker").addEventListener("input",()=>{clearTimeout(window._tvTimer);window._tvTimer=setTimeout(renderTVChart,600);});
+$("t-exchange").addEventListener("change",()=>{updateCurrencyLabels();updateComputedQty();renderTVChart();lookupTickerName();});
+$("t-ticker").addEventListener("input",()=>{clearTimeout(window._tvTimer);window._tvTimer=setTimeout(()=>{renderTVChart();lookupTickerName();},600);});
 
 function updateComputedQty(){
   const exch=$("t-exchange").value;
@@ -555,6 +556,26 @@ function renderTVChart(){
   const p=new URLSearchParams({symbol:symbol,interval:"D",hidesidetoolbar:"1",symboledit:"0",saveimage:"0",toolbarbg:"f7f5f0",theme:"light",timezone:"Asia/Tokyo",locale:"en",hideideas:"1"});
   const url="https://s.tradingview.com/widgetembed/?"+p.toString();
   container.innerHTML=`<iframe src="${url}" style="width:100%;height:100%;border:none" frameborder="0" allowtransparency="true" scrolling="no" allowfullscreen></iframe>`;
+}
+
+// Display-only: look up the Japanese company name for the entered ticker.
+// No submit/RPC change — record_trade still resolves/creates the security on save.
+async function lookupTickerName(){
+  const el=$("t-ticker-name");
+  if(!el)return;
+  const ticker=$("t-ticker").value.trim().toUpperCase();
+  const exch=$("t-exchange").value;
+  if(!ticker){el.textContent="";return;}
+  const{data,error}=await supabase.from("securities").select("name,name_local").eq("ticker",ticker).eq("exchange",exch).limit(1);
+  if(error){el.textContent="";return;}
+  if(data&&data.length){
+    const n=data[0].name||data[0].name_local||"";
+    el.textContent=n?("✓ "+n):"登録済み（社名未設定）";
+    el.style.color=n?"var(--green)":"var(--muted)";
+  }else{
+    el.textContent="新規銘柄 — 社名は登録時に記録されます";
+    el.style.color="var(--amber)";
+  }
 }
 
 function getNavFor(code){
