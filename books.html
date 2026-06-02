@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penrose Books — LS / LO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/platform-pages.css">
+<style>
+:root{--penrose-navy:#1a2744;--penrose-gold:#c9a84c;--penrose-cream:#f7f5f0;--penrose-sumi:#2a2a2a;--penrose-line:#e0d8c4;--penrose-muted:#8b8680;--green:#2e7d32;--red:#b71c1c;--amber:#b7791f}
+*{box-sizing:border-box}
+body{margin:0;font-family:"DM Sans",system-ui,sans-serif;background:var(--penrose-cream);color:var(--penrose-sumi)}
+h1,h2,h3{font-family:"Cormorant Garamond",serif;margin:0}
+a{color:inherit}
+.container{max-width:1100px;margin:0 auto;padding:1.2rem}
+.topbar{display:flex;justify-content:space-between;align-items:center;background:var(--penrose-navy);color:#fff;padding:.8rem 1.2rem}
+.topbar-title{font-family:"Cormorant Garamond",serif;font-size:1.3rem}
+.topbar-title span{color:var(--penrose-gold)}
+.topbar-actions{display:flex;gap:1rem;align-items:center;font-size:.85rem}
+.topbar-actions a{cursor:pointer;text-decoration:underline}
+.login-wrap{display:flex;min-height:100vh;align-items:center;justify-content:center}
+.login-card{background:#fff;border:1px solid var(--penrose-line);border-radius:8px;padding:2rem;width:340px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+.login-card h1{font-size:1.8rem}.login-card .subtitle{color:var(--penrose-muted);font-size:.85rem;margin-bottom:1rem}
+label{display:block;font-size:.8rem;color:var(--penrose-muted);margin:.6rem 0 .2rem}
+input{width:100%;padding:.5rem;border:1px solid var(--penrose-line);border-radius:5px;font-size:.95rem}
+.btn{width:100%;margin-top:.8rem;padding:.55rem;border:none;border-radius:5px;background:var(--penrose-navy);color:#fff;font-weight:600;cursor:pointer}
+.btn-secondary{background:transparent;color:var(--penrose-navy);border:1px solid var(--penrose-line)}
+#login-msg.err{color:var(--red);font-size:.8rem;margin-top:.6rem}#login-msg.ok{color:var(--green);font-size:.8rem;margin-top:.6rem}
+.toggle{display:inline-flex;border:1px solid var(--penrose-line);border-radius:6px;overflow:hidden;margin:1rem 0}
+.toggle button{padding:.5rem 1.4rem;border:none;background:#fff;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--penrose-muted)}
+.toggle button.active{background:var(--penrose-navy);color:#fff}
+.book-header{background:#fff;border:1px solid var(--penrose-line);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:1.2rem}
+.book-header h2{font-size:1.5rem}.book-header .code{font-size:.8rem;letter-spacing:.05em;color:var(--penrose-gold);font-weight:600}
+.hdr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin-top:.9rem}
+.hdr-grid .k{font-size:.72rem;color:var(--penrose-muted);text-transform:uppercase;letter-spacing:.04em}
+.hdr-grid .v{font-size:1rem;font-weight:600;margin-top:.15rem}
+.section{background:#fff;border:1px solid var(--penrose-line);border-radius:8px;margin-bottom:1.2rem;overflow:hidden}
+.section-header{display:flex;justify-content:space-between;align-items:baseline;padding:.9rem 1.2rem;border-bottom:1px solid var(--penrose-line)}
+.section-header h3{font-size:1.2rem}.section-header .sub{font-size:.8rem;color:var(--penrose-muted)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{padding:.5rem .8rem;text-align:left;border-bottom:1px solid #f0ece1}
+th.num,td.num{text-align:right}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--penrose-muted)}
+tbody tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:.1rem .5rem;border-radius:4px;font-size:.72rem;font-weight:600}
+.badge.long{background:#e8f3e9;color:var(--green)}.badge.short{background:#fbe9e7;color:var(--red)}
+.subtotal{font-weight:700;background:#faf8f2}
+.pending{color:var(--penrose-muted);font-style:italic}
+.empty{padding:1.4rem;color:var(--penrose-muted);text-align:center}
+.loading{padding:1.4rem;color:var(--penrose-muted)}
+.exposure-pill{font-size:.75rem;padding:.15rem .5rem;border-radius:10px;background:#f0ece1;margin-left:.4rem}
+.exposure-pill.ok{background:#e8f3e9;color:var(--green)}.exposure-pill.warn{background:#fdf1da;color:var(--amber)}
+.note{font-size:.75rem;color:var(--penrose-muted);padding:.6rem 1.2rem}
+</style>
+</head>
+<body>
+
+<div id="login" class="login-wrap" style="display:none">
+  <div class="login-card">
+    <h1>Penrose <span style="color:var(--penrose-gold)">Books</span></h1>
+    <div class="subtitle">LS / LO book viewer</div>
+    <label>Email</label>
+    <input type="email" id="email" placeholder="yuki@penrose-japan.co.uk" autocomplete="email"/>
+    <label>Password</label>
+    <input type="password" id="password" autocomplete="current-password"/>
+    <button class="btn" id="login-btn">Sign in</button>
+    <button class="btn btn-secondary" id="magic-btn">Email magic link instead</button>
+    <div id="login-msg"></div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="topbar">
+    <div class="topbar-title">Penrose <span>Books</span></div>
+    <div class="topbar-actions">
+      <span id="user-email"></span>
+      <a id="refresh-btn">Refresh</a>
+      <a href="/index.html">Trading Ops</a>
+      <a id="logout-btn">Sign out</a>
+    </div>
+  </div>
+  <div class="container">
+    <div data-platform-nav data-active-nav="books"></div>
+    <div class="toggle" id="book-toggle">
+      <button data-code="LS" class="active">LS</button>
+      <button data-code="LO">LO</button>
+    </div>
+    <div id="book-header"></div>
+    <div id="long-section"></div>
+    <div id="short-section"></div>
+    <div class="note">USD mn = value-sized position size (sizing_mode=value). Price/MV mark via daily enrichment; “pending” until first mark. Derived from filled transactions (current_positions_marked).</div>
+  </div>
+</div>
+
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const SUPA_URL = "https://prdjmipmkomhvokwrjid.supabase.co";
+const SUPA_ANON = "sb_publishable_uV1Dkr9lgu2PBdoeACBAyw_4V_rrWvH";
+const supabase = createClient(SUPA_URL, SUPA_ANON);
+const $ = id => document.getElementById(id);
+const dash = "—";
+const BOOK_CODES = ["LS", "LO"];
+let activeCode = "LS";
+let DATA = { books: {}, ltd: {}, positions: {} }; // positions keyed by code -> rows
+
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmtMn = n => (n === null || n === undefined || isNaN(n)) ? dash : Number(n).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const fmtPx = n => (n === null || n === undefined || isNaN(n)) ? null : Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 });
+const fmtPct = n => (n === null || n === undefined || isNaN(n)) ? dash : (n * 100).toFixed(0) + "%";
+
+async function init() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) showApp(session); else showLogin();
+}
+function showLogin() { $("login").style.display = "flex"; $("app").style.display = "none"; }
+async function showApp(s) { $("login").style.display = "none"; $("app").style.display = "block"; $("user-email").textContent = s.user.email; await loadAll(); }
+
+$("login-btn").addEventListener("click", async () => {
+  const e = $("email").value.trim(), p = $("password").value;
+  $("login-msg").className = ""; $("login-msg").textContent = "";
+  if (!e || !p) { $("login-msg").className = "err"; $("login-msg").textContent = "Email + password required"; return; }
+  const { data, error } = await supabase.auth.signInWithPassword({ email: e, password: p });
+  if (error) { $("login-msg").className = "err"; $("login-msg").textContent = error.message; return; }
+  showApp(data.session);
+});
+$("magic-btn").addEventListener("click", async () => {
+  const e = $("email").value.trim();
+  if (!e) { $("login-msg").className = "err"; $("login-msg").textContent = "Email required"; return; }
+  const { error } = await supabase.auth.signInWithOtp({ email: e });
+  if (error) { $("login-msg").className = "err"; $("login-msg").textContent = error.message; return; }
+  $("login-msg").className = "ok"; $("login-msg").textContent = "Check your email for the magic link.";
+});
+$("logout-btn").addEventListener("click", async e => { e.preventDefault(); await supabase.auth.signOut(); showLogin(); });
+$("refresh-btn").addEventListener("click", e => { e.preventDefault(); loadAll(); });
+$("book-toggle").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  activeCode = b.dataset.code;
+  $("book-toggle").querySelectorAll("button").forEach(x => x.classList.toggle("active", x.dataset.code === activeCode));
+  render();
+}));
+
+async function loadAll() {
+  $("book-header").innerHTML = '<div class="loading">Loading…</div>';
+  $("long-section").innerHTML = ""; $("short-section").innerHTML = "";
+
+  const [{ data: books }, { data: ltd }, { data: pos }] = await Promise.all([
+    supabase.from("portfolios").select("code,display_name,strategy,portfolio_type,initial_nav,initial_nav_currency,inception_date,benchmark_code,target_net_exposure_min,target_net_exposure_max,target_gross_exposure_max").in("code", BOOK_CODES),
+    supabase.from("portfolio_ltd_summary").select("code,latest_nav,latest_nav_date").in("code", BOOK_CODES),
+    supabase.from("current_positions_marked").select("security_id,ticker,exchange,side,quantity,current_price,position_currency,portfolios!inner(code)"),
+  ]);
+
+  DATA.books = {}; (books || []).forEach(b => DATA.books[b.code] = b);
+  DATA.ltd = {}; (ltd || []).forEach(r => DATA.ltd[r.code] = r);
+
+  // securities (Japanese name + topix_sector) joined client-side by security_id
+  const bookPos = (pos || []).filter(p => BOOK_CODES.includes(p.portfolios?.code));
+  const secIds = [...new Set(bookPos.map(p => p.security_id).filter(Boolean))];
+  const secMap = {};
+  if (secIds.length) {
+    const { data: secs } = await supabase.from("securities").select("id,name,name_local,topix_sector").in("id", secIds);
+    (secs || []).forEach(s => secMap[s.id] = s);
+  }
+  DATA.positions = {};
+  BOOK_CODES.forEach(c => DATA.positions[c] = []);
+  bookPos.forEach(p => {
+    const s = secMap[p.security_id] || {};
+    DATA.positions[p.portfolios.code].push({
+      ticker: p.ticker, exchange: p.exchange, side: p.side,
+      usd_mn: Math.abs(Number(p.quantity) || 0),
+      price: p.current_price, currency: p.position_currency,
+      name: s.name || s.name_local || null,
+      topix_sector: s.topix_sector || null,
+    });
+  });
+  render();
+}
+
+function navOf(code) {
+  const ltd = DATA.ltd[code], b = DATA.books[code] || {};
+  return (ltd && ltd.latest_nav != null) ? Number(ltd.latest_nav) : (b.initial_nav != null ? Number(b.initial_nav) : null);
+}
+
+function renderHeader(code) {
+  const b = DATA.books[code];
+  if (!b) { $("book-header").innerHTML = '<div class="empty">Book ' + esc(code) + ' not found.</div>'; return; }
+  const nav = navOf(code), ccy = b.initial_nav_currency || "USD";
+  const navTxt = nav != null ? (Number(nav).toLocaleString() + " " + ccy) : dash;
+  const netRange = (b.target_net_exposure_min != null && b.target_net_exposure_max != null)
+    ? (fmtPct(b.target_net_exposure_min) + "–" + fmtPct(b.target_net_exposure_max)) : dash;
+  const grossMax = b.target_gross_exposure_max != null ? fmtPct(b.target_gross_exposure_max) : dash;
+  $("book-header").innerHTML = `
+    <div class="book-header">
+      <div class="code">${esc(code)} · ${esc(b.strategy || "")}</div>
+      <h2>${esc(b.display_name || code)}</h2>
+      <div class="hdr-grid">
+        <div><div class="k">NAV</div><div class="v">${esc(navTxt)}</div></div>
+        <div><div class="k">Strategy</div><div class="v">${esc(b.strategy || dash)}</div></div>
+        <div><div class="k">Inception</div><div class="v">${esc(b.inception_date || dash)}</div></div>
+        <div><div class="k">Net target</div><div class="v">${esc(netRange)}</div></div>
+        <div><div class="k">Gross max</div><div class="v">${esc(grossMax)}</div></div>
+        <div><div class="k">Benchmark</div><div class="v">${esc(b.benchmark_code || dash)}</div></div>
+      </div>
+    </div>`;
+}
+
+function renderSide(elId, title, rows, code) {
+  const nav = navOf(code);
+  const gross = rows.reduce((a, r) => a + r.usd_mn, 0);
+  const grossPct = nav ? (gross * 1e6 / nav) : null;
+  let body;
+  if (rows.length === 0) {
+    body = '<div class="empty">No ' + esc(title.toLowerCase()) + ' positions.</div>';
+  } else {
+    const sorted = [...rows].sort((a, b) => b.usd_mn - a.usd_mn);
+    body = '<table><thead><tr><th>Ticker</th><th>銘柄</th><th>TOPIX sector</th><th class="num">USD mn</th><th class="num">Price</th></tr></thead><tbody>' +
+      sorted.map(r => {
+        const px = fmtPx(r.price);
+        return `<tr><td style="font-weight:600">${esc(r.ticker)}.${esc(r.exchange)}</td>` +
+          `<td>${esc(r.name || dash)}</td>` +
+          `<td>${esc(r.topix_sector || dash)}</td>` +
+          `<td class="num">${fmtMn(r.usd_mn)}</td>` +
+          `<td class="num">${px ? esc(px) + " " + esc(r.currency || "") : '<span class="pending">pending</span>'}</td></tr>`;
+      }).join("") +
+      `<tr class="subtotal"><td colspan="3">${esc(title)} gross</td><td class="num">${fmtMn(gross)}</td><td class="num">${grossPct != null ? fmtPct(grossPct) + " NAV" : ""}</td></tr>` +
+      '</tbody></table>';
+  }
+  $(elId).innerHTML = `<div class="section"><div class="section-header"><h3>${esc(title)}</h3><span class="sub">${rows.length} position${rows.length === 1 ? "" : "s"}</span></div>${body}</div>`;
+}
+
+function render() {
+  renderHeader(activeCode);
+  const rows = DATA.positions[activeCode] || [];
+  const longs = rows.filter(r => r.side === "long");
+  const shorts = rows.filter(r => r.side === "short");
+  renderSide("long-section", "LONG", longs, activeCode);
+  renderSide("short-section", "SHORT", shorts, activeCode);
+
+  // exposure summary appended to header
+  const nav = navOf(activeCode);
+  const lg = longs.reduce((a, r) => a + r.usd_mn, 0);
+  const sg = shorts.reduce((a, r) => a + r.usd_mn, 0);
+  const grossTotal = lg + sg, net = lg - sg;
+  const b = DATA.books[activeCode] || {};
+  const netPct = nav ? net * 1e6 / nav : null, grossPct = nav ? grossTotal * 1e6 / nav : null;
+  let pills = "";
+  if (netPct != null) {
+    const inNet = (b.target_net_exposure_min == null || netPct >= Number(b.target_net_exposure_min)) && (b.target_net_exposure_max == null || netPct <= Number(b.target_net_exposure_max));
+    pills += `<span class="exposure-pill ${b.target_net_exposure_min != null ? (inNet ? "ok" : "warn") : ""}">Net ${fmtMn(net)} mn · ${fmtPct(netPct)} NAV</span>`;
+  }
+  if (grossPct != null) {
+    const okGross = b.target_gross_exposure_max == null || grossPct <= Number(b.target_gross_exposure_max);
+    pills += `<span class="exposure-pill ${b.target_gross_exposure_max != null ? (okGross ? "ok" : "warn") : ""}">Gross ${fmtMn(grossTotal)} mn · ${fmtPct(grossPct)} NAV</span>`;
+  }
+  if (pills) {
+    const hdr = $("book-header").querySelector(".book-header");
+    if (hdr) hdr.insertAdjacentHTML("beforeend", `<div style="margin-top:.9rem">${pills}</div>`);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
