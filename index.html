@@ -269,7 +269,7 @@ details[open] summary{margin-bottom:.5em;color:var(--penrose-navy)}
 <label style="margin-top:1rem">Size By</label>
 <div class="segmented" id="t-sizing-mode">
 <button type="button" data-mode="quantity" class="selected">Quantity</button>
-<button type="button" data-mode="value">Value</button>
+<button type="button" data-mode="value">Amount (USD mn)</button>
 <button type="button" data-mode="weight">% of NAV</button>
 </div>
 <div id="t-size-quantity" class="t-size-pane">
@@ -277,17 +277,17 @@ details[open] summary{margin-bottom:.5em;color:var(--penrose-navy)}
 <input type="number" id="t-quantity" step="1" min="1" placeholder="5000" inputmode="numeric"/>
 </div>
 <div id="t-size-value" class="t-size-pane" style="display:none">
-<div class="info-box" style="margin-top:.4rem;font-size:9pt"><strong>Reference Price:</strong> Approximate current market price (¥/$ per share). Used to convert target value into shares. Check the chart above, then type.</div>
+<div class="info-box" style="margin-top:.4rem;font-size:9pt"><strong>Amount sizing (USD mn):</strong> the USD-mn amount IS the position size — stored directly as quantity, no share conversion (LS/LO book model). Reference/entry price is optional and informational.</div>
 <div class="modal-grid">
-<div><label>Value (<span id="t-value-ccy">JPY</span>)</label>
-<input type="number" id="t-value" step="1" min="0" placeholder="10000000" inputmode="numeric"/>
+<div><label>Amount (<span id="t-value-ccy">USD mn</span>)</label>
+<input type="number" id="t-value" step="0.1" min="0" placeholder="7.5" inputmode="decimal"/>
 </div>
-<div><label>Reference Price</label>
-<input type="number" id="t-ref-price-v" step="0.01" min="0" placeholder="2150" inputmode="decimal"/>
-<div class="form-help">From chart above or broker</div>
+<div><label>Reference / entry price</label>
+<input type="number" id="t-ref-price-v" step="0.01" min="0" placeholder="5303" inputmode="decimal"/>
+<div class="form-help">Optional — screenshot / entry price</div>
 </div>
 </div>
-<div class="computed-box" id="t-computed-v">Computed: enter value + reference price</div>
+<div class="computed-box" id="t-computed-v">Enter amount in USD mn</div>
 </div>
 <div id="t-size-weight" class="t-size-pane" style="display:none">
 <div class="info-box" style="margin-top:.4rem;font-size:9pt"><strong>% of NAV:</strong> Target position size as % of portfolio NAV. If portfolio base currency (e.g. USD) differs from trade currency (e.g. JPY), enter FX rate. Formula: <code>NAV × weight% × FX rate ÷ ref price = shares</code>.</div>
@@ -488,7 +488,7 @@ function getSelectedAction(){const el=document.querySelector("#trade-modal .acti
 
 function updateCurrencyLabels(){
   const exch=$("t-exchange").value;
-  $("t-value-ccy").textContent=currencyFor(exch);
+  $("t-value-ccy").textContent="USD mn";
 }
 $("t-exchange").addEventListener("change",()=>{updateCurrencyLabels();updateComputedQty();renderTVChart();});
 $("t-ticker").addEventListener("input",()=>{clearTimeout(window._tvTimer);window._tvTimer=setTimeout(renderTVChart,600);});
@@ -501,11 +501,10 @@ function updateComputedQty(){
   if(mode==="value"){
     const v=parseFloat($("t-value").value)||0;
     const rp=parseFloat($("t-ref-price-v").value)||0;
-    if(v>0&&rp>0){
-      const rawQty=v/rp;
-      const qty=Math.floor(rawQty/lot)*lot;
-      $("t-computed-v").innerHTML=`<strong>${qty.toLocaleString()}</strong> shares @ ${rp.toLocaleString()} ${ccy} = ${(qty*rp).toLocaleString()} ${ccy} (lot size: ${lot})`;
-    }else{$("t-computed-v").textContent="Computed: enter value + reference price";}
+    if(v>0){
+      const refTxt=rp>0?` · ref/entry ${rp.toLocaleString()} ${ccy}`:"";
+      $("t-computed-v").innerHTML=`<strong>${v.toLocaleString()} USD mn</strong> amount-sized position (quantity = ${v.toLocaleString()}, no share conversion)${refTxt}`;
+    }else{$("t-computed-v").textContent="Enter amount in USD mn";}
   }else if(mode==="weight"){
     const portfolio=$("t-portfolio").value;
     const nav=getNavFor(portfolio);
@@ -602,10 +601,10 @@ $("t-submit").addEventListener("click",async()=>{
   }else if(sizingMode==="value"){
     const v=parseFloat($("t-value").value);
     const rp=parseFloat($("t-ref-price-v").value);
-    if(!v||!rp||v<=0||rp<=0){msg.className="modal-msg err";msg.textContent="Value mode requires value + reference price";return;}
-    quantity=Math.floor((v/rp)/lot)*lot;
+    if(!v||v<=0){msg.className="modal-msg err";msg.textContent="Amount (USD mn) mode requires a positive amount";return;}
+    quantity=v;
     sizingInputValue=v;
-    sizingRefPrice=rp;
+    sizingRefPrice=(rp&&rp>0)?rp:null;
   }else if(sizingMode==="weight"){
     const w=parseFloat($("t-weight").value);
     const rp=parseFloat($("t-ref-price-w").value);
