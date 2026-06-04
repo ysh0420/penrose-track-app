@@ -53,6 +53,11 @@ tbody tr:last-child td{border-bottom:none}
 .exposure-pill{font-size:.75rem;padding:.15rem .5rem;border-radius:10px;background:#f0ece1;margin-left:.4rem}
 .exposure-pill.ok{background:#e8f3e9;color:var(--green)}.exposure-pill.warn{background:#fdf1da;color:var(--amber)}
 .note{font-size:.75rem;color:var(--penrose-muted);padding:.6rem 1.2rem}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.alpha-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.8rem;padding:1rem 1.2rem}
+.alpha-grid .k{font-size:.72rem;color:var(--penrose-muted);text-transform:uppercase;letter-spacing:.04em}
+.alpha-grid .v{font-size:1.15rem;font-weight:700;margin-top:.15rem}
+.basis-pill{font-size:.7rem;padding:.1rem .45rem;border-radius:10px;background:#f0ece1;color:var(--penrose-muted);margin-left:.4rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
 </style>
 </head>
 <body>
@@ -88,6 +93,7 @@ tbody tr:last-child td{border-bottom:none}
       <button data-code="LO">LO</button>
     </div>
     <div id="book-header"></div>
+    <div id="alpha-section"></div>
     <div id="long-section"></div>
     <div id="short-section"></div>
     <div class="note">USD mn = value-sized position size (sizing_mode=value). Price/MV mark via daily enrichment; “pending” until first mark. Derived from filled transactions (current_positions_marked).</div>
@@ -104,12 +110,14 @@ const $ = id => document.getElementById(id);
 const dash = "—";
 const BOOK_CODES = ["LS", "LO"];
 let activeCode = "LS";
-let DATA = { books: {}, ltd: {}, positions: {} }; // positions keyed by code -> rows
+let DATA = { books: {}, ltd: {}, positions: {}, alpha: {} }; // keyed by code -> rows
 
 const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmtMn = n => (n === null || n === undefined || isNaN(n)) ? dash : Number(n).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const fmtPx = n => (n === null || n === undefined || isNaN(n)) ? null : Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 });
 const fmtPct = n => (n === null || n === undefined || isNaN(n)) ? dash : (n * 100).toFixed(0) + "%";
+const fmtPctS = n => (n === null || n === undefined || isNaN(n)) ? dash : (n >= 0 ? "+" : "") + (n * 100).toFixed(2) + "%"; // signed, 2dp (returns/alpha)
+const compound = (rows, key) => rows.reduce((a, r) => a * (1 + (Number(r[key]) || 0)), 1) - 1;
 
 async function init() {
   const { data: { session } } = await supabase.auth.getSession();
@@ -145,14 +153,20 @@ async function loadAll() {
   $("book-header").innerHTML = '<div class="loading">Loading…</div>';
   $("long-section").innerHTML = ""; $("short-section").innerHTML = "";
 
-  const [{ data: books }, { data: ltd }, { data: pos }] = await Promise.all([
-    supabase.from("portfolios").select("code,display_name,strategy,portfolio_type,initial_nav,initial_nav_currency,inception_date,benchmark_code,target_net_exposure_min,target_net_exposure_max,target_gross_exposure_max").in("code", BOOK_CODES),
+  const [{ data: books }, { data: ltd }, { data: pos }, { data: alpha }] = await Promise.all([
+    supabase.from("portfolios").select("id,code,display_name,strategy,portfolio_type,initial_nav,initial_nav_currency,inception_date,benchmark_code,target_net_exposure_min,target_net_exposure_max,target_gross_exposure_max").in("code", BOOK_CODES),
     supabase.from("portfolio_ltd_summary").select("code,latest_nav,latest_nav_date").in("code", BOOK_CODES),
     supabase.from("current_positions_marked").select("security_id,ticker,exchange,side,quantity,current_price,avg_cost_price,position_currency,portfolios!inner(code)"),
+    supabase.from("portfolio_alpha_daily").select("portfolio_id,date,book_return,topix_return,topix_return_basis,daily_alpha,cum_book_return,cum_topix_return,cum_alpha").order("date", { ascending: true }),
   ]);
 
   DATA.books = {}; (books || []).forEach(b => DATA.books[b.code] = b);
   DATA.ltd = {}; (ltd || []).forEach(r => DATA.ltd[r.code] = r);
+
+  // alpha series keyed by code (map portfolio_id -> code via portfolios)
+  const idToCode = {}; (books || []).forEach(b => idToCode[b.id] = b.code);
+  DATA.alpha = {}; BOOK_CODES.forEach(c => DATA.alpha[c] = []);
+  (alpha || []).forEach(r => { const c = idToCode[r.portfolio_id]; if (c && DATA.alpha[c]) DATA.alpha[c].push(r); });
 
   // securities (Japanese name + topix_sector) joined client-side by security_id
   const bookPos = (pos || []).filter(p => BOOK_CODES.includes(p.portfolios?.code));
@@ -232,8 +246,47 @@ function renderSide(elId, title, rows, code) {
   $(elId).innerHTML = `<div class="section"><div class="section-header"><h3>${esc(title)}</h3><span class="sub">${rows.length} position${rows.length === 1 ? "" : "s"}</span></div>${body}</div>`;
 }
 
+function renderAlpha(code) {
+  const el = $("alpha-section");
+  const rows = DATA.alpha[code] || [];
+  if (!rows.length) {
+    el.innerHTML = `<div class="section"><div class="section-header"><h3>Alpha vs TOPIX</h3><span class="sub">no marked days yet</span></div>` +
+      `<div class="empty">No daily-marked performance for ${esc(code)} yet.</div></div>`;
+    return;
+  }
+  const last = rows[rows.length - 1];
+  const inception = (DATA.books[code] || {}).inception_date || rows[0].date;
+  const nDays = rows.length;
+  const basis = last.topix_return_basis || "price";
+  // month-to-date: compound daily within the latest row's calendar month
+  const ym = String(last.date).slice(0, 7);
+  const mtd = rows.filter(r => String(r.date).slice(0, 7) === ym);
+  const mtdAlpha = compound(mtd, "book_return") - compound(mtd, "topix_return");
+  const col = v => (v === null || v === undefined || isNaN(v)) ? "" : (Number(v) >= 0 ? "pos" : "neg");
+  const series = rows.slice().reverse().map(r =>
+    `<tr><td>${esc(r.date)}</td>` +
+    `<td class="num ${col(r.book_return)}">${fmtPctS(r.book_return)}</td>` +
+    `<td class="num ${col(r.topix_return)}">${fmtPctS(r.topix_return)}</td>` +
+    `<td class="num ${col(r.daily_alpha)}">${fmtPctS(r.daily_alpha)}</td>` +
+    `<td class="num ${col(r.cum_alpha)}">${fmtPctS(r.cum_alpha)}</td></tr>`).join("");
+  el.innerHTML = `<div class="section">
+    <div class="section-header"><h3>Alpha vs TOPIX</h3>
+      <span class="sub">since inception · ${nDays} trading day${nDays === 1 ? "" : "s"}<span class="basis-pill">${esc(basis)} basis</span></span></div>
+    <div class="alpha-grid">
+      <div><div class="k">Book return</div><div class="v ${col(last.cum_book_return)}">${fmtPctS(last.cum_book_return)}</div></div>
+      <div><div class="k">TOPIX return</div><div class="v ${col(last.cum_topix_return)}">${fmtPctS(last.cum_topix_return)}</div></div>
+      <div><div class="k">Alpha (cumulative)</div><div class="v ${col(last.cum_alpha)}">${fmtPctS(last.cum_alpha)}</div></div>
+      <div><div class="k">Alpha (MTD)</div><div class="v ${col(mtdAlpha)}">${fmtPctS(mtdAlpha)}</div></div>
+      <div><div class="k">Alpha (latest day)</div><div class="v ${col(last.daily_alpha)}">${fmtPctS(last.daily_alpha)}</div></div>
+    </div>
+    <table><thead><tr><th>Date</th><th class="num">Book</th><th class="num">TOPIX</th><th class="num">Daily α</th><th class="num">Cum α</th></tr></thead><tbody>${series}</tbody></table>
+    <div class="note">Since position inception ${esc(inception)} (${nDays} trading day${nDays === 1 ? "" : "s"}) — early snapshot, not annualized. Book = daily marked price return; TOPIX on <b>${esc(basis)}</b> basis (total-return auto-applies once backfilled). Alpha = book − TOPIX, compounded from inception.</div>
+  </div>`;
+}
+
 function render() {
   renderHeader(activeCode);
+  renderAlpha(activeCode);
   const rows = DATA.positions[activeCode] || [];
   const longs = rows.filter(r => r.side === "long");
   const shorts = rows.filter(r => r.side === "short");
