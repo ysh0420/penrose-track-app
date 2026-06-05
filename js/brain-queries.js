@@ -269,6 +269,27 @@ export function getCompanyResearchCard(symbol) {
 }
 
 /**
+ * Market Pulse dashboard (Panel 1): latest indices, FX, JP industry flows, and
+ * volume anomalies. RPC fn_get_market_pulse_dashboard (penrose_market) is a
+ * DRAFT pending Brain apply + brain-query allowlist registration — until then
+ * this throws "Unknown rpc_name" and the panel shows a pending state.
+ */
+export function getMarketPulseDashboard(limit = 12) {
+  return brainQuery("fn_get_market_pulse_dashboard", { p_limit: limit });
+}
+
+/**
+ * Classification / supply-chain overview (Panel 6): Penrose-derived sector /
+ * sub-sector taxonomy, supply-chain tags, and US→JP lead-lag mapping. Excludes
+ * do_not_publish_directly rows and paid Koyfin raw. RPC
+ * fn_get_classification_overview (penrose_market) is a DRAFT pending Brain apply
+ * + allowlist registration.
+ */
+export function getClassificationOverview(limit = 30) {
+  return brainQuery("fn_get_classification_overview", { p_limit: limit });
+}
+
+/**
  * Drill into the bucketed `get_intraday_alerts` payload and return only
  * the fact-check completions whose subject_symbol matches `symbol`.
  * Returns [] if no payload, no completions, or no matches.
