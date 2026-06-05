@@ -10,6 +10,7 @@ const SECTIONS = [
 
 const NAV_ITEMS = [
   { id: "today", label: "Today", href: "/today.html", section: "main" },
+  { id: "brain-dashboard", label: "Dashboard", href: "/brain-dashboard.html", section: "brain" },
   { id: "brain-review", label: "Review", href: "/brain-review.html", section: "brain" },
   { id: "data-coverage", label: "Data Coverage", href: "/data-coverage.html", section: "brain" },
   { id: "news", label: "News", href: "/news.html", section: "brain" },

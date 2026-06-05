@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penrose Brain — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/platform-pages.css">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c;--amber:#b7791f}
+*{box-sizing:border-box}
+body{margin:0;font-family:"DM Sans",system-ui,sans-serif;background:var(--cream);color:var(--sumi)}
+h1,h2,h3{font-family:"Cormorant Garamond",serif;margin:0}
+a{color:inherit}
+.topbar{display:flex;justify-content:space-between;align-items:center;background:var(--navy);color:#fff;padding:.7rem 1.2rem}
+.topbar-title{font-family:"Cormorant Garamond",serif;font-size:1.3rem}
+.topbar-title span{color:var(--gold)}
+.topbar-actions{display:flex;gap:1rem;align-items:center;font-size:.82rem}
+.topbar-actions a{cursor:pointer;text-decoration:underline}
+.container{max-width:1320px;margin:0 auto;padding:1rem 1.2rem 2rem}
+/* dense institutional grid */
+.bd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}
+@media (max-width:980px){.bd-grid{grid-template-columns:1fr}}
+.bd-panel{background:#fff;border:1px solid var(--line);border-radius:4px;display:flex;flex-direction:column;min-height:140px;overflow:hidden}
+.bd-panel.wide{grid-column:1 / -1}
+.bd-head{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;padding:.6rem .9rem;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff, #fbfaf6)}
+.bd-head h3{font-size:1.08rem;color:var(--navy);letter-spacing:.01em}
+.bd-head .meta{font-size:.7rem;color:var(--muted);text-align:right;white-space:nowrap}
+.bd-asof{font-variant-numeric:tabular-nums}
+.bd-body{padding:.55rem .9rem .8rem;font-size:.8rem;overflow-x:auto}
+.bd-note{font-size:.68rem;color:var(--muted);padding:.4rem .9rem;border-top:1px dashed var(--line)}
+/* compact table */
+.bt{width:100%;border-collapse:collapse;font-size:.78rem}
+.bt th,.bt td{padding:.28rem .5rem;text-align:left;border-bottom:1px solid #f0ece1;white-space:nowrap}
+.bt th{font-size:.66rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:600}
+.bt td.num,.bt th.num{text-align:right;font-variant-numeric:tabular-nums}
+.bt tr:last-child td{border-bottom:none}
+.bt tbody tr:hover{background:#faf8f2}
+.up{color:var(--green)}.down{color:var(--red)}.muted{color:var(--muted)}
+.pill{display:inline-block;padding:.05rem .4rem;border-radius:10px;font-size:.66rem;font-weight:600;background:#f0ece1;color:var(--muted)}
+.statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:.5rem;margin-bottom:.5rem}
+.statrow .k{font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.statrow .v{font-size:1rem;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
+.hypo-banner{background:rgba(183,121,31,.1);border:1px solid var(--amber);color:#8a5a13;font-size:.72rem;font-weight:600;padding:.4rem .6rem;border-radius:4px;margin-bottom:.55rem}
+.hl{display:block;padding:.3rem 0;border-bottom:1px solid #f3efe4;font-size:.78rem}
+.hl:last-child{border-bottom:none}
+.hl .src{font-size:.66rem;color:var(--muted)}
+.chips span{display:inline-block;padding:.04rem .35rem;margin:1px 2px 1px 0;border-radius:10px;background:rgba(26,39,68,.07);color:var(--navy);font-size:.64rem}
+.pending-rpc{padding:.8rem;border:1px dashed var(--amber);border-radius:4px;background:rgba(183,121,31,.05);color:#8a5a13;font-size:.74rem}
+.bd-err{color:var(--red);font-size:.74rem;padding:.4rem 0}
+.refresh-link{cursor:pointer;text-decoration:underline;font-size:.7rem;color:var(--navy)}
+</style>
+</head>
+<body>
+
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="topbar">
+    <div class="topbar-title">Penrose <span>Brain</span> · Dashboard</div>
+    <div class="topbar-actions">
+      <span id="brain-user-email"></span>
+      <a id="bd-refresh">Refresh</a>
+      <a href="/today.html">Main</a>
+      <a id="brain-signout">Sign out</a>
+    </div>
+  </div>
+  <div class="container">
+    <div data-platform-nav data-active-nav="brain-dashboard"></div>
+    <div style="margin-top:.8rem;font-size:.72rem;color:var(--muted)">
+      Information / Data Brain — market reference &amp; content source. Read-only. Information layer only;
+      the live LS/LO investment book is not shown here.
+    </div>
+    <div class="bd-grid">
+      <section class="bd-panel wide" id="p1"><div class="bd-head"><h3>1 · Market Pulse</h3><div class="meta" id="p1-meta"></div></div><div class="bd-body" id="p1-body"></div></section>
+      <section class="bd-panel" id="p2"><div class="bd-head"><h3>2 · Surfacing / Signals</h3><div class="meta" id="p2-meta"></div></div><div class="bd-body" id="p2-body"></div></section>
+      <section class="bd-panel" id="p3"><div class="bd-head"><h3>3 · Disclosure / News</h3><div class="meta" id="p3-meta"></div></div><div class="bd-body" id="p3-body"></div></section>
+      <section class="bd-panel" id="p4"><div class="bd-head"><h3>4 · AI Model Portfolio</h3><div class="meta" id="p4-meta"></div></div><div class="bd-body" id="p4-body"></div></section>
+      <section class="bd-panel" id="p5"><div class="bd-head"><h3>5 · Research</h3><div class="meta" id="p5-meta"></div></div><div class="bd-body" id="p5-body"></div></section>
+      <section class="bd-panel wide" id="p6"><div class="bd-head"><h3>6 · Classification / Supply-Chain</h3><div class="meta" id="p6-meta"></div></div><div class="bd-body" id="p6-body"></div></section>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module" src="/js/page-brain-dashboard.js"></script>
+</body>
+</html>
