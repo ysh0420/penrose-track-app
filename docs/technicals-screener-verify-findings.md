@@ -89,3 +89,23 @@ preset's intent; all are in the RPC comments too.
   columns (`feature_text` / `company_profile` / `customers`) are **not** selected; only
   name/sector/(optional tags). Public outputs (Substack/LP) keep the existing paid-raw protection.
 - Thresholds + score weights are transparent and documented here + in the RPC.
+
+## v1 status — COMPLETE & LIVE (2026-06-06)
+- **RPC applied** in Brain (jviciwafctmmixgjszam) by Yuki via MCP (gate ①). Self-verified by
+  direct call (service-role): `momentum` 20 rows (pool 24, top 4078), `reversal` 20 (pool 47,
+  top タマホーム), `overheated` 17 (top 東洋炭素); interpretation renders, as_of 2026-06-05.
+- **brain-query allowlist registered + redeployed**: `"fn_get_technicals_screener":"penrose_market"`
+  added to `ALLOWED_RPCS`; Edge Function brain-query redeployed → **version 24, ACTIVE, verify_jwt
+  true**. Endpoint smoke (anon-only) returns HTTP 401 "Invalid token" = live + auth enforced.
+- **Frontend** on branch `feat/technicals-screener` (off main): `technicals-screener.html`,
+  `js/page-technicals-screener.js`, `getTechnicalsScreener` wrapper, Brain › Screener nav.
+  Pushed; PR not opened (gh not authenticated → compare URL handed to Yuki). Yuki merges.
+- **3 presets operational**; design goal (technicals × sector context, top-N, rule-based
+  interpretation) confirmed against live data.
+
+### TODO (Yuki absent — non-blocking)
+- Full JWT-path test (logged-in Yuki session → brain-query → 200 with rows): could not mint a
+  user JWT headless; server pieces all verified, so this is a final UI smoke once Yuki signs in.
+- Open the PR (gh auth) and merge `feat/technicals-screener` → main.
+- Optional next: per-symbol drill-through into /stock.html; a "Yuki watchlist only" filter;
+  daily as_of freshness badge.
