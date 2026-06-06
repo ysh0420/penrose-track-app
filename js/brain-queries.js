@@ -290,6 +290,19 @@ export function getClassificationOverview(limit = 30) {
 }
 
 /**
+ * Technicals Screener (① candidate sieve): top-N by transparent weighted-sum
+ * score for one intent preset over penrose_market.technicals_daily, joined to
+ * company_classification for name/sector. preset ∈ {momentum|reversal|overheated}
+ * (A|B|C aliases accepted). RPC fn_get_technicals_screener (penrose_market) is a
+ * DRAFT pending Brain apply + brain-query allowlist registration — until then
+ * this throws "Unknown rpc_name" and the page shows a pending state.
+ * Read-only, no AI triggers. Returns {as_of, preset, count, disclaimer, rows[]}.
+ */
+export function getTechnicalsScreener(preset = "momentum", limit = 20) {
+  return brainQuery("fn_get_technicals_screener", { p_preset: preset, p_limit: limit });
+}
+
+/**
  * Drill into the bucketed `get_intraday_alerts` payload and return only
  * the fact-check completions whose subject_symbol matches `symbol`.
  * Returns [] if no payload, no completions, or no matches.
