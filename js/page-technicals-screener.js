@@ -21,6 +21,11 @@ const fmtNum = (n, dp = 1) => isNum(n) ? Number(n).toLocaleString(undefined, { m
 const fmtSigned = (n, dp = 1) => isNum(n) ? (Number(n) >= 0 ? "+" : "") + Number(n).toFixed(dp) : dash;
 const signCls = (n) => isNum(n) ? (Number(n) >= 0 ? "up" : "down") : "";
 
+// One-click TradingView (Tokyo). Confirmed live format: hyphen-separated
+// TSE-{symbol} (e.g. 8035 -> https://www.tradingview.com/symbols/TSE-8035/).
+// Works for alphanumeric codes too (135A -> TSE-135A).
+const tradingViewUrl = (symbol) => `https://www.tradingview.com/symbols/TSE-${encodeURIComponent(String(symbol))}/`;
+
 const PRESETS = {
   momentum: {
     title: "Momentum / Breakout",
@@ -69,6 +74,7 @@ function renderRows(rows) {
     return `<tr>
       <td class="num muted">${esc(r.rank)}</td>
       <td>${esc(r.symbol)}</td>
+      <td><a class="tv-link" href="${esc(tradingViewUrl(r.symbol))}" target="_blank" rel="noopener noreferrer" title="Open ${esc(r.symbol)} on TradingView">TV ↗</a></td>
       <td class="${named ? "name" : "codeonly"}">${esc(r.name ?? dash)}</td>
       <td>${r.sector ? `<span class="sector-chip">${esc(r.sector)}</span>` : `<span class="muted">${dash}</span>`}</td>
       <td class="num"><span class="score-pill">${fmtNum(r.score, 1)}</span></td>
@@ -84,7 +90,7 @@ function renderRows(rows) {
   }).join("");
   return `<table class="bt">
     <thead><tr>
-      <th class="num">#</th><th>Code</th><th>Name</th><th>Sector</th>
+      <th class="num">#</th><th>Code</th><th>TV</th><th>Name</th><th>Sector</th>
       <th class="num">Score</th><th class="num">RSI</th><th class="num">%200MA</th>
       <th class="num">1m</th><th class="num">3m</th><th class="num">RelVol</th>
       <th class="num">MACDh</th><th class="num">BB</th><th>Interpretation</th>
