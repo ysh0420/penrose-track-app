@@ -1,10 +1,12 @@
 -- ============================================================================
 -- DRAFT — Technicals Screener RPC (① information layer / candidate sieve).
 -- ============================================================================
--- STATUS: DRAFT. NOT APPLIED. Apply target = Brain (jviciwafctmmixgjszam).
--- Apply = Yuki gate ①. After apply, ALSO register the name in the brain-query
--- Edge Function allowlist and redeploy (see §3) — until then the browser gets
--- "Unknown rpc_name" and the Screener page shows a pending state.
+-- STATUS: UPDATE (create-or-replace) of the already-live RPC. Apply target =
+-- Brain (jviciwafctmmixgjszam); apply = Yuki gate ①. The function name is
+-- unchanged, so the brain-query allowlist (v24) needs NO change and the Edge
+-- Function does NOT need redeploy — re-applying this body is sufficient.
+-- (v1 history: first applied + allowlisted + Edge deployed v24 on 2026-06-06.)
+-- This revision only adds the koyfin_returns name fallback (see SECURITY note).
 --
 -- WHAT: a transparent, rule-based technical screen over penrose_market.technicals_daily,
 -- joined to company_classification for name/sector context. Three intent presets;
@@ -21,6 +23,10 @@
 --     select paid prose (feature_text / company_profile / customers) or per-name
 --     financials. track-app is Yuki-only (auth-gated) so names/sectors/metrics
 --     are fine to display; public outputs keep their existing paid-raw protection.
+--   * Name fallback: company_classification.company_name (JP, 1001-co dict) first,
+--     else latest koyfin_returns.company_name (EN, ~2000-co; paid source — name
+--     only, OK for the Yuki-only app), else '(code only)'. This lifts name
+--     coverage from 581/762 to 761/762. Sector still comes only from the JP dict.
 -- ============================================================================
 
 begin;
@@ -57,16 +63,24 @@ as $$
     from penrose_market.company_classification
     where as_of_date = (select max(as_of_date) from penrose_market.company_classification)
   ),
+  kr as (
+    -- latest English company name per symbol (paid Koyfin source; name only).
+    select distinct on (symbol) symbol, company_name as kr_name
+    from penrose_market.koyfin_returns
+    order by symbol, as_of_date desc
+  ),
   base as (
     select
       t.*,
       tp.prev_macdh,
       cc.company_name,
       cc.toyo_keizai_sector,
+      kr.kr_name,
       (select preset from params) as preset
     from t
     left join tp on tp.symbol = t.symbol
     left join cc on cc.symbol = t.symbol
+    left join kr on kr.symbol = t.symbol
   ),
   filtered as (
     select * from base b
@@ -85,6 +99,7 @@ as $$
     select
       symbol,
       company_name,
+      kr_name,
       toyo_keizai_sector,
       rsi_14, pct_from_sma_200, price_change_1m_pct, price_change_3m_pct, price_change_5d_pct,
       price_change_1d_pct, rel_volume_20d, macd_histogram, bollinger_position,
@@ -120,7 +135,7 @@ as $$
     select jsonb_agg(jsonb_build_object(
       'rank', rank,
       'symbol', symbol,
-      'name', coalesce(company_name, '(code only)'),
+      'name', coalesce(company_name, kr_name, '(code only)'),
       'sector', toyo_keizai_sector,
       'score', score,
       'rsi', round(rsi_14,1),
@@ -166,12 +181,10 @@ grant execute on function penrose_market.fn_get_technicals_screener(text, int) t
 commit;
 
 -- ----------------------------------------------------------------------------
--- §3. AFTER APPLY — register in brain-query allowlist + redeploy (Yuki)
---   penrose-research-engine/supabase/functions/brain-query/index.ts, in
---   ALLOWED_RPCS add:
---       "fn_get_technicals_screener": "penrose_market",
---   then redeploy the brain-query Edge Function. Browser calls it via
---   brain-client.getTechnicalsScreener(preset, limit).
+-- §3. ALLOWLIST / EDGE — already done in v1 (no action needed for this update).
+--   "fn_get_technicals_screener": "penrose_market" is already in brain-query
+--   ALLOWED_RPCS; Edge Function is live at version 24 (verify_jwt true). The
+--   function name is unchanged here, so no redeploy is required.
 --
 -- §4. VERIFICATION (read-only, after apply)
 -- select jsonb_pretty(penrose_market.fn_get_technicals_screener('momentum', 20));
