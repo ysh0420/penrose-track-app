@@ -11,6 +11,7 @@
 import { mountBrainAuthGate } from "./brain-client.js";
 import { getTechnicalsScreener } from "./brain-queries.js";
 import { escapeHTML } from "./brain-components.js";
+import { tvLinkHtml } from "./tv-link.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = escapeHTML;
@@ -20,11 +21,6 @@ const arr = (v) => Array.isArray(v) ? v : [];
 const fmtNum = (n, dp = 1) => isNum(n) ? Number(n).toLocaleString(undefined, { maximumFractionDigits: dp, minimumFractionDigits: dp }) : dash;
 const fmtSigned = (n, dp = 1) => isNum(n) ? (Number(n) >= 0 ? "+" : "") + Number(n).toFixed(dp) : dash;
 const signCls = (n) => isNum(n) ? (Number(n) >= 0 ? "up" : "down") : "";
-
-// One-click TradingView (Tokyo). Confirmed live format: hyphen-separated
-// TSE-{symbol} (e.g. 8035 -> https://www.tradingview.com/symbols/TSE-8035/).
-// Works for alphanumeric codes too (135A -> TSE-135A).
-const tradingViewUrl = (symbol) => `https://www.tradingview.com/symbols/TSE-${encodeURIComponent(String(symbol))}/`;
 
 const PRESETS = {
   momentum: {
@@ -74,7 +70,7 @@ function renderRows(rows) {
     return `<tr>
       <td class="num muted">${esc(r.rank)}</td>
       <td>${esc(r.symbol)}</td>
-      <td><a class="tv-link" href="${esc(tradingViewUrl(r.symbol))}" target="_blank" rel="noopener noreferrer" title="Open ${esc(r.symbol)} on TradingView">TV ↗</a></td>
+      <td>${tvLinkHtml(r.symbol, esc)}</td>
       <td class="${named ? "name" : "codeonly"}">${esc(r.name ?? dash)}</td>
       <td>${r.sector ? `<span class="sector-chip">${esc(r.sector)}</span>` : `<span class="muted">${dash}</span>`}</td>
       <td class="num"><span class="score-pill">${fmtNum(r.score, 1)}</span></td>

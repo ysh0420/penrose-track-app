@@ -80,3 +80,7 @@
   .platform-primary-nav a{flex:1 1 30%;text-align:center}
   .platform-secondary-label{width:100%;padding:.2rem .35rem}
 }
+
+/* Shared one-click TradingView link (Technicals Screener, Books, Brain Dashboard) */
+.tv-link{display:inline-block;padding:.03rem .35rem;border:1px solid #e0d8c4;border-radius:4px;font-size:.64rem;font-weight:600;color:#1a2744;text-decoration:none;letter-spacing:.02em;white-space:nowrap;line-height:1.4}
+.tv-link:hover{border-color:#c9a84c;color:#c9a84c;background:rgba(201,168,76,.08)}

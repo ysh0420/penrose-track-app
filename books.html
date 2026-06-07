@@ -103,6 +103,7 @@ tbody tr:last-child td{border-bottom:none}
 <script type="module" src="/js/platform-nav.js"></script>
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { tvLinkHtml } from "/js/tv-link.js";
 const SUPA_URL = "https://prdjmipmkomhvokwrjid.supabase.co";
 const SUPA_ANON = "sb_publishable_uV1Dkr9lgu2PBdoeACBAyw_4V_rrWvH";
 const supabase = createClient(SUPA_URL, SUPA_ANON);
@@ -234,7 +235,7 @@ function renderSide(elId, title, rows, code) {
         const priceCell = mark
           ? esc(mark) + " " + ccy
           : (entry ? esc(entry) + " " + ccy + ' <span class="pending">entry · mark pending</span>' : '<span class="pending">pending</span>');
-        return `<tr><td style="font-weight:600">${esc(r.ticker)}.${esc(r.exchange)}</td>` +
+        return `<tr><td style="font-weight:600">${esc(r.ticker)}.${esc(r.exchange)} ${tvLinkHtml(r.ticker, esc)}</td>` +
           `<td>${esc(r.name || dash)}</td>` +
           `<td>${esc(r.topix_sector || dash)}</td>` +
           `<td class="num">${fmtMn(r.usd_mn)}</td>` +
