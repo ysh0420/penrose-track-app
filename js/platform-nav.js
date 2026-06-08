@@ -5,7 +5,6 @@ const SECTIONS = [
   { id: "brain", label: "Brain", href: "/brain-review.html" },
   { id: "portfolio", label: "Portfolio", href: "/master-portfolio.html" },
   { id: "research", label: "Research", href: "/reports.html" },
-  { id: "external", label: "External", href: "/client.html" },
 ];
 
 const NAV_ITEMS = [
@@ -22,15 +21,11 @@ const NAV_ITEMS = [
   { id: "model-v2-log", label: "V2 Daily Log", href: "/portfolio-v2-log.html", section: "portfolio" },
   { id: "model", label: "Legacy Archive", href: "/model-portfolio.html", section: "portfolio" },
   { id: "track", label: "MW", href: "/track-record.html", section: "portfolio" },
-  { id: "citadel", label: "Citadel", href: "/citadel.html", section: "portfolio" },
-  { id: "cfm", label: "CFM", href: "/cfm.html", section: "portfolio" },
   { id: "long-only", label: "Long Only", href: "/long-only.html", section: "portfolio" },
   { id: "reports", label: "Reports", href: "/reports.html", section: "research" },
   { id: "research-log", label: "Research Log", href: "/research-log.html", section: "research" },
   { id: "agent-intake", label: "Agent Intake", href: "/agent-intake.html", section: "research" },
-  { id: "ideas", label: "Ideas", href: "/ideas.html", section: "research" },
   { id: "companies", label: "Companies", href: "/stock.html", section: "research" },
-  { id: "client", label: "Client View", href: "/client.html", section: "external" },
 ];
 
 function escapeHTML(value) {
