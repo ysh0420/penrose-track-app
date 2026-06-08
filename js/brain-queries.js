@@ -303,6 +303,19 @@ export function getTechnicalsScreener(preset = "momentum", limit = 20) {
 }
 
 /**
+ * Technicals Screener v2 (Confluence): top-N by independent-category confluence
+ * count (trend+momentum+volume+structure) with divergence detection, per the
+ * Notion report. preset ∈ {momentum|reversal|overheated}; side ∈ {auto|long|short}.
+ * SEPARATE from v1. RPC fn_get_technicals_screener_v2 (penrose_market) is a DRAFT
+ * pending Brain apply + allowlist registration — until then this throws
+ * "Unknown rpc_name" and the page shows a pending state. Read-only, no AI.
+ * Returns {as_of, preset, side, count, disclaimer, rows[]}.
+ */
+export function getTechnicalsScreenerV2(preset = "momentum", limit = 20, side = "auto") {
+  return brainQuery("fn_get_technicals_screener_v2", { p_preset: preset, p_limit: limit, p_side: side });
+}
+
+/**
  * Drill into the bucketed `get_intraday_alerts` payload and return only
  * the fact-check completions whose subject_symbol matches `symbol`.
  * Returns [] if no payload, no completions, or no matches.
