@@ -17,7 +17,7 @@ const symbol = new URLSearchParams(location.search).get("symbol");
 async function loadAll() {
   if (!symbol) {
     document.getElementById("brain-app").innerHTML =
-      `<div class="brain-empty">No symbol specified. Go to <a href="/portfolio.html">Portfolio</a> to pick one.</div>`;
+      `<div class="brain-empty">No symbol specified. Go to <a href="/master-portfolio.html">Portfolio</a> to pick one.</div>`;
     return;
   }
 
