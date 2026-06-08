@@ -18,6 +18,7 @@ import {
   getMarketPulseDashboard, getClassificationOverview,
 } from "./brain-queries.js";
 import { escapeHTML } from "./brain-components.js";
+import { tvLinkHtml } from "./tv-link.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = escapeHTML;
@@ -60,7 +61,7 @@ async function loadP1() {
   const idxRows = indices.slice(0, 8).map((r) => `<tr><td>${esc(r.index_symbol ?? r.symbol)}</td><td class="num">${fmtNum(r.close)}</td><td class="num ${signCls(r.change_pct)}">${fmtPct(r.change_pct, 2)}</td></tr>`).join("");
   const fxRows = fx.slice(0, 6).map((r) => `<tr><td>${esc(r.pair)}</td><td class="num">${fmtNum(r.close, 3)}</td><td class="num ${signCls(r.change_pct)}">${fmtPct(r.change_pct, 2)}</td></tr>`).join("");
   const flowRows = flows.slice(0, 8).map((r) => `<tr><td>${esc(r.industry_code)}</td><td class="num ${signCls(r.price_change_1d)}">${fmtPct(r.price_change_1d, 1)}</td><td class="num">${fmtPct(r.price_change_1m, 1)}</td><td>${esc(r.flow_status ?? r.momentum_stage ?? "")}</td></tr>`).join("");
-  const anRows = anomalies.slice(0, 8).map((r) => `<tr><td>${esc(r.symbol)}</td><td>${esc(r.anomaly_type)}</td><td class="num">${fmtNum(r.vol_rel_20d, 1)}×</td></tr>`).join("");
+  const anRows = anomalies.slice(0, 8).map((r) => `<tr><td>${esc(r.symbol)} ${tvLinkHtml(r.symbol, esc)}</td><td>${esc(r.anomaly_type)}</td><td class="num">${fmtNum(r.vol_rel_20d, 1)}×</td></tr>`).join("");
   setBody("p1-body", `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem">
     <div><div class="muted" style="font-size:.66rem;margin-bottom:.2rem">INDICES</div><table class="bt"><tbody>${idxRows || emptyRow(3)}</tbody></table></div>
     <div><div class="muted" style="font-size:.66rem;margin-bottom:.2rem">FX</div><table class="bt"><tbody>${fxRows || emptyRow(3)}</tbody></table></div>
@@ -82,7 +83,8 @@ async function loadP2() {
   const rows = signals.slice(0, 14).map((s) => {
     const dir = String(s.direction ?? "").toLowerCase();
     const dirCls = dir === "long" ? "up" : dir === "short" ? "down" : "muted";
-    return `<tr><td>${esc(s.primary_symbol ?? (arr(s.symbols)[0]) ?? "")}</td>` +
+    const sym = s.primary_symbol ?? (arr(s.symbols)[0]) ?? "";
+    return `<tr><td>${esc(sym)} ${tvLinkHtml(sym, esc)}</td>` +
       `<td>${esc((s.company_name ?? "").slice(0, 18))}</td>` +
       `<td class="${dirCls}">${esc(s.direction ?? "")}</td>` +
       `<td>${esc(s.signal_state ?? "")}</td>` +
@@ -143,7 +145,7 @@ async function loadP4() {
   const nav = d?.latest_nav || {}, run = d?.latest_run || {}, positions = arr(d?.positions);
   setMeta("p4-meta", fmtDate(nav.nav_date || run.run_date), "fn_get_model_portfolio_dashboard");
   const top = [...positions].sort((a, b) => Math.abs(Number(b.weight) || 0) - Math.abs(Number(a.weight) || 0)).slice(0, 8);
-  const posRows = top.map((p) => `<tr><td>${esc(p.symbol)}</td><td>${esc((p.company_name || p.company_name_en || "").slice(0, 18))}</td>` +
+  const posRows = top.map((p) => `<tr><td>${esc(p.symbol)} ${tvLinkHtml(p.symbol, esc)}</td><td>${esc((p.company_name || p.company_name_en || "").slice(0, 18))}</td>` +
     `<td>${esc((p.sector || "").slice(0, 12))}</td>` +
     `<td class="num">${fmtPct(p.weight, 1)}</td>` +
     `<td class="num">${fmtUsdM(p.market_value_usd)}</td>` +

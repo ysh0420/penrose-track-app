@@ -11,6 +11,7 @@
 import { mountBrainAuthGate } from "./brain-client.js";
 import { getTechnicalsScreener } from "./brain-queries.js";
 import { escapeHTML } from "./brain-components.js";
+import { tvLinkHtml } from "./tv-link.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = escapeHTML;
@@ -69,6 +70,7 @@ function renderRows(rows) {
     return `<tr>
       <td class="num muted">${esc(r.rank)}</td>
       <td>${esc(r.symbol)}</td>
+      <td>${tvLinkHtml(r.symbol, esc)}</td>
       <td class="${named ? "name" : "codeonly"}">${esc(r.name ?? dash)}</td>
       <td>${r.sector ? `<span class="sector-chip">${esc(r.sector)}</span>` : `<span class="muted">${dash}</span>`}</td>
       <td class="num"><span class="score-pill">${fmtNum(r.score, 1)}</span></td>
@@ -84,7 +86,7 @@ function renderRows(rows) {
   }).join("");
   return `<table class="bt">
     <thead><tr>
-      <th class="num">#</th><th>Code</th><th>Name</th><th>Sector</th>
+      <th class="num">#</th><th>Code</th><th>TV</th><th>Name</th><th>Sector</th>
       <th class="num">Score</th><th class="num">RSI</th><th class="num">%200MA</th>
       <th class="num">1m</th><th class="num">3m</th><th class="num">RelVol</th>
       <th class="num">MACDh</th><th class="num">BB</th><th>Interpretation</th>
