@@ -5,9 +5,10 @@
 // directly. Independent of the ② live LS/LO book.
 //
 // Four buckets (High Conviction / Superior Long / Superior Short /
-// Alpha-only Short). Each returns names with a technical strength percentile,
-// RSI(14), a rule-based timing read (CONSTRUCTIVE / EXTENDED / NEUTRAL), and
-// the beta-adjusted alpha risk_adj from the nightly alpha screen. No AI.
+// Alpha-only Short) over superior_signals_daily (multi-TF superior + RSI timing
+// + alpha intersection). Each row carries side, a technical strength percentile,
+// RSI(14), a rule-based timing read (CONSTRUCTIVE / EXTENDED / NEUTRAL), and the
+// beta-adjusted alpha risk_adj. No AI.
 
 import { mountBrainAuthGate } from "./brain-client.js";
 import { getTechnicalPanel } from "./brain-queries.js";
@@ -27,8 +28,8 @@ const BUCKETS = {
   high_conviction: {
     title: "High Conviction",
     method:
-      "Names where the technical strength screen and the beta-adjusted alpha screen (vs TOPIX) " +
-      "agree on side. Highest-conviction candidate entries; CONSTRUCTIVE timing preferred over EXTENDED.",
+      "Names flagged high_conviction in superior_signals_daily (multi-TF superior + RSI timing + " +
+      "alpha intersection). Mixed long/short — side badge per row. CONSTRUCTIVE timing preferred over EXTENDED.",
   },
   superior_long: {
     title: "Superior Long",
@@ -80,6 +81,13 @@ function timingCell(timing) {
   return `<span class="timing-badge ${cls}">${esc(key)}</span>`;
 }
 
+function sideCell(side) {
+  const key = String(side ?? "").toUpperCase();
+  if (key === "LONG") return `<span class="side-badge side-long">LONG</span>`;
+  if (key === "SHORT") return `<span class="side-badge side-short">SHORT</span>`;
+  return `<span class="muted">${dash}</span>`;
+}
+
 function renderRows(rows) {
   if (!rows.length) {
     return `<div class="muted" style="padding:.6rem">No names match this bucket today.</div>`;
@@ -92,6 +100,7 @@ function renderRows(rows) {
       <td>${tvLinkHtml(r.symbol, esc)}</td>
       <td class="${named ? "name" : "codeonly"}">${esc(r.company_name ?? dash)}</td>
       <td>${r.sector ? `<span class="sector-chip">${esc(r.sector)}</span>` : `<span class="muted">${dash}</span>`}</td>
+      <td>${sideCell(r.side)}</td>
       <td class="num"><span class="score-pill">${fmtNum(r.strength_pct, 0)}</span></td>
       <td class="num">${fmtNum(r.rsi_14, 0)}</td>
       <td>${timingCell(r.timing)}</td>
@@ -100,7 +109,7 @@ function renderRows(rows) {
   }).join("");
   return `<table class="bt">
     <thead><tr>
-      <th class="num">#</th><th>Code</th><th>TV</th><th>Name</th><th>Sector</th>
+      <th class="num">#</th><th>Code</th><th>TV</th><th>Name</th><th>Sector</th><th>Side</th>
       <th class="num">Strength</th><th class="num">RSI</th><th>Timing</th><th class="num">Alpha r/r</th>
     </tr></thead>
     <tbody>${body}</tbody>
@@ -127,7 +136,7 @@ async function load(bucket) {
   }
   const rows = arr(d?.rows);
   $("ts-meta").innerHTML =
-    `${rows.length} names · technicals_daily × alpha_screen_daily · as of <span class="ts-asof">${esc(d?.as_of ?? "")}</span>`;
+    `${rows.length} names · superior_signals_daily (multi-TF superior + RSI timing + alpha intersection) · as of <span class="ts-asof">${esc(d?.as_of ?? "")}</span>`;
   $("ts-body").innerHTML = renderRows(rows);
 }
 
