@@ -129,7 +129,7 @@ async function load(bucket) {
 
   let d;
   try {
-    d = await getTechnicalPanel(bucket, 25);
+    d = await getTechnicalPanel(bucket, 100);
   } catch (e) {
     showError(e);
     return;

@@ -21,7 +21,7 @@
 -- ARGS (passed through verbatim by the brain-query gateway / getTechnicalPanel):
 --   p_bucket text   default 'high_conviction'  (permissive: case/punctuation-
 --                   insensitive, accepts aliases hc/long/short/alpha/… — see norm)
---   p_limit  int    default 100                (frontend currently requests 25)
+--   p_limit  int    default 100                (frontend requests 100)
 --
 -- RETURNS jsonb {as_of, bucket, count, disclaimer, rows[]} where each row =
 --   {rank, side, symbol, company_name, sector, strength_pct, rsi_14,
