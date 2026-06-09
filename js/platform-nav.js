@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { id: "data-coverage", label: "Data Coverage", href: "/data-coverage.html", section: "brain" },
   { id: "technicals-screener", label: "Screener", href: "/technicals-screener.html", section: "brain" },
   { id: "technicals-screener-v2", label: "Screener v2", href: "/technicals-screener-v2.html", section: "brain" },
+  { id: "technical-screen", label: "Technical Screen", href: "/technical-screen.html", section: "brain" },
   { id: "news", label: "News", href: "/news.html", section: "brain" },
   { id: "master", label: "Main Portfolio", href: "/master-portfolio.html", section: "portfolio" },
   { id: "books", label: "Books (LS/LO)", href: "/books.html", section: "portfolio" },

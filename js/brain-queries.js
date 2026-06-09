@@ -316,6 +316,20 @@ export function getTechnicalsScreenerV2(preset = "momentum", limit = 20, side = 
 }
 
 /**
+ * Technical Screen panel: superior_signals_daily (multi-TF superior + RSI timing
+ * + alpha intersection), bucketed into high_conviction / superior_long /
+ * superior_short / alpha_only_short. Reads penrose_market via the
+ * get_technical_panel RPC only (no direct table reads); the panel shows a
+ * pending state if the RPC is ever absent from the brain-query allowlist.
+ * Read-only, no AI. Returns {as_of, bucket, count, disclaimer, rows[]} where each
+ * row carries {rank, side, symbol, company_name, sector, strength_pct, rsi_14,
+ * timing, alpha_risk_adj} (side = effective LONG/SHORT; high_conviction mixes both).
+ */
+export function getTechnicalPanel(bucket = "high_conviction", limit = 25) {
+  return brainQuery("get_technical_panel", { p_bucket: bucket, p_limit: limit });
+}
+
+/**
  * Drill into the bucketed `get_intraday_alerts` payload and return only
  * the fact-check completions whose subject_symbol matches `symbol`.
  * Returns [] if no payload, no completions, or no matches.
