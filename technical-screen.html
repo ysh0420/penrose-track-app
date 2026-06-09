@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penrose Brain — Technical Screen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/platform-pages.css">
+<link rel="stylesheet" href="/css/brain-pages.css">
+<style>
+:root{--navy:#1a2744;--gold:#c9a84c;--cream:#f7f5f0;--sumi:#2a2a2a;--line:#e0d8c4;--muted:#8b8680;--green:#2e7d32;--red:#b71c1c;--amber:#b7791f}
+*{box-sizing:border-box}
+body{margin:0;font-family:"DM Sans",system-ui,sans-serif;background:var(--cream);color:var(--sumi)}
+h1,h2,h3{font-family:"Cormorant Garamond",serif;margin:0}
+a{color:inherit}
+.topbar{display:flex;justify-content:space-between;align-items:center;background:var(--navy);color:#fff;padding:.7rem 1.2rem}
+.topbar-title{font-family:"Cormorant Garamond",serif;font-size:1.3rem}
+.topbar-title span{color:var(--gold)}
+.topbar-actions{display:flex;gap:1rem;align-items:center;font-size:.82rem}
+.topbar-actions a{cursor:pointer;text-decoration:underline}
+.container{max-width:1320px;margin:0 auto;padding:1rem 1.2rem 2rem}
+.ts-disclaimer{background:rgba(183,121,31,.1);border:1px solid var(--amber);color:#8a5a13;font-size:.74rem;font-weight:600;padding:.45rem .7rem;border-radius:4px;margin:.8rem 0}
+.ts-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin:.8rem 0 .2rem}
+.ts-tab{cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:4px;padding:.45rem .8rem;font-size:.82rem;font-family:inherit;color:var(--sumi);display:flex;flex-direction:column;gap:.1rem;min-width:150px}
+.ts-tab .t{font-weight:600;color:var(--navy)}
+.ts-tab .s{font-size:.64rem;color:var(--muted)}
+.ts-tab.active{border-color:var(--navy);background:var(--navy);color:#fff}
+.ts-tab.active .t,.ts-tab.active .s{color:#fff}
+.ts-panel{background:#fff;border:1px solid var(--line);border-radius:4px;margin-top:.6rem;overflow:hidden}
+.ts-head{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;padding:.6rem .9rem;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fbfaf6)}
+.ts-head h3{font-size:1.08rem;color:var(--navy)}
+.ts-head .meta{font-size:.7rem;color:var(--muted);text-align:right;white-space:nowrap}
+.ts-asof{font-variant-numeric:tabular-nums}
+.ts-body{padding:.4rem .6rem .7rem;overflow-x:auto}
+.bt{width:100%;border-collapse:collapse;font-size:.78rem}
+.bt th,.bt td{padding:.3rem .5rem;text-align:left;border-bottom:1px solid #f0ece1;white-space:nowrap}
+.bt th{font-size:.64rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:600;position:sticky;top:0;background:#fff}
+.bt td.num,.bt th.num{text-align:right;font-variant-numeric:tabular-nums}
+.bt tr:last-child td{border-bottom:none}
+.bt tbody tr:hover{background:#faf8f2}
+.bt td.name{font-weight:600;color:var(--navy)}
+.bt td.codeonly{font-weight:400;color:var(--muted)}
+.up{color:var(--green)}.down{color:var(--red)}.muted{color:var(--muted)}
+.score-pill{display:inline-block;min-width:2.6rem;text-align:center;padding:.08rem .4rem;border-radius:10px;font-weight:700;font-size:.72rem;background:rgba(26,39,68,.08);color:var(--navy);font-variant-numeric:tabular-nums}
+.sector-chip{display:inline-block;padding:.04rem .35rem;border-radius:10px;background:rgba(26,39,68,.06);color:var(--navy);font-size:.66rem}
+/* timing badge — CONSTRUCTIVE green / EXTENDED amber / NEUTRAL grey */
+.timing-badge{display:inline-block;padding:.06rem .45rem;border-radius:10px;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.timing-constructive{background:rgba(46,125,50,.12);color:var(--green)}
+.timing-extended{background:rgba(183,121,31,.14);color:var(--amber)}
+.timing-neutral{background:rgba(139,134,128,.14);color:var(--muted)}
+/* .tv-link is shared in css/platform-pages.css */
+.pending-rpc{padding:.8rem;border:1px dashed var(--amber);border-radius:4px;background:rgba(183,121,31,.05);color:#8a5a13;font-size:.74rem}
+.ts-err{color:var(--red);font-size:.74rem;padding:.5rem}
+.refresh-link{cursor:pointer;text-decoration:underline;font-size:.7rem;color:var(--navy)}
+.method-note{font-size:.66rem;color:var(--muted);padding:.5rem .9rem;border-top:1px dashed var(--line);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div id="brain-login"></div>
+
+<div id="brain-app" style="display:none">
+  <div class="topbar">
+    <div class="topbar-title">Penrose <span>Brain</span> · Technical Screen</div>
+    <div class="topbar-actions">
+      <span id="brain-user-email"></span>
+      <a id="ts-refresh">Refresh</a>
+      <a href="/today.html">Main</a>
+      <a id="brain-signout">Sign out</a>
+    </div>
+  </div>
+  <div class="container">
+    <div data-platform-nav data-active-nav="technical-screen"></div>
+
+    <div class="ts-disclaimer">Technical screen — a candidate <b>sieve</b>, not investment advice.
+      Information layer (①) only; independent of the live LS/LO book. Final judgement is yours.</div>
+
+    <div class="ts-tabs" id="ts-tabs">
+      <button class="ts-tab active" data-bucket="high_conviction"><span class="t">High Conviction</span><span class="s">technical strength × alpha agree</span></button>
+      <button class="ts-tab" data-bucket="superior_long"><span class="t">Superior Long</span><span class="s">constructive long candidates</span></button>
+      <button class="ts-tab" data-bucket="superior_short"><span class="t">Superior Short</span><span class="s">extended short candidates</span></button>
+      <button class="ts-tab" data-bucket="alpha_only_short"><span class="t">Alpha-only Short</span><span class="s">negative alpha, technicals not yet confirming</span></button>
+    </div>
+
+    <div class="ts-panel">
+      <div class="ts-head">
+        <h3 id="ts-title">High Conviction</h3>
+        <div class="meta" id="ts-meta"></div>
+      </div>
+      <div class="ts-body" id="ts-body"></div>
+      <div class="method-note" id="ts-method"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/js/platform-nav.js"></script>
+<script type="module" src="/js/page-technical-screen.js"></script>
+</body>
+</html>
