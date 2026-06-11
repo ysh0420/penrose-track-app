@@ -34,20 +34,30 @@ function metricHTML(label, value) {
 }
 
 function renderItem(item) {
-  const title = item.title_ja || item.title || "";
-  const href = item.url ? ` href="${escapeHTML(item.url)}" target="_blank" rel="noopener"` : "";
+  // "元ニュース" card: prominent HEADLINE first, then source · time · impact,
+  // then symbol/theme chips. Headline links to the original article in a new
+  // tab when a URL is present; degrades to plain text when it is not (some
+  // sources store the headline but no per-article URL).
+  const title = item.title_ja || item.title || "(untitled)";
+  const source = escapeHTML(item.source_name ?? item.source_code ?? "");
+  const time = fmtDate(item.published_at ?? item.fetched_at);
   const symbols = unique(item.symbols).map((s) => `<span class="news-chip">${escapeHTML(s)}</span>`).join("");
   const themes = unique(item.themes).slice(0, 4).map((t) => `<span class="news-chip">${escapeHTML(t)}</span>`).join("");
+  const chips = symbols || themes ? `<div class="news-chips">${symbols}${themes}</div>` : "";
   const impact = item.is_market_moving
-    ? `<span class="${impactClass(item)}">${escapeHTML(item.impact_direction ?? "market-moving")}</span>`
-    : escapeHTML(item.impact_direction ?? "neutral");
+    ? `<span class="news-impact ${impactClass(item)}">${escapeHTML(item.impact_direction ?? "market-moving")}</span>`
+    : `<span class="news-impact">${escapeHTML(item.impact_direction ?? "neutral")}</span>`;
+
+  const headline = item.url
+    ? `<a class="news-headline" href="${escapeHTML(item.url)}" target="_blank" rel="noopener">${escapeHTML(title)}<span class="ext" aria-hidden="true">↗</span></a>`
+    : `<span class="news-headline news-headline-plain">${escapeHTML(title)}</span>`;
 
   return `
-    <div class="news-item">
-      <div class="news-meta">${escapeHTML(item.source_name ?? item.source_code ?? "")} · ${fmtDate(item.published_at ?? item.fetched_at)} · ${impact}</div>
-      <div>${item.url ? `<a${href}>${escapeHTML(title)}</a>` : escapeHTML(title)}</div>
-      <div>${symbols}${themes}</div>
-    </div>
+    <article class="news-item">
+      ${headline}
+      <div class="news-meta"><span class="news-source">${source}</span> · ${escapeHTML(time)} · ${impact}</div>
+      ${chips}
+    </article>
   `;
 }
 

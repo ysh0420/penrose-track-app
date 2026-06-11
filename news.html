@@ -37,16 +37,24 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;color:var(--navy)}
 .news-brief-md{font-size:10.5pt;line-height:1.65}
 .news-brief-md h1,.news-brief-md h2,.news-brief-md h3{font-family:'DM Sans',sans-serif;font-size:12pt;margin:1em 0 .35em;border:none;padding:0}
 .news-brief-md a{color:var(--navy)}
-.news-items{display:grid;gap:10px}
-.news-item{border-bottom:1px solid var(--line);padding-bottom:10px;font-size:10pt;line-height:1.45}
+.news-items{display:grid;gap:0}
+.news-item{border-bottom:1px solid var(--line);padding:12px 0;font-size:10pt;line-height:1.45}
+.news-item:first-child{padding-top:0}
 .news-item:last-child{border-bottom:0;padding-bottom:0}
-.news-item a{color:var(--navy);text-decoration:none;border-bottom:1px solid rgba(26,39,68,.2)}
-.news-item a:hover{border-bottom-color:var(--gold);color:var(--gold)}
-.news-meta{font-size:8.5pt;color:var(--muted);margin-bottom:.25rem}
+.news-headline{display:block;font-size:12pt;font-weight:600;color:var(--navy);line-height:1.4;text-decoration:none;margin-bottom:.35rem}
+a.news-headline:hover{color:var(--gold)}
+.news-headline .ext{font-size:9pt;color:var(--muted);margin-left:.3rem;vertical-align:1px}
+a.news-headline:hover .ext{color:var(--gold)}
+.news-headline-plain{color:var(--sumi);cursor:default}
+.news-meta{font-size:9pt;color:var(--muted);margin-bottom:0;display:flex;flex-wrap:wrap;gap:.25rem;align-items:baseline}
+.news-source{color:var(--navy);font-weight:500}
+.news-impact{text-transform:lowercase}
+.news-chips{margin-top:.4rem}
 .news-chip{display:inline-block;border:1px solid var(--line);border-radius:12px;padding:1px 7px;margin:2px 3px 0 0;color:var(--navy);background:#fbfaf6;font-size:8.5pt}
 .news-positive{color:var(--green);font-weight:600}.news-negative{color:var(--red);font-weight:600}.news-mixed{color:#8a5b00;font-weight:600}
 @media(max-width:920px){.news-grid{grid-template-columns:1fr}.news-summary{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:640px){body{padding:1rem .75rem}.topbar{padding:1rem}.news-summary{grid-template-columns:1fr}}
+@media(max-width:640px){body{padding:1rem .75rem}.topbar{padding:1rem}.news-summary{grid-template-columns:1fr}
+.news-headline{font-size:13pt;line-height:1.45}.news-item{padding:14px 0}.news-meta{font-size:9.5pt}}
 </style>
 </head>
 <body>
