@@ -4,29 +4,31 @@ const SECTIONS = [
   { id: "main", label: "Main", href: "/today.html" },
   { id: "brain", label: "Brain", href: "/brain-review.html" },
   { id: "portfolio", label: "Portfolio", href: "/master-portfolio.html" },
-  { id: "research", label: "Research", href: "/reports.html" },
 ];
 
+// Research section removed from nav (Reports / Research Log / Agent Intake /
+// Companies). The backing RPCs are preserved; research-log.html and stock.html
+// stay on disk because they are still deep-link / drill-down targets
+// (today, model-portfolio, portfolio-v2, track-record) — they are simply no
+// longer surfaced in the nav.
+//
+// Screener consolidation: "Screener" is now the single live Technical Screen
+// page (get_technical_panel). v1 was deleted; v2 (Confluence draft) is archived
+// under archive/screener-v2/ pending a decision to fold its features in.
 const NAV_ITEMS = [
   { id: "today", label: "Today", href: "/today.html", section: "main" },
+  { id: "news", label: "News", href: "/news.html", section: "main" },
   { id: "brain-dashboard", label: "Dashboard", href: "/brain-dashboard.html", section: "brain" },
   { id: "brain-review", label: "Review", href: "/brain-review.html", section: "brain" },
   { id: "data-coverage", label: "Data Coverage", href: "/data-coverage.html", section: "brain" },
-  { id: "technicals-screener", label: "Screener", href: "/technicals-screener.html", section: "brain" },
-  { id: "technicals-screener-v2", label: "Screener v2", href: "/technicals-screener-v2.html", section: "brain" },
-  { id: "technical-screen", label: "Technical Screen", href: "/technical-screen.html", section: "brain" },
-  { id: "news", label: "News", href: "/news.html", section: "brain" },
+  { id: "technical-screen", label: "Screener", href: "/technical-screen.html", section: "brain" },
   { id: "master", label: "Main Portfolio", href: "/master-portfolio.html", section: "portfolio" },
-  { id: "books", label: "Books (LS/LO)", href: "/books.html", section: "portfolio" },
+  { id: "books", label: "Books", href: "/books.html", section: "portfolio" },
   { id: "model-v2", label: "V2 Review", href: "/portfolio-v2-review.html", section: "portfolio" },
   { id: "model-v2-log", label: "V2 Daily Log", href: "/portfolio-v2-log.html", section: "portfolio" },
   { id: "model", label: "Legacy Archive", href: "/model-portfolio.html", section: "portfolio" },
   { id: "track", label: "MW", href: "/track-record.html", section: "portfolio" },
   { id: "long-only", label: "Long Only", href: "/long-only.html", section: "portfolio" },
-  { id: "reports", label: "Reports", href: "/reports.html", section: "research" },
-  { id: "research-log", label: "Research Log", href: "/research-log.html", section: "research" },
-  { id: "agent-intake", label: "Agent Intake", href: "/agent-intake.html", section: "research" },
-  { id: "companies", label: "Companies", href: "/stock.html", section: "research" },
 ];
 
 function escapeHTML(value) {
